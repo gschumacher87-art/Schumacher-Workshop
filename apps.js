@@ -86,18 +86,21 @@ function openBooking(day, month, year) {
     const bookingForm = document.getElementById("bookingForm");
     bookingForm.style.display = "block";
 
-    // Include button directly in innerHTML
-    bookingForm.innerHTML = `
-        <h3 style="display:inline-block; margin-right:10px;">Booking for ${day}/${month + 1}/${year}</h3>
-        <button id="addBookingBtn">Add Booking</button>
-    `;
+    // Clear previous content
+    bookingForm.innerHTML = "";
 
-    // Safely attach event listener after innerHTML
-    const addBtn = document.getElementById("addBookingBtn");
-    if (addBtn) {
-        addBtn.addEventListener("click", () => {
-            alert("Add Booking clicked for " + day + "/" + (month + 1) + "/" + year);
-        });
-    }
+    // Create heading
+    const heading = document.createElement("h3");
+    heading.style.display = "inline-block";
+    heading.style.marginRight = "10px";
+    heading.textContent = `Booking for ${day}/${month + 1}/${year}`;
+    bookingForm.appendChild(heading);
+
+    // Create Add Booking button
+    const addBtn = document.createElement("button");
+    addBtn.textContent = "Add Booking";
+    addBtn.addEventListener("click", () => {
+        alert("Add Booking clicked for " + day + "/" + (month + 1) + "/" + year);
+    });
+    bookingForm.appendChild(addBtn);
 }
-
