@@ -1,23 +1,28 @@
-body {
+/* Reset some defaults */
+body, html {
     margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
-    display: flex;
-    height: 100vh;
+    height: 100%;
 }
 
+/* Sidebar */
 .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
     width: 220px;
+    height: 100%;
     background-color: #000;
     color: #fff;
-    display: flex;
-    flex-direction: column;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .sidebar h2 {
-    color: yellow;
-    margin: 0 0 30px 0;
-    font-size: 20px;
+    color: #FFD700; /* Yellow text */
+    margin-bottom: 40px;
+    font-size: 1.5em;
 }
 
 .sidebar ul {
@@ -34,37 +39,40 @@ body {
     font-weight: bold;
 }
 
+/* Main area */
 .main {
-    flex: 1;
-    background-color: #f4f4f4;
+    margin-left: 220px;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
 }
 
-.header {
+/* Header */
+header {
     display: flex;
     justify-content: flex-end;
-    align-items: center;
+    font-size: 1.2em;
     margin-bottom: 30px;
-    font-size: 18px;
-    font-weight: bold;
 }
 
+/* Cards */
 .cards {
     display: flex;
     gap: 20px;
 }
 
 .card {
-    background-color: #fff;
+    background-color: #f0f0f0;
     padding: 20px;
     flex: 1;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 8px;
-    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .card h3 {
     margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 1.5em;
+    margin: 0;
 }
