@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("analogClock");
     const ctx = canvas.getContext("2d");
     const radius = canvas.height / 2;
-
     ctx.translate(radius, radius);
 
     function drawClock() {
@@ -24,10 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // hour hand
         drawHand((hour % 12 + minute / 60) * Math.PI / 6, radius * 0.5, 5);
-
         // minute hand
         drawHand((minute + second / 60) * Math.PI / 30, radius * 0.7, 3);
-
         // second hand
         drawHand(second * Math.PI / 30, radius * 0.9, 1, "red");
     }
@@ -45,6 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setInterval(drawClock, 1000);
     drawClock();
+    // ===== CLOCK BLOCK END =====
+
 
     // ===== DATE BLOCK =====
     function updateDate() {
@@ -60,10 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     updateDate();
-    // ===== CLOCK + DATE BLOCK END =====
+    // ===== DATE BLOCK END =====
 
-
-  document.addEventListener("DOMContentLoaded", () => {
 
     // ===== CALENDAR BLOCK =====
     const calendarCard = Array.from(document.querySelectorAll(".cards .card"))
@@ -74,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
 
-    // Generate calendar
     function showCalendar(month, year) {
         const monthYearEl = document.getElementById("monthYear");
         monthYearEl.textContent = `${month + 1}/${year}`;
@@ -89,29 +85,24 @@ document.addEventListener("DOMContentLoaded", () => {
         let cell;
         let date = 1;
 
-        // First week
         for (let i = 0; i < 7; i++) {
             cell = document.createElement("td");
-            if (i < firstDay) cell.textContent = "";
-            else cell.textContent = date++;
+            cell.textContent = i < firstDay ? "" : date++;
             row.appendChild(cell);
         }
         tbody.appendChild(row);
 
-        // Remaining weeks
         while (date <= daysInMonth) {
             row = document.createElement("tr");
             for (let i = 0; i < 7; i++) {
                 cell = document.createElement("td");
-                if (date <= daysInMonth) cell.textContent = date++;
-                else cell.textContent = "";
+                cell.textContent = date <= daysInMonth ? date++ : "";
                 row.appendChild(cell);
             }
             tbody.appendChild(row);
         }
     }
 
-    // Click calendar card
     if (calendarCard) {
         calendarCard.addEventListener("click", () => {
             dashboardSection.style.display = "none";
@@ -120,7 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Month navigation
     document.getElementById("prevMonth").addEventListener("click", () => {
         currentMonth--;
         if (currentMonth < 0) { currentMonth = 11; currentYear--; }
