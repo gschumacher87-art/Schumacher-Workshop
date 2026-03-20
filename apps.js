@@ -81,23 +81,11 @@ document.getElementById("nextMonth").addEventListener("click", () => {
     }
     showCalendar(currentMonth, currentYear);
 });
-    // ===== OPEN BOOKING FUNCTION =====
+  // ===== OPEN BOOKING FUNCTION =====
 function openBooking(day, month, year) {
     const bookingForm = document.getElementById("bookingForm");
     bookingForm.style.display = "block";
-
-    bookingForm.innerHTML = `
-        <h3 style="display:inline-block; margin-right:10px;">Booking for ${day}/${month + 1}/${year}</h3>
-        <button id="addBookingBtn">Add Booking</button>
-    `;
-
-    // Ensure button exists after rendering
-    setTimeout(() => {
-        const addBtn = document.getElementById("addBookingBtn");
-        if (addBtn) {
-            addBtn.addEventListener("click", () => {
-                alert("Add Booking clicked for " + day + "/" + (month + 1) + "/" + year);
-            });
-        }
-    }, 0);
+    bookingForm.innerHTML = `<h3>Booking for ${day}/${month + 1}/${year}</h3>`;
 }
+
+});
