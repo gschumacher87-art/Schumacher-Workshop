@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===== CALENDAR =====
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || {};
 
     function showCalendar(month, year) {
         const monthYearEl = document.getElementById("monthYear");
@@ -99,6 +100,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         bookingForm.appendChild(addBtn);
     }
+    const key = `${day}-${month}-${year}`;
+
+const list = document.createElement("div");
+
+if (bookings[key] && bookings[key].length > 0) {
+    bookings[key].forEach((b, index) => {
+        const item = document.createElement("div");
+        item.style.border = "1px solid #ccc";
+        item.style.padding = "5px";
+        item.style.marginTop = "5px";
+        item.style.cursor = "pointer";
+
+        item.textContent = `${b.customer} - ${b.vehicle} - ${b.repair}`;
+
+        list.appendChild(item);
+    });
+} else {
+    list.textContent = "No bookings yet.";
+}
+
+bookingForm.appendChild(list);
 
     // ===== GENERIC BOOKING POP-UP =====
     function showBookingModal(day, month, year) {
@@ -154,11 +176,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
         modal.style.display = "flex";
 
-        const saveBtn = document.getElementById("saveBookingBtn");
         saveBtn.onclick = () => {
-            alert("Booking would be saved here. Databases not yet implemented.");
-            modal.style.display = "none";
-        };
+    const inputs = document.querySelectorAll("#bookingFormFields input");
+
+    const bookingData = {
+        customer: inputs[0].value,
+        vehicle: inputs[1].value,
+        rego: inputs[2].value,
+        repair: inputs[3].value
+    };
+
+    const key = `${day}-${month}-${year}`;
+
+    if (!bookings[key]) bookings[key] = [];
+    bookings[key].push(bookingData);
+
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+
+    modal.style.display = "none";
+
+    openBooking(day, month, year); // refresh list
+};
     }
 
     // Initial calendar render
