@@ -21,20 +21,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const minute = now.getMinutes();
         const second = now.getSeconds();
 
+        // Draw hour, minute, second hands
         drawHand((hour % 12 + minute / 60) * Math.PI / 6, radius * 0.5, 5);
         drawHand((minute + second / 60) * Math.PI / 30, radius * 0.7, 3);
         drawHand(second * Math.PI / 30, radius * 0.9, 1, "red");
     }
 
-    function drawHand(pos, length, width, color = "#000") {
+    function drawHand(angle, length, width, color = "#000") {
         ctx.beginPath();
         ctx.lineWidth = width;
         ctx.strokeStyle = color;
         ctx.moveTo(0, 0);
-        ctx.rotate(pos);
+        ctx.rotate(angle);
         ctx.lineTo(0, -length);
         ctx.stroke();
-        ctx.rotate(-pos);
+        ctx.rotate(-angle);
     }
 
     setInterval(drawClock, 1000);
@@ -42,18 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===== CLOCK BLOCK END =====
 
     // ===== DATE BLOCK =====
+    const dateEl = document.getElementById("currentDate");
     function updateDate() {
-        const el = document.getElementById("currentDate");
-        if (!el) return;
-
+        if (!dateEl) return;
         const now = new Date();
-        el.textContent = now.toLocaleDateString("en-AU", {
+        dateEl.textContent = now.toLocaleDateString("en-AU", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric"
         });
     }
-
     updateDate();
     // ===== DATE BLOCK END =====
 
@@ -77,11 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
         let date = 1;
-        for (let i = 0; i < 6; i++) {
+        for (let rowIndex = 0; rowIndex < 6; rowIndex++) {
             const row = document.createElement("tr");
-            for (let j = 0; j < 7; j++) {
+            for (let colIndex = 0; colIndex < 7; colIndex++) {
                 const cell = document.createElement("td");
-                if ((i === 0 && j < firstDay) || date > daysInMonth) {
+                if ((rowIndex === 0 && colIndex < firstDay) || date > daysInMonth) {
                     cell.textContent = "";
                 } else {
                     cell.textContent = date++;
@@ -103,13 +102,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("prevMonth").addEventListener("click", () => {
         currentMonth--;
-        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
         showCalendar(currentMonth, currentYear);
     });
 
     document.getElementById("nextMonth").addEventListener("click", () => {
         currentMonth++;
-        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
         showCalendar(currentMonth, currentYear);
     });
     // ===== CALENDAR BLOCK END =====
