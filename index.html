@@ -9,35 +9,31 @@
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-header">
-        <h2>Schumacher Automotive</h2>
-    </div>
-    <ul class="sidebar-tabs">
+    <div class="sidebar-header">Schumacher Automotive</div>
+    <ul>
         <li class="active">Dashboard</li>
-        <!-- other tabs can go here later -->
     </ul>
 </div>
 
 <div class="main">
-    <!-- DASHBOARD SECTION -->
-    <div id="dashboardSection" class="dashboard-section">
+    <div class="dashboard">
         <div class="dashboard-top">
             <canvas id="analogClock" width="120" height="120"></canvas>
-            <div id="currentDate" class="current-date"></div>
+            <div class="current-date" id="currentDate"></div>
         </div>
 
         <div class="cards">
             <div class="card">
-                <h3>Calendar</h3>
-                <p id="calendarValue">--/--/----</p>
+                <h3>Today's Bookings</h3>
+                <p id="bookingsCount">0</p>
             </div>
             <div class="card">
                 <h3>Vehicles in Workshop</h3>
-                <p id="vehiclesValue">0</p>
+                <p id="vehiclesCount">0</p>
             </div>
             <div class="card">
                 <h3>Today's Jobs</h3>
-                <p id="jobsValue">0</p>
+                <p id="jobsCount">0</p>
             </div>
         </div>
     </div>
