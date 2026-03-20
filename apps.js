@@ -86,22 +86,8 @@ document.getElementById("nextMonth").addEventListener("click", () => {
 function openBooking(day, month, year) {
     const bookingForm = document.getElementById("bookingForm");
     bookingForm.style.display = "block";
-
-    // Clear previous content safely
-    bookingForm.innerHTML = "";
-
-    // Create heading
-    const heading = document.createElement("h3");
-    heading.style.display = "inline-block";
-    heading.style.marginRight = "10px";
-    heading.textContent = `Booking for ${day}/${month + 1}/${year}`;
-    bookingForm.appendChild(heading);
-
-    // Create Add Booking button
-    const addBtn = document.createElement("button");
-    addBtn.textContent = "Add Booking";
-    addBtn.addEventListener("click", () => {
-        alert("Add Booking clicked for " + day + "/" + (month + 1) + "/" + year);
-    });
-    bookingForm.appendChild(addBtn);
+    bookingForm.innerHTML = `
+        <h3 style="display:inline-block; margin-right:10px;">Booking for ${day}/${month + 1}/${year}</h3>
+        <button onclick="alert('Add Booking clicked for ${day}/${month + 1}/${year}')">Add Booking</button>
+    `;
 }
