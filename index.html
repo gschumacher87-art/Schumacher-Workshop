@@ -9,26 +9,22 @@
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-header">
-        Schumacher Automotive
-    </div>
-    <ul class="sidebar-menu">
+    <h2 class="sidebar-header">Schumacher Automotive</h2>
+    <ul class="sidebar-tabs">
         <li class="active">Dashboard</li>
     </ul>
 </div>
 
 <div class="main">
     <div class="top-bar">
-        <div id="liveClock">00:00:00</div>
+        <div id="liveClock"></div>
     </div>
-
-    <h1>Dashboard</h1>
 
     <div class="cards">
         <div class="card">
             <h3>Today's Bookings</h3>
-            <p id="bookingCount">0</p>
-            <p id="currentDate">dd/mm/yyyy</p>
+            <p id="bookingsToday">0</p>
+            <p id="currentDate"></p>
         </div>
         <div class="card">
             <h3>Vehicles in Workshop</h3>
@@ -41,5 +37,6 @@
     </div>
 </div>
 
+<script src="app.js"></script>
 </body>
 </html>
