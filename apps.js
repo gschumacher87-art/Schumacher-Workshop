@@ -99,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
             showBookingModal(day, month, year);
         });
         bookingForm.appendChild(addBtn);
-    }
     const key = `${day}-${month}-${year}`;
 
 const list = document.createElement("div");
@@ -175,6 +174,7 @@ bookingForm.appendChild(list);
         `;
 
         modal.style.display = "flex";
+        const saveBtn = document.getElementById("saveBookingBtn");
 
         saveBtn.onclick = () => {
     const inputs = document.querySelectorAll("#bookingFormFields input");
