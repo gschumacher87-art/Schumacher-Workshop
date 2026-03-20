@@ -16,48 +16,52 @@
 </div>
 
 <div class="main">
-    <div class="dashboard">
-        <div class="dashboard-top">
-            <canvas id="analogClock" width="120" height="120"></canvas>
-            <div class="current-date" id="currentDate"></div>
-        </div>
 
-        <div class="cards">
-            <div class="card">
-                <h3>Calendar</h3>
-                <p id="bookingsCount">0</p>
+    <!-- Dashboard Section -->
+    <div id="dashboardSection">
+        <div class="dashboard">
+            <div class="dashboard-top">
+                <canvas id="analogClock" width="120" height="120"></canvas>
+                <div class="current-date" id="currentDate"></div>
             </div>
-            <div class="card">
-                <h3>Vehicles in Workshop</h3>
-                <p id="vehiclesCount">0</p>
-            </div>
-            <div class="card">
-                <h3>Today's Jobs</h3>
-                <p id="jobsCount">0</p>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>Calendar</h3>
+                    <p id="bookingsCount">0</p>
+                </div>
+                <div class="card">
+                    <h3>Vehicles in Workshop</h3>
+                    <p id="vehiclesCount">0</p>
+                </div>
+                <div class="card">
+                    <h3>Today's Jobs</h3>
+                    <p id="jobsCount">0</p>
+                </div>
             </div>
         </div>
-
-        <!-- Calendar Container (hidden by default) -->
-        <div id="calendarContainer" style="display:none;">
-            <div class="calendar-header">
-                <button id="prevMonth">&lt;</button>
-                <span id="monthYear"></span>
-                <button id="nextMonth">&gt;</button>
-            </div>
-            <table id="calendarTable">
-                <thead>
-                    <tr>
-                        <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
-                        <th>Thu</th><th>Fri</th><th>Sat</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dates will be generated here -->
-                </tbody>
-            </table>
-        </div>
-
     </div>
+
+    <!-- Calendar Section -->
+    <div id="calendarSection" style="display:none;">
+        <div class="calendar-header">
+            <button id="prevMonth">&lt;</button>
+            <span id="monthYear"></span>
+            <button id="nextMonth">&gt;</button>
+        </div>
+        <table id="calendarTable">
+            <thead>
+                <tr>
+                    <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
+                    <th>Thu</th><th>Fri</th><th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dates will be generated here -->
+            </tbody>
+        </table>
+    </div>
+
 </div>
 
 <script src="apps.js"></script>
