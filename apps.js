@@ -104,3 +104,4 @@ function openBooking(day, month, year) {
     });
     bookingForm.appendChild(addBtn);
 }
+    });
