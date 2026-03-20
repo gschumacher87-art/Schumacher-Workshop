@@ -63,68 +63,75 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===== CLOCK + DATE BLOCK END =====
 
 
-  // ===== CALENDAR BLOCK =====
-const calendarCard = Array.from(document.querySelectorAll(".cards .card"))
-    .find(card => card.querySelector("h3")?.textContent === "Calendar");
-const calendarSection = document.getElementById("calendarSection");
+  document.addEventListener("DOMContentLoaded", () => {
 
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
+    // ===== CALENDAR BLOCK =====
+    const calendarCard = Array.from(document.querySelectorAll(".cards .card"))
+        .find(card => card.querySelector("h3")?.textContent === "Calendar");
+    const dashboardSection = document.getElementById("dashboardSection");
+    const calendarSection = document.getElementById("calendarSection");
 
-// Generate calendar for a given month/year
-function showCalendar(month, year) {
-    const monthYearEl = document.getElementById("monthYear");
-    monthYearEl.textContent = `${month + 1}/${year}`;
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
 
-    const tbody = document.getElementById("calendarTable").querySelector("tbody");
-    tbody.innerHTML = "";
+    // Generate calendar
+    function showCalendar(month, year) {
+        const monthYearEl = document.getElementById("monthYear");
+        monthYearEl.textContent = `${month + 1}/${year}`;
 
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const tbody = document.getElementById("calendarTable").querySelector("tbody");
+        tbody.innerHTML = "";
 
-    let row = document.createElement("tr");
-    let cell;
-    let date = 1;
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // First week
-    for (let i = 0; i < 7; i++) {
-        cell = document.createElement("td");
-        if (i < firstDay) cell.textContent = "";
-        else cell.textContent = date++;
-        row.appendChild(cell);
-    }
-    tbody.appendChild(row);
+        let row = document.createElement("tr");
+        let cell;
+        let date = 1;
 
-    // Remaining weeks
-    while (date <= daysInMonth) {
-        row = document.createElement("tr");
+        // First week
         for (let i = 0; i < 7; i++) {
             cell = document.createElement("td");
-            if (date <= daysInMonth) cell.textContent = date++;
-            else cell.textContent = "";
+            if (i < firstDay) cell.textContent = "";
+            else cell.textContent = date++;
             row.appendChild(cell);
         }
         tbody.appendChild(row);
+
+        // Remaining weeks
+        while (date <= daysInMonth) {
+            row = document.createElement("tr");
+            for (let i = 0; i < 7; i++) {
+                cell = document.createElement("td");
+                if (date <= daysInMonth) cell.textContent = date++;
+                else cell.textContent = "";
+                row.appendChild(cell);
+            }
+            tbody.appendChild(row);
+        }
     }
-}
 
-// Show calendar on Calendar card click
-calendarCard.addEventListener("click", () => {
-    document.getElementById("dashboardSection").style.display = "none";
-    calendarSection.style.display = "block";
-    showCalendar(currentMonth, currentYear);
-});
+    // Click calendar card
+    if (calendarCard) {
+        calendarCard.addEventListener("click", () => {
+            dashboardSection.style.display = "none";
+            calendarSection.style.display = "block";
+            showCalendar(currentMonth, currentYear);
+        });
+    }
 
-// Month navigation buttons
-document.getElementById("prevMonth").addEventListener("click", () => {
-    currentMonth--;
-    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-    showCalendar(currentMonth, currentYear);
-});
+    // Month navigation
+    document.getElementById("prevMonth").addEventListener("click", () => {
+        currentMonth--;
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        showCalendar(currentMonth, currentYear);
+    });
 
-document.getElementById("nextMonth").addEventListener("click", () => {
-    currentMonth++;
-    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-    showCalendar(currentMonth, currentYear);
+    document.getElementById("nextMonth").addEventListener("click", () => {
+        currentMonth++;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        showCalendar(currentMonth, currentYear);
+    });
+    // ===== CALENDAR BLOCK END =====
+
 });
-// ===== CALENDAR BLOCK END =====
