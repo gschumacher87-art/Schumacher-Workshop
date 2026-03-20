@@ -49,29 +49,7 @@ body {
     padding: 20px;
 }
 
-/* ===== DASHBOARD ===== */
-.dashboard-top {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-#analogClock {
-    background: #fff;
-    border-radius: 50%;
-    border: 4px solid #333;
-    width: 120px;
-    height: 120px;
-}
-
-.current-date {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-/* ===== CARDS ===== */
+/* ===== DASHBOARD CARDS ===== */
 .cards {
     display: flex;
     gap: 20px;
@@ -155,14 +133,6 @@ body {
     .main {
         margin-left: 0;
         padding: 10px;
-    }
-    .dashboard-top {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    #analogClock {
-        width: 90px;
-        height: 90px;
     }
     .cards {
         flex-direction: column;
