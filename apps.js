@@ -1,4 +1,3 @@
-alert("JS LOADED");
 document.addEventListener("DOMContentLoaded", () => {
 
     const canvas = document.getElementById("analogClock");
