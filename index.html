@@ -9,8 +9,8 @@
 <body>
 
 <div class="sidebar">
-    <h2 class="sidebar-header">Schumacher Automotive</h2>
-    <ul class="sidebar-tabs">
+    <div class="sidebar-header">Schumacher Automotive</div>
+    <ul class="sidebar-menu">
         <li class="active">Dashboard</li>
     </ul>
 </div>
@@ -20,11 +20,10 @@
         <div id="liveClock"></div>
     </div>
 
-    <div class="cards">
+    <div class="dashboard-cards">
         <div class="card">
             <h3>Today's Bookings</h3>
-            <p id="bookingsToday">0</p>
-            <p id="currentDate"></p>
+            <p id="todaysDate"></p>
         </div>
         <div class="card">
             <h3>Vehicles in Workshop</h3>
@@ -37,6 +36,20 @@
     </div>
 </div>
 
-<script src="app.js"></script>
+<script>
+    // Live Clock
+    function updateClock() {
+        const clock = document.getElementById('liveClock');
+        const now = new Date();
+        clock.textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Today's date in card
+    const dateEl = document.getElementById('todaysDate');
+    dateEl.textContent = new Date().toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+</script>
+
 </body>
 </html>
