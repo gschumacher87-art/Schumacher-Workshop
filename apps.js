@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ===== CALENDAR BLOCK =====
     const calendarCard = Array.from(document.querySelectorAll(".cards .card"))
-        .find(card => card.querySelector("h3")?.textContent.trim === "Calendar");
+        .find(card => card.querySelector("h3")?.textContent.trim() === "Calendar");
     const dashboardSection = document.getElementById("dashboardSection");
     const calendarSection = document.getElementById("calendarSection");
 
