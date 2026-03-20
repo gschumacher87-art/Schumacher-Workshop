@@ -1,46 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schumacher Automotive Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schumacher Automotive DMS</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>Schumacher Automotive</h2>
-        </div>
-        <ul class="sidebar-menu">
-            <li class="active">Dashboard</li>
-        </ul>
+
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>Schumacher Automotive</h2>
     </div>
+    <ul class="sidebar-tabs">
+        <li class="active">Dashboard</li>
+        <!-- other tabs can go here later -->
+    </ul>
+</div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main">
-        <div class="dashboard-header">
-            <h1>Dashboard</h1>
-            <div class="clock" id="dashboardClock">00:00:00</div>
+<div class="main">
+    <!-- DASHBOARD SECTION -->
+    <div id="dashboardSection" class="dashboard-section">
+        <div class="dashboard-top">
+            <canvas id="analogClock" width="120" height="120"></canvas>
+            <div id="currentDate" class="current-date"></div>
         </div>
 
-        <!-- CARDS -->
         <div class="cards">
             <div class="card">
-                <h3>Today's Bookings <span id="bookingDate">--/--/----</span></h3>
-                <p id="bookingsCount">0</p>
+                <h3>Calendar</h3>
+                <p id="calendarValue">--/--/----</p>
             </div>
             <div class="card">
                 <h3>Vehicles in Workshop</h3>
-                <p id="vehiclesCount">0</p>
+                <p id="vehiclesValue">0</p>
             </div>
             <div class="card">
-                <h3>Hours Booked Today</h3>
-                <p id="hoursCount">0</p>
+                <h3>Today's Jobs</h3>
+                <p id="jobsValue">0</p>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="apps.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
