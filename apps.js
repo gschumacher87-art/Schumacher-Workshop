@@ -24,144 +24,144 @@ document.addEventListener("DOMContentLoaded", () => {
         calendarSection.style.display = "none";
     });
 
+   document.addEventListener("DOMContentLoaded", () => {
     // ===== CALENDAR =====
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
 
-function showCalendar(month, year) {
-    const monthYearEl = document.getElementById("monthYear");
-    monthYearEl.textContent = `${month + 1}/${year}`;
+    function showCalendar(month, year) {
+        const monthYearEl = document.getElementById("monthYear");
+        monthYearEl.textContent = `${month + 1}/${year}`;
 
-    const tbody = document.querySelector("#calendarTable tbody");
-    tbody.innerHTML = "";
+        const tbody = document.querySelector("#calendarTable tbody");
+        tbody.innerHTML = "";
 
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    let date = 1;
-    for (let rowIndex = 0; rowIndex < 6; rowIndex++) {
-        const row = document.createElement("tr");
-        for (let colIndex = 0; colIndex < 7; colIndex++) {
-            const cell = document.createElement("td");
-            if ((rowIndex === 0 && colIndex < firstDay) || date > daysInMonth) {
-                cell.textContent = "";
-            } else {
-                const thisDate = date;
-                cell.textContent = thisDate;
-
-                cell.style.cursor = "pointer";
-                cell.addEventListener("click", () => {
-                    openBooking(thisDate, month, year);
-                });
-
-                date++;
+        let date = 1;
+        for (let rowIndex = 0; rowIndex < 6; rowIndex++) {
+            const row = document.createElement("tr");
+            for (let colIndex = 0; colIndex < 7; colIndex++) {
+                const cell = document.createElement("td");
+                if ((rowIndex === 0 && colIndex < firstDay) || date > daysInMonth) {
+                    cell.textContent = "";
+                } else {
+                    const thisDate = date;
+                    cell.textContent = thisDate;
+                    cell.style.cursor = "pointer";
+                    cell.addEventListener("click", () => {
+                        openBooking(thisDate, month, year);
+                    });
+                    date++;
+                }
+                row.appendChild(cell);
             }
-            row.appendChild(cell);
+            tbody.appendChild(row);
+            if (date > daysInMonth) break;
         }
-        tbody.appendChild(row);
-        if (date > daysInMonth) break;
     }
-}
 
-// ===== PREV / NEXT MONTH =====
-document.getElementById("prevMonth").addEventListener("click", () => {
-    currentMonth--;
-    if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
+    // ===== PREV / NEXT MONTH =====
+    document.getElementById("prevMonth").addEventListener("click", () => {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        showCalendar(currentMonth, currentYear);
+    });
+
+    document.getElementById("nextMonth").addEventListener("click", () => {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        showCalendar(currentMonth, currentYear);
+    });
+
+    // ===== OPEN BOOKING FUNCTION =====
+    function openBooking(day, month, year) {
+        const bookingForm = document.getElementById("bookingForm");
+        bookingForm.style.display = "block";
+        bookingForm.innerHTML = "";
+
+        const heading = document.createElement("h3");
+        heading.style.display = "inline-block";
+        heading.style.marginRight = "10px";
+        heading.textContent = `Booking for ${day}/${month + 1}/${year}`;
+        bookingForm.appendChild(heading);
+
+        const addBtn = document.createElement("button");
+        addBtn.textContent = "Add Booking";
+        addBtn.addEventListener("click", () => {
+            showBookingModal(day, month, year);
+        });
+        bookingForm.appendChild(addBtn);
     }
+
+    // ===== GENERIC BOOKING POP-UP =====
+    function showBookingModal(day, month, year) {
+        let modal = document.getElementById("bookingModal");
+        if (!modal) {
+            modal = document.createElement("div");
+            modal.id = "bookingModal";
+            Object.assign(modal.style, {
+                position: "fixed",
+                top: "0",
+                left: "0",
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0,0,0,0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: "1000",
+            });
+
+            const content = document.createElement("div");
+            content.id = "bookingModalContent";
+            Object.assign(content.style, {
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "5px",
+                minWidth: "300px",
+            });
+
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) modal.style.display = "none";
+            });
+        }
+
+        const content = document.getElementById("bookingModalContent");
+        content.innerHTML = `
+            <h3>New Booking for ${day}/${month + 1}/${year}</h3>
+            <form id="bookingFormFields">
+                <label>Customer Name:</label>
+                <input type="text" placeholder="Select customer"><br><br>
+                <label>Vehicle:</label>
+                <input type="text" placeholder="Select vehicle"><br><br>
+                <label>Rego:</label>
+                <input type="text" placeholder="Enter registration"><br><br>
+                <label>Repair Type:</label>
+                <input type="text" placeholder="Select repair type"><br><br>
+                <button type="button" id="saveBookingBtn">Save Booking</button>
+            </form>
+        `;
+
+        modal.style.display = "flex";
+
+        const saveBtn = document.getElementById("saveBookingBtn");
+        saveBtn.onclick = () => {
+            alert("Booking would be saved here. Databases not yet implemented.");
+            modal.style.display = "none";
+        };
+    }
+
+    // Initial calendar render
     showCalendar(currentMonth, currentYear);
 });
-
-document.getElementById("nextMonth").addEventListener("click", () => {
-    currentMonth++;
-    if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-    }
-    showCalendar(currentMonth, currentYear);
-});
- // ===== OPEN BOOKING FUNCTION =====
-function openBooking(day, month, year) {
-    const bookingForm = document.getElementById("bookingForm");
-    bookingForm.style.display = "block";
-
-    // Clear previous content
-    bookingForm.innerHTML = "";
-
-    // Create heading
-    const heading = document.createElement("h3");
-    heading.style.display = "inline-block";
-    heading.style.marginRight = "10px";
-    heading.textContent = `Booking for ${day}/${month + 1}/${year}`;
-    bookingForm.appendChild(heading);
-
-    // Create Add Booking button
-    const addBtn = document.createElement("button");
-    addBtn.textContent = "Add Booking";
-    addBtn.addEventListener("click", () => {
-        openBookingForm(day, month, year); // call the modal function
-    });
-    bookingForm.appendChild(addBtn);
-}
-
-// ===== GENERIC BOOKING POP-UP =====
-function openBookingForm(day, month, year) {
-    let modal = document.getElementById("bookingModal");
-    if (!modal) {
-        modal = document.createElement("div");
-        modal.id = "bookingModal";
-        Object.assign(modal.style, {
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: "1000",
-        });
-
-        const content = document.createElement("div");
-        content.id = "bookingModalContent";
-        Object.assign(content.style, {
-            background: "#fff",
-            padding: "20px",
-            borderRadius: "5px",
-            minWidth: "300px",
-        });
-
-        modal.appendChild(content);
-        document.body.appendChild(modal);
-
-        // Close modal on background click
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) modal.style.display = "none";
-        });
-    }
-
-    const content = document.getElementById("bookingModalContent");
-    content.innerHTML = `
-        <h3>New Booking for ${day}/${month + 1}/${year}</h3>
-        <form id="bookingFormFields">
-            <label>Customer Name:</label>
-            <input type="text" placeholder="Select customer"><br><br>
-            <label>Vehicle:</label>
-            <input type="text" placeholder="Select vehicle"><br><br>
-            <label>Rego:</label>
-            <input type="text" placeholder="Enter registration"><br><br>
-            <label>Repair Type:</label>
-            <input type="text" placeholder="Select repair type"><br><br>
-            <button type="button" id="saveBookingBtn">Save Booking</button>
-        </form>
-    `;
-
-    modal.style.display = "flex";
-
-    document.getElementById("saveBookingBtn").addEventListener("click", () => {
-        alert("Booking would be saved here. Databases not yet implemented.");
-        modal.style.display = "none";
-    });
-}
