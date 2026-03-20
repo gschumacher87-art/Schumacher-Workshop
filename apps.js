@@ -100,8 +100,68 @@ function openBooking(day, month, year) {
     const addBtn = document.createElement("button");
     addBtn.textContent = "Add Booking";
     addBtn.addEventListener("click", () => {
-        alert("Add Booking clicked for " + day + "/" + (month + 1) + "/" + year);
+        openBookingForm(day, month, year); // call the modal function
     });
     bookingForm.appendChild(addBtn);
 }
+
+// ===== GENERIC BOOKING POP-UP =====
+function openBookingForm(day, month, year) {
+    let modal = document.getElementById("bookingModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "bookingModal";
+        Object.assign(modal.style, {
+            position: "fixed",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: "1000",
+        });
+
+        const content = document.createElement("div");
+        content.id = "bookingModalContent";
+        Object.assign(content.style, {
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "5px",
+            minWidth: "300px",
+        });
+
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+
+        // Close modal on background click
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) modal.style.display = "none";
+        });
+    }
+
+    const content = document.getElementById("bookingModalContent");
+    content.innerHTML = `
+        <h3>New Booking for ${day}/${month + 1}/${year}</h3>
+        <form id="bookingFormFields">
+            <label>Customer Name:</label>
+            <input type="text" placeholder="Select customer"><br><br>
+            <label>Vehicle:</label>
+            <input type="text" placeholder="Select vehicle"><br><br>
+            <label>Rego:</label>
+            <input type="text" placeholder="Enter registration"><br><br>
+            <label>Repair Type:</label>
+            <input type="text" placeholder="Select repair type"><br><br>
+            <button type="button" id="saveBookingBtn">Save Booking</button>
+        </form>
+    `;
+
+    modal.style.display = "flex";
+
+    document.getElementById("saveBookingBtn").addEventListener("click", () => {
+        alert("Booking would be saved here. Databases not yet implemented.");
+        modal.style.display = "none";
     });
+}
