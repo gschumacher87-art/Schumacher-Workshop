@@ -11,19 +11,22 @@
 <div class="sidebar">
     <div class="sidebar-header">Schumacher Automotive</div>
     <ul class="sidebar-menu">
+        <!-- Database sections placeholder -->
+        <li class="placeholder">Database Section 1</li>
+        <li class="placeholder">Database Section 2</li>
         <li class="active">Dashboard</li>
     </ul>
 </div>
 
 <div class="main">
     <div class="top-bar">
-        <div id="liveClock"></div>
+        <div id="liveClock">00:00:00</div>
     </div>
 
     <div class="dashboard-cards">
         <div class="card">
             <h3>Today's Bookings</h3>
-            <p id="todaysDate"></p>
+            <p id="todaysDate">--/--/----</p>
         </div>
         <div class="card">
             <h3>Vehicles in Workshop</h3>
@@ -37,18 +40,22 @@
 </div>
 
 <script>
-    // Live Clock
+    // Live clock
     function updateClock() {
         const clock = document.getElementById('liveClock');
         const now = new Date();
-        clock.textContent = now.toLocaleTimeString();
+        const hh = String(now.getHours()).padStart(2,'0');
+        const mm = String(now.getMinutes()).padStart(2,'0');
+        const ss = String(now.getSeconds()).padStart(2,'0');
+        clock.textContent = `${hh}:${mm}:${ss}`;
     }
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Today's date in card
+    // Today's date
     const dateEl = document.getElementById('todaysDate');
-    dateEl.textContent = new Date().toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+    const today = new Date();
+    dateEl.textContent = today.toLocaleDateString('en-AU', { day:'2-digit', month:'2-digit', year:'numeric' });
 </script>
 
 </body>
