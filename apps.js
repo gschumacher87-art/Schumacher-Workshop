@@ -46,15 +46,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 if ((rowIndex === 0 && colIndex < firstDay) || date > daysInMonth) {
                     cell.textContent = "";
                 } else {
-                    cell.textContent = date;
+    const thisDate = date;
+    cell.textContent = thisDate;
 
-                    // ===== MAKE CELL CLICKABLE =====
-                    cell.style.cursor = "pointer";
-                    cell.addEventListener("click", () => {
-                        openBooking(date, month, year);
-                    });
+    // ===== MAKE CELL CLICKABLE =====
+    cell.style.cursor = "pointer";
+    cell.addEventListener("click", () => {
+        openBooking(thisDate, month, year);
+    });
 
-                    date++;
+    date++;
+}
                 }
                 row.appendChild(cell);
             }
