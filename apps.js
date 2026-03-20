@@ -120,6 +120,8 @@ if (bookings[key] && bookings[key].length > 0) {
 }
 
 bookingForm.appendChild(list);
+}
+
 
     // ===== GENERIC BOOKING POP-UP =====
     function showBookingModal(day, month, year) {
