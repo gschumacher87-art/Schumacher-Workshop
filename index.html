@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Schumacher Automotive DMS</title>
+<title>Schumacher Automotive Dashboard</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,22 +11,21 @@
 <div class="sidebar">
     <div class="sidebar-header">Schumacher Automotive</div>
     <ul class="sidebar-menu">
-        <!-- Database sections placeholder -->
-        <li class="placeholder">Database Section 1</li>
-        <li class="placeholder">Database Section 2</li>
         <li class="active">Dashboard</li>
     </ul>
 </div>
 
 <div class="main">
-    <div class="top-bar">
-        <div id="liveClock">00:00:00</div>
+    <div class="dashboard-header">
+        <div class="dashboard-title">Dashboard</div>
+        <div class="live-clock" id="liveClock">00:00:00</div>
     </div>
 
-    <div class="dashboard-cards">
+    <div class="cards">
         <div class="card">
-            <h3>Today's Bookings</h3>
+            <h3>Todays Bookings</h3>
             <p id="todaysDate">--/--/----</p>
+            <p id="bookingCount">0</p>
         </div>
         <div class="card">
             <h3>Vehicles in Workshop</h3>
@@ -34,28 +33,25 @@
         </div>
         <div class="card">
             <h3>Hours Booked Today</h3>
-            <p id="hoursBooked">0</p>
+            <p id="hoursCount">0</p>
         </div>
     </div>
 </div>
 
 <script>
-    // Live clock
-    function updateClock() {
-        const clock = document.getElementById('liveClock');
-        const now = new Date();
-        const hh = String(now.getHours()).padStart(2,'0');
-        const mm = String(now.getMinutes()).padStart(2,'0');
-        const ss = String(now.getSeconds()).padStart(2,'0');
-        clock.textContent = `${hh}:${mm}:${ss}`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+function updateClock(){
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('liveClock').textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
 
-    // Today's date
-    const dateEl = document.getElementById('todaysDate');
-    const today = new Date();
-    dateEl.textContent = today.toLocaleDateString('en-AU', { day:'2-digit', month:'2-digit', year:'numeric' });
+// Set today's date for Todays Bookings card
+const today = new Date();
+document.getElementById('todaysDate').textContent = today.toLocaleDateString('en-AU');
 </script>
 
 </body>
