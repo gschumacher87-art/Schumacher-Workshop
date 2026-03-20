@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
         calendarSection.style.display = "none";
     });
 
-   document.addEventListener("DOMContentLoaded", () => {
     // ===== CALENDAR =====
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
