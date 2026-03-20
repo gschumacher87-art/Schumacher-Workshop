@@ -86,8 +86,18 @@ document.getElementById("nextMonth").addEventListener("click", () => {
 function openBooking(day, month, year) {
     const bookingForm = document.getElementById("bookingForm");
     bookingForm.style.display = "block";
+
+    // Set innerHTML for heading and button
     bookingForm.innerHTML = `
         <h3 style="display:inline-block; margin-right:10px;">Booking for ${day}/${month + 1}/${year}</h3>
-        <button onclick="alert('Add Booking clicked for ${day}/${month + 1}/${year}')">Add Booking</button>
+        <button id="addBookingBtn">Add Booking</button>
     `;
+
+    // Attach event listener after innerHTML is set
+    const addBtn = document.getElementById("addBookingBtn");
+    if (addBtn) {
+        addBtn.addEventListener("click", () => {
+            alert("Add Booking clicked for " + day + "/" + (month + 1) + "/" + year);
+        });
+    }
 }
