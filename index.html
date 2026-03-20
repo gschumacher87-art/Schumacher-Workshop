@@ -14,7 +14,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">Schumacher Automotive</div>
         <ul>
-            <li class="active">Dashboard</li>
+            <li class="active" id="dashboardTab">Dashboard</li>
         </ul>
     </aside>
 
@@ -23,25 +23,18 @@
 
         <!-- Dashboard Section -->
         <section id="dashboardSection" class="dashboard-section">
-            <div class="dashboard">
-                <div class="dashboard-top">
-                    <canvas id="analogClock" width="120" height="120"></canvas>
-                    <div class="current-date" id="currentDate"></div>
+            <div class="cards">
+                <div class="card calendar-card">
+                    <h3>Calendar</h3>
+                    <p id="bookingsCount">0</p>
                 </div>
-
-                <div class="cards">
-                    <div class="card calendar-card">
-                        <h3>Calendar</h3>
-                        <p id="bookingsCount">0</p>
-                    </div>
-                    <div class="card vehicles-card">
-                        <h3>Vehicles in Workshop</h3>
-                        <p id="vehiclesCount">0</p>
-                    </div>
-                    <div class="card jobs-card">
-                        <h3>Today's Jobs</h3>
-                        <p id="jobsCount">0</p>
-                    </div>
+                <div class="card vehicles-card">
+                    <h3>Vehicles in Workshop</h3>
+                    <p id="vehiclesCount">0</p>
+                </div>
+                <div class="card jobs-card">
+                    <h3>Today's Jobs</h3>
+                    <p id="jobsCount">0</p>
                 </div>
             </div>
         </section>
