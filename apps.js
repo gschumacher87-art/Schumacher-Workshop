@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawClock() {
         ctx.clearRect(-radius, -radius, canvas.width, canvas.height);
 
-        // clock face
+        // Clock face
         ctx.beginPath();
         ctx.arc(0, 0, radius - 2, 0, Math.PI * 2);
         ctx.strokeStyle = "#333";
@@ -21,11 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const minute = now.getMinutes();
         const second = now.getSeconds();
 
-        // hour hand
         drawHand((hour % 12 + minute / 60) * Math.PI / 6, radius * 0.5, 5);
-        // minute hand
         drawHand((minute + second / 60) * Math.PI / 30, radius * 0.7, 3);
-        // second hand
         drawHand(second * Math.PI / 30, radius * 0.9, 1, "red");
     }
 
@@ -44,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     drawClock();
     // ===== CLOCK BLOCK END =====
 
-
     // ===== DATE BLOCK =====
     function updateDate() {
         const el = document.getElementById("currentDate");
@@ -60,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateDate();
     // ===== DATE BLOCK END =====
-
 
     // ===== CALENDAR BLOCK =====
     const calendarCard = Array.from(document.querySelectorAll(".cards .card"))
@@ -81,25 +76,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        let row = document.createElement("tr");
-        let cell;
         let date = 1;
-
-        for (let i = 0; i < 7; i++) {
-            cell = document.createElement("td");
-            cell.textContent = i < firstDay ? "" : date++;
-            row.appendChild(cell);
-        }
-        tbody.appendChild(row);
-
-        while (date <= daysInMonth) {
-            row = document.createElement("tr");
-            for (let i = 0; i < 7; i++) {
-                cell = document.createElement("td");
-                cell.textContent = date <= daysInMonth ? date++ : "";
+        for (let i = 0; i < 6; i++) {
+            const row = document.createElement("tr");
+            for (let j = 0; j < 7; j++) {
+                const cell = document.createElement("td");
+                if ((i === 0 && j < firstDay) || date > daysInMonth) {
+                    cell.textContent = "";
+                } else {
+                    cell.textContent = date++;
+                }
                 row.appendChild(cell);
             }
             tbody.appendChild(row);
+            if (date > daysInMonth) break;
         }
     }
 
