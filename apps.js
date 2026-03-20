@@ -10,6 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
         calendarSection.style.display = "block";
         showCalendar(currentMonth, currentYear);
     });
+    // ===== DASHBOARD SIDEBAR CLICK =====
+const dashboardTab = document.getElementById("dashboardTab");
+dashboardTab?.addEventListener("click", () => {
+    dashboardSection.style.display = "block";
+    calendarSection.style.display = "none";
+});
 
     // ===== CALENDAR =====
     let currentMonth = new Date().getMonth();
