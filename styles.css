@@ -1,146 +1,89 @@
-/* ========================
-   Reset and Base Styles
-======================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
 body {
-    background-color: #f0f2f5;
-    color: #333;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
 }
 
-/* ========================
-   Sidebar
-======================== */
 .sidebar {
     position: fixed;
-    top: 0;
     left: 0;
-    width: 220px;
+    top: 0;
+    width: 200px;
     height: 100vh;
-    background-color: #000;
+    background: #000;
     color: #fff;
     display: flex;
     flex-direction: column;
-    z-index: 1000;
 }
 
 .sidebar-header {
+    font-size: 18px;
+    font-weight: bold;
+    color: yellow;
     padding: 20px;
     text-align: center;
-    background-color: #000;
+    border-bottom: 1px solid #333;
 }
 
-.sidebar-header h2 {
-    color: #FFD700; /* Yellow text */
-    font-size: 1.3rem;
-    font-weight: bold;
-}
-
-.sidebar-tabs {
+.sidebar ul {
     list-style: none;
-    margin-top: 20px;
-    flex: 1;
+    padding: 0;
+    margin: 0;
 }
 
-.sidebar-tabs li {
+.sidebar ul li {
     padding: 15px 20px;
     cursor: pointer;
-    transition: background 0.2s;
+    border-bottom: 1px solid #333;
 }
 
-.sidebar-tabs li:hover,
-.sidebar-tabs li.active {
-    background-color: #222;
+.sidebar ul li.active {
+    background: #333;
 }
 
-/* ========================
-   Main Content
-======================== */
 .main {
-    margin-left: 220px; /* same width as sidebar */
-    padding: 20px 30px;
+    margin-left: 200px;
+    padding: 20px;
 }
 
-/* ========================
-   Dashboard Top: Clock & Date
-======================== */
 .dashboard-top {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
     gap: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 #analogClock {
-    width: 120px;
-    height: 120px;
-    border: 4px solid #333;
+    background: #fff;
     border-radius: 50%;
-    background-color: #fff;
-    display: block;
+    border: 4px solid #333;
 }
 
 .current-date {
-    font-size: 1.1rem;
-    color: #333;
-    align-self: center;
-}
-
-/* ========================
-   Dashboard Cards
-======================== */
-.cards {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.card {
-    background-color: #fff;
-    color: #333;
-    flex: 1 1 200px;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.card h3 {
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-}
-
-.card p {
-    font-size: 1.5rem;
+    font-size: 16px;
     font-weight: bold;
 }
 
-/* ========================
-   Responsive Adjustments
-======================== */
-@media (max-width: 900px) {
-    .main {
-        margin-left: 0;
-        padding: 20px;
-    }
-    .cards {
-        flex-direction: column;
-    }
-    .dashboard-top {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
+.cards {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    flex: 1;
+    text-align: center;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.card h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.card p {
+    font-size: 24px;
+    margin: 0;
 }
