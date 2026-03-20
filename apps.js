@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(drawClock, 1000);
     drawClock();
 
-    // ===== DATE UNDER CLOCK =====
+    // ===== DATE BLOCK =====
     function updateDate() {
         const el = document.getElementById("currentDate");
         if (!el) return;
@@ -60,16 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     updateDate();
-    // ===== CLOCK BLOCK END =====
+    // ===== CLOCK + DATE BLOCK END =====
 
 
     // ===== CALENDAR BLOCK =====
-    const calendarCard = document.querySelector(".cards .card:nth-child(1)");
+    const calendarCard = Array.from(document.querySelectorAll(".cards .card"))
+        .find(card => card.querySelector("h3")?.textContent === "Calendar");
     const calendarContainer = document.getElementById("calendarContainer");
 
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
 
+    // Generate calendar for a given month/year
     function showCalendar(month, year) {
         const monthYearEl = document.getElementById("monthYear");
         monthYearEl.textContent = `${month + 1}/${year}`;
@@ -84,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let cell;
         let date = 1;
 
-        // Fill first week
+        // First week
         for (let i = 0; i < 7; i++) {
             cell = document.createElement("td");
             if (i < firstDay) cell.textContent = "";
@@ -93,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         tbody.appendChild(row);
 
-        // Fill remaining weeks
+        // Remaining weeks
         while (date <= daysInMonth) {
             row = document.createElement("tr");
             for (let i = 0; i < 7; i++) {
@@ -106,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Show calendar when Calendar card is clicked
+    // Show calendar on Calendar card click
     calendarCard.addEventListener("click", () => {
         calendarContainer.style.display = "block";
         showCalendar(currentMonth, currentYear);
