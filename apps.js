@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const calendarCard = document.querySelector(".calendar-card");
     const dashboardSection = document.getElementById("dashboardSection");
     const calendarSection = document.getElementById("calendarSection");
+    const bookingsCount = document.getElementById("bookingsCount");
+const today = new Date();
+const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+bookingsCount.textContent = today.toLocaleDateString('en-US', options);
 
     calendarCard?.addEventListener("click", () => {
         dashboardSection.style.display = "none";
