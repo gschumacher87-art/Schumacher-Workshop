@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Schumacher Automotive Dashboard</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schumacher Automotive Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="sidebar">
-    <h2>Schumacher Automotive</h2>
-    <ul>
-        <li class="active">Dashboard</li>
-    </ul>
-</div>
 
-<div class="main">
-    <div class="header">
-        <div id="clock"></div>
+    <div class="sidebar">
+        <h2>Schumacher Automotive</h2>
+        <ul>
+            <li class="active">Dashboard</li>
+        </ul>
     </div>
 
-    <div class="cards">
-        <div class="card">
-            <h3>Today's Bookings</h3>
-            <p id="todaysDate">--</p>
-        </div>
-        <div class="card">
-            <h3>Vehicles in Workshop</h3>
-            <p id="vehiclesInWorkshop">0</p>
-        </div>
-        <div class="card">
-            <h3>Hours Booked Today</h3>
-            <p id="hoursBooked">0</p>
+    <div class="main">
+        <header>
+            <div id="clock">00:00:00</div>
+        </header>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Today's Bookings</h3>
+                <p id="todayDate">--</p>
+            </div>
+            <div class="card">
+                <h3>Vehicles in Workshop</h3>
+                <p>0</p>
+            </div>
+            <div class="card">
+                <h3>Hours Booked Today</h3>
+                <p>0</p>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="app.js"></script>
 </body>
 </html>
