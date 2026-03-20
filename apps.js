@@ -22,52 +22,67 @@ dashboardTab?.addEventListener("click", () => {
 });
 
     // ===== CALENDAR =====
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
-    function showCalendar(month, year) {
-        const monthYearEl = document.getElementById("monthYear");
-        monthYearEl.textContent = `${month + 1}/${year}`;
+function showCalendar(month, year) {
+    const monthYearEl = document.getElementById("monthYear");
+    monthYearEl.textContent = `${month + 1}/${year}`;
 
-        const tbody = document.querySelector("#calendarTable tbody");
-        tbody.innerHTML = "";
+    const tbody = document.querySelector("#calendarTable tbody");
+    tbody.innerHTML = "";
 
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        let date = 1;
-        for (let rowIndex = 0; rowIndex < 6; rowIndex++) {
-            const row = document.createElement("tr");
-            for (let colIndex = 0; colIndex < 7; colIndex++) {
-                const cell = document.createElement("td");
-                if ((rowIndex === 0 && colIndex < firstDay) || date > daysInMonth) {
-                    cell.textContent = "";
-                } else {
-                    cell.textContent = date++;
-                }
-                row.appendChild(cell);
+    let date = 1;
+    for (let rowIndex = 0; rowIndex < 6; rowIndex++) {
+        const row = document.createElement("tr");
+        for (let colIndex = 0; colIndex < 7; colIndex++) {
+            const cell = document.createElement("td");
+            if ((rowIndex === 0 && colIndex < firstDay) || date > daysInMonth) {
+                cell.textContent = "";
+            } else {
+                cell.textContent = date;
+
+                // ===== MAKE CELL CLICKABLE =====
+                cell.style.cursor = "pointer";
+                cell.addEventListener("click", () => {
+                    openBooking(date, month, year);
+                });
+
+                date++;
             }
-            tbody.appendChild(row);
-            if (date > daysInMonth) break;
+            row.appendChild(cell);
         }
+        tbody.appendChild(row);
+        if (date > daysInMonth) break;
     }
+}
 
-    document.getElementById("prevMonth").addEventListener("click", () => {
-        currentMonth--;
-        if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
-        }
-        showCalendar(currentMonth, currentYear);
-    });
-
-    document.getElementById("nextMonth").addEventListener("click", () => {
-        currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
-        showCalendar(currentMonth, currentYear);
-    });
-
+// ===== PREV / NEXT MONTH =====
+document.getElementById("prevMonth").addEventListener("click", () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    showCalendar(currentMonth, currentYear);
 });
+
+document.getElementById("nextMonth").addEventListener("click", () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    showCalendar(currentMonth, currentYear);
+});
+
+// ===== OPEN BOOKING FUNCTION =====
+function openBooking(day, month, year) {
+    const bookingForm = document.getElementById("bookingForm");
+    bookingForm.style.display = "block";
+    bookingForm.innerHTML = `<h3>Booking for ${day}/${month + 1}/${year}</h3>`;
+    // You can later insert your actual booking form fields here
+}
