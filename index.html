@@ -1,58 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Schumacher Automotive Dashboard</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schumacher Automotive Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<div class="sidebar">
-    <div class="sidebar-header">Schumacher Automotive</div>
-    <ul class="sidebar-menu">
-        <li class="active">Dashboard</li>
-    </ul>
-</div>
-
-<div class="main">
-    <div class="dashboard-header">
-        <div class="dashboard-title">Dashboard</div>
-        <div class="live-clock" id="liveClock">00:00:00</div>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Schumacher Automotive</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active">Dashboard</li>
+        </ul>
     </div>
 
-    <div class="cards">
-        <div class="card">
-            <h3>Todays Bookings</h3>
-            <p id="todaysDate">--/--/----</p>
-            <p id="bookingCount">0</p>
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="dashboard-header">
+            <h1>Dashboard</h1>
+            <div class="clock" id="dashboardClock">00:00:00</div>
         </div>
-        <div class="card">
-            <h3>Vehicles in Workshop</h3>
-            <p id="vehiclesCount">0</p>
-        </div>
-        <div class="card">
-            <h3>Hours Booked Today</h3>
-            <p id="hoursCount">0</p>
+
+        <!-- CARDS -->
+        <div class="cards">
+            <div class="card">
+                <h3>Today's Bookings <span id="bookingDate">--/--/----</span></h3>
+                <p id="bookingsCount">0</p>
+            </div>
+            <div class="card">
+                <h3>Vehicles in Workshop</h3>
+                <p id="vehiclesCount">0</p>
+            </div>
+            <div class="card">
+                <h3>Hours Booked Today</h3>
+                <p id="hoursCount">0</p>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-function updateClock(){
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2,'0');
-    const m = String(now.getMinutes()).padStart(2,'0');
-    const s = String(now.getSeconds()).padStart(2,'0');
-    document.getElementById('liveClock').textContent = `${h}:${m}:${s}`;
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// Set today's date for Todays Bookings card
-const today = new Date();
-document.getElementById('todaysDate').textContent = today.toLocaleDateString('en-AU');
-</script>
-
+    <script src="apps.js"></script>
 </body>
 </html>
