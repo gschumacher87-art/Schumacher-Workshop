@@ -1,32 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
-const customersSection = document.getElementById("customersSection");
 
-    // ===== DASHBOARD / CALENDAR / CUSTOMERS SWITCH =====
-const dashboardSection = document.getElementById("dashboardSection");
-const calendarSection = document.getElementById("calendarSection");
-const customersSection = document.getElementById("customersSection");
+    // ===== DASHBOARD TO CALENDAR SWITCH =====
+    const calendarCard = document.querySelector(".calendar-card");
+    const dashboardSection = document.getElementById("dashboardSection");
+    const calendarSection = document.getElementById("calendarSection");
 
-// Dashboard tab click
-document.getElementById("dashboardTab")?.addEventListener("click", () => {
-    dashboardSection.style.display = "block";
-    calendarSection.style.display = "none";
-    customersSection.style.display = "none";
-});
+    // Show today on dashboard card
+    const bookingsCount = document.getElementById("bookingsCount");
+    const today = new Date();
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    bookingsCount.textContent = today.toLocaleDateString('en-US', options);
 
-// Calendar card click (from dashboard)
-document.querySelector(".calendar-card")?.addEventListener("click", () => {
-    dashboardSection.style.display = "none";
-    calendarSection.style.display = "block";
-    customersSection.style.display = "none";
-    showCalendar(currentMonth, currentYear); // calendar function untouched
-});
+    calendarCard?.addEventListener("click", () => {
+        dashboardSection.style.display = "none";
+        calendarSection.style.display = "block";
+        showCalendar(currentMonth, currentYear);
+    });
 
-// Customers tab click
-document.getElementById("customersTab")?.addEventListener("click", () => {
-    dashboardSection.style.display = "none";
-    calendarSection.style.display = "none";
-    customersSection.style.display = "block";
-});
+    // ===== DASHBOARD SIDEBAR CLICK =====
+    const dashboardTab = document.getElementById("dashboardTab");
+    dashboardTab?.addEventListener("click", () => {
+        dashboardSection.style.display = "block";
+        calendarSection.style.display = "none";
+    });
 
     // ===== CALENDAR =====
     let currentMonth = new Date().getMonth();
@@ -239,138 +235,3 @@ function showBookingModal(day, month, year, editIndex = null) {
     // Initial calendar render
     showCalendar(currentMonth, currentYear);
 });
-// ===== END CALENDAR =====
-
-// ===== CUSTOMERS DATABASE / SECTION =====//
-const customersList = document.getElementById("customersList");
-const addCustomerBtn = document.getElementById("addCustomerBtn");
-
-// SINGLE source of truth for customers
-let customers = JSON.parse(localStorage.getItem("customers")) || [];
-
-// Render customer list in sidebar
-function renderCustomers() {
-    customersList.innerHTML = "";
-    customers.forEach((c, index) => {
-        const item = document.createElement("div");
-        item.style.border = "1px solid #ccc";
-        item.style.padding = "5px";
-        item.style.marginTop = "5px";
-        item.style.display = "flex";
-        item.style.justifyContent = "space-between";
-        item.style.alignItems = "center";
-
-        const text = document.createElement("span");
-        text.textContent = `${c.name} - ${c.phone} - ${c.email}`;
-        item.appendChild(text);
-
-        const btnContainer = document.createElement("span");
-
-        // EDIT button
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => {
-            showCustomerModal(index);
-        });
-        btnContainer.appendChild(editBtn);
-
-        // DELETE button
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.addEventListener("click", () => {
-            if (confirm("Delete this customer?")) {
-                customers.splice(index, 1);
-                localStorage.setItem("customers", JSON.stringify(customers));
-                renderCustomers();
-            }
-        });
-        btnContainer.appendChild(deleteBtn);
-
-        item.appendChild(btnContainer);
-        customersList.appendChild(item);
-    });
-}
-
-// ===== CUSTOMER POPUP MODAL =====
-function showCustomerModal(editIndex = null) {
-    let modal = document.getElementById("customerModal");
-    if (!modal) {
-        modal = document.createElement("div");
-        modal.id = "customerModal";
-        Object.assign(modal.style, {
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: "1000",
-        });
-
-        const content = document.createElement("div");
-        content.id = "customerModalContent";
-        Object.assign(content.style, {
-            background: "#fff",
-            padding: "20px",
-            borderRadius: "5px",
-            minWidth: "300px",
-        });
-
-        modal.appendChild(content);
-        document.body.appendChild(modal);
-
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) modal.style.display = "none";
-        });
-    }
-
-    const content = document.getElementById("customerModalContent");
-    let c = { name: "", phone: "", email: "" };
-    if (editIndex !== null) c = customers[editIndex];
-
-    content.innerHTML = `
-        <h3>${editIndex !== null ? "Edit" : "New"} Customer</h3>
-        <form id="customerFormFields">
-            <label>Name:</label>
-            <input type="text" placeholder="Customer Name" value="${c.name}"><br><br>
-            <label>Phone:</label>
-            <input type="text" placeholder="Phone" value="${c.phone}"><br><br>
-            <label>Email:</label>
-            <input type="text" placeholder="Email" value="${c.email}"><br><br>
-            <button type="button" id="saveCustomerBtn">${editIndex !== null ? "Update" : "Add"} Customer</button>
-        </form>
-    `;
-
-    modal.style.display = "flex";
-
-    document.getElementById("saveCustomerBtn").onclick = () => {
-        const inputs = document.querySelectorAll("#customerFormFields input");
-        const customerData = {
-            name: inputs[0].value,
-            phone: inputs[1].value,
-            email: inputs[2].value
-        };
-
-        if (editIndex !== null) {
-            customers[editIndex] = customerData;
-        } else {
-            customers.push(customerData);
-        }
-
-        localStorage.setItem("customers", JSON.stringify(customers));
-        modal.style.display = "none";
-        renderCustomers();
-    };
-}
-
-// Open modal when Add Customer clicked
-addCustomerBtn?.addEventListener("click", () => {
-    showCustomerModal();
-});
-
-// Initial render
-renderCustomers();
-
