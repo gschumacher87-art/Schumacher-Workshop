@@ -340,14 +340,27 @@ function showAddCustomerModal(editIndex = null) {
             return;
         }
 
+        // ===== HANDLE CUSTOMER SAVE =====
         if (editIndex !== null) {
             customers[editIndex] = newCustomer;
         } else {
-            customers.push(newCustomer);
+            // --- For new customers, prompt for vehicle BEFORE saving ---
+            const make = prompt("Vehicle Make:");
+            const model = prompt("Vehicle Model:");
+            const year = prompt("Vehicle Year:");
+            const rego = prompt("Vehicle Rego:");
+            const vin = prompt("Vehicle VIN:");
+
+            newCustomer.vehicles = [{ make, model, year, rego, vin }];
+
+            customers.push(newCustomer); // now includes vehicles
         }
 
+        // ===== UPDATE LOCAL STORAGE & CLOSE MODAL =====
         localStorage.setItem("customers", JSON.stringify(customers));
         modal.style.display = "none";
+
+        // ===== RENDER CUSTOMER LIST =====
         renderCustomers();
     };
 }
@@ -365,14 +378,28 @@ function renderCustomers() {
         item.style.padding = "5px";
         item.style.marginTop = "5px";
         item.style.display = "flex";
+        item.style.flexDirection = "column"; // separate lines for customer + vehicle
         item.style.justifyContent = "space-between";
-        item.style.alignItems = "center";
 
-        const text = document.createElement("span");
-        text.textContent = `${c.firstName} ${c.surname} - ${c.phone} - ${c.email}`;
-        item.appendChild(text);
+        // ===== CUSTOMER INFO =====
+        const customerText = document.createElement("span");
+        customerText.textContent = `${c.firstName} ${c.surname} - ${c.phone} - ${c.email}`;
+        item.appendChild(customerText);
 
+        // ===== VEHICLE INFO (if any) =====
+        if (c.vehicles && c.vehicles.length > 0) {
+            c.vehicles.forEach((v) => {
+                const vehicleText = document.createElement("span");
+                vehicleText.style.marginLeft = "10px";
+                vehicleText.style.fontSize = "0.9em";
+                vehicleText.textContent = `Vehicle: ${v.make} ${v.model}, ${v.year}, Rego: ${v.rego}, VIN: ${v.vin}`;
+                item.appendChild(vehicleText);
+            });
+        }
+
+        // ===== EDIT / DELETE BUTTONS =====
         const btnContainer = document.createElement("span");
+        btnContainer.style.marginTop = "5px";
 
         const editBtn = document.createElement("button");
         editBtn.textContent = "Edit";
@@ -397,9 +424,10 @@ function renderCustomers() {
     });
 }
 
-// Open modal on button click
+// ===== OPEN MODAL ON BUTTON CLICK =====
 addCustomerBtn?.addEventListener("click", () => {
     showAddCustomerModal();
+
 });
     
 
