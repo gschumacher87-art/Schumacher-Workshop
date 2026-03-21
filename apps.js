@@ -235,3 +235,5 @@ function showBookingModal(day, month, year, editIndex = null) {
     // Initial calendar render
     showCalendar(currentMonth, currentYear);
 });
+// ===== END CALENDAR =====
+
