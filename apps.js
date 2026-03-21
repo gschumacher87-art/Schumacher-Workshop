@@ -4,13 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const calendarCard = document.querySelector(".calendar-card");
     const dashboardSection = document.getElementById("dashboardSection");
     const calendarSection = document.getElementById("calendarSection");
-    // ===== CUSTOMERS SIDEBAR CLICK =====
-
-
-
-customersTab?.addEventListener("click", () => {
-    renderCustomers();
-});
 
     // Show today on dashboard card
     const bookingsCount = document.getElementById("bookingsCount");
