@@ -257,10 +257,12 @@ function showBookingModal(day, month, year, editIndex = null) {
     }
 
     customersTab?.addEventListener("click", () => {
-        // show customers section
-        customersSection.style.display = "block";
-        renderCustomers();
-    });
+    dashboardSection.style.display = "none";   // hide dashboard
+    calendarSection.style.display = "none";    // hide calendar
+    customersSection.style.display = "block";  // show customers
+    renderCustomers();                          // refresh list
+});
+    
 });
                 
    
