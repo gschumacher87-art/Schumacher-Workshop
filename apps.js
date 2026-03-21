@@ -252,24 +252,71 @@ function renderCustomers() {
     }
     customers.forEach((c, index) => {
         const item = document.createElement("div");
-        item.textContent = `${c.name} - ${c.phone || ""}`;
+        item.style.border = "1px solid #ccc";
+        item.style.padding = "5px";
+        item.style.marginTop = "5px";
+        item.style.display = "flex";
+        item.style.flexDirection = "column"; // separate lines for customer + vehicle
+        item.style.justifyContent = "space-between";
+
+        // ===== CUSTOMER INFO =====
+        const customerText = document.createElement("span");
+        customerText.textContent = `${c.firstName} ${c.surname} - ${c.phone} - ${c.email}`;
+        item.appendChild(customerText);
+
+        // ===== VEHICLE INFO (if any) =====
+        if (c.vehicles && c.vehicles.length > 0) {
+            c.vehicles.forEach((v) => {
+                const vehicleText = document.createElement("span");
+                vehicleText.style.marginLeft = "10px";
+                vehicleText.style.fontSize = "0.9em";
+                vehicleText.textContent = `Vehicle: ${v.make} ${v.model}, ${v.year}, Rego: ${v.rego}, VIN: ${v.vin}`;
+                item.appendChild(vehicleText);
+            });
+        }
+
+        // ===== EDIT / DELETE / ADD VEHICLE BUTTONS =====
+        const btnContainer = document.createElement("span");
+        btnContainer.style.marginTop = "5px";
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => showAddCustomerModal(index));
+        btnContainer.appendChild(editBtn);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", () => {
+            if (confirm("Delete this customer?")) {
+                customers.splice(index, 1);
+                localStorage.setItem("customers", JSON.stringify(customers));
+                renderCustomers();
+            }
+        });
+        btnContainer.appendChild(deleteBtn);
+
+        const addVehicleBtn = document.createElement("button");
+        addVehicleBtn.textContent = "Add Vehicle";
+        addVehicleBtn.addEventListener("click", () => showAddVehicleModal(index));
+        btnContainer.appendChild(addVehicleBtn);
+
+        item.appendChild(btnContainer);
         customersList.appendChild(item);
     });
 }
 
 customersTab?.addEventListener("click", () => {
     // ===== SHOW CUSTOMERS & HIDE OTHERS =====
-    dashboardSection.style.display = "none";   // hide dashboard
-    calendarSection.style.display = "none";    // hide calendar
-    customersSection.style.display = "block";  // show customers
-    renderCustomers();                          // refresh list
+    dashboardSection.style.display = "none";
+    calendarSection.style.display = "none";
+    customersSection.style.display = "block";
+    renderCustomers();
 });
 
 // ===== CUSTOMER DATABASE & ADD CUSTOMER MODAL =====
 const addCustomerBtn = document.getElementById("addCustomerBtn");
 
 function showAddCustomerModal(editIndex = null) {
-    // Create modal if it doesn’t exist
     let modal = document.getElementById("customerModal");
     if (!modal) {
         modal = document.createElement("div");
@@ -305,7 +352,6 @@ function showAddCustomerModal(editIndex = null) {
     }
 
     const content = document.getElementById("customerModalContent");
-
     let customerData = { firstName: "", surname: "", phone: "", email: "" };
     if (editIndex !== null) customerData = customers[editIndex];
 
@@ -340,97 +386,92 @@ function showAddCustomerModal(editIndex = null) {
             return;
         }
 
-        // ===== HANDLE CUSTOMER SAVE =====
         if (editIndex !== null) {
             customers[editIndex] = newCustomer;
         } else {
-            // --- For new customers, prompt for vehicle BEFORE saving ---
-            const make = prompt("Vehicle Make:");
-            const model = prompt("Vehicle Model:");
-            const year = prompt("Vehicle Year:");
-            const rego = prompt("Vehicle Rego:");
-            const vin = prompt("Vehicle VIN:");
-
-            newCustomer.vehicles = [{ make, model, year, rego, vin }];
-
-            customers.push(newCustomer); // now includes vehicles
+            newCustomer.vehicles = [];
+            customers.push(newCustomer);
         }
 
-        // ===== UPDATE LOCAL STORAGE & CLOSE MODAL =====
         localStorage.setItem("customers", JSON.stringify(customers));
         modal.style.display = "none";
-
-        // ===== RENDER CUSTOMER LIST =====
         renderCustomers();
     };
 }
 
-// ===== RENDER CUSTOMERS LIST =====
-function renderCustomers() {
-    customersList.innerHTML = "";
-    if (customers.length === 0) {
-        customersList.textContent = "No customers yet.";
-        return;
+// ===== VEHICLE MODAL =====
+function showAddVehicleModal(customerIndex) {
+    let modal = document.getElementById("vehicleModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "vehicleModal";
+        Object.assign(modal.style, {
+            position: "fixed",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: "1000"
+        });
+
+        const content = document.createElement("div");
+        content.id = "vehicleModalContent";
+        Object.assign(content.style, {
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "5px",
+            minWidth: "300px"
+        });
+
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) modal.style.display = "none";
+        });
     }
-    customers.forEach((c, index) => {
-        const item = document.createElement("div");
-        item.style.border = "1px solid #ccc";
-        item.style.padding = "5px";
-        item.style.marginTop = "5px";
-        item.style.display = "flex";
-        item.style.flexDirection = "column"; // separate lines for customer + vehicle
-        item.style.justifyContent = "space-between";
 
-        // ===== CUSTOMER INFO =====
-        const customerText = document.createElement("span");
-        customerText.textContent = `${c.firstName} ${c.surname} - ${c.phone} - ${c.email}`;
-        item.appendChild(customerText);
+    const content = document.getElementById("vehicleModalContent");
+    content.innerHTML = `
+        <h3>Add Vehicle</h3>
+        <form id="vehicleFormFields">
+            <label>Make:</label><input type="text"><br><br>
+            <label>Model:</label><input type="text"><br><br>
+            <label>Year:</label><input type="text"><br><br>
+            <label>Rego:</label><input type="text"><br><br>
+            <label>VIN:</label><input type="text"><br><br>
+            <button type="button" id="saveVehicleBtn">Add Vehicle</button>
+        </form>
+    `;
+    modal.style.display = "flex";
 
-        // ===== VEHICLE INFO (if any) =====
-        if (c.vehicles && c.vehicles.length > 0) {
-            c.vehicles.forEach((v) => {
-                const vehicleText = document.createElement("span");
-                vehicleText.style.marginLeft = "10px";
-                vehicleText.style.fontSize = "0.9em";
-                vehicleText.textContent = `Vehicle: ${v.make} ${v.model}, ${v.year}, Rego: ${v.rego}, VIN: ${v.vin}`;
-                item.appendChild(vehicleText);
-            });
+    document.getElementById("saveVehicleBtn").onclick = () => {
+        const inputs = document.querySelectorAll("#vehicleFormFields input");
+        const vehicle = {
+            make: inputs[0].value.trim(),
+            model: inputs[1].value.trim(),
+            year: inputs[2].value.trim(),
+            rego: inputs[3].value.trim(),
+            vin: inputs[4].value.trim()
+        };
+
+        if (!vehicle.make || !vehicle.model) {
+            alert("Vehicle Make and Model are required.");
+            return;
         }
 
-        // ===== EDIT / DELETE BUTTONS =====
-        const btnContainer = document.createElement("span");
-        btnContainer.style.marginTop = "5px";
+        if (!customers[customerIndex].vehicles) customers[customerIndex].vehicles = [];
+        customers[customerIndex].vehicles.push(vehicle);
 
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => {
-            showAddCustomerModal(index);
-        });
-        btnContainer.appendChild(editBtn);
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.addEventListener("click", () => {
-            if (confirm("Delete this customer?")) {
-                customers.splice(index, 1);
-                localStorage.setItem("customers", JSON.stringify(customers));
-                renderCustomers();
-            }
-        });
-        btnContainer.appendChild(deleteBtn);
-
-        item.appendChild(btnContainer);
-        customersList.appendChild(item);
-    });
+        localStorage.setItem("customers", JSON.stringify(customers));
+        modal.style.display = "none";
+        renderCustomers();
+    };
 }
 
 // ===== OPEN MODAL ON BUTTON CLICK =====
-addCustomerBtn?.addEventListener("click", () => {
-    showAddCustomerModal();
-
-});
-    
-
-                
-   
-        
+addCustomerBtn?.addEventListener("click", () => showAddCustomerModal());
