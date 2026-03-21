@@ -9,8 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 customersTab?.addEventListener("click", () => {
-    dashboardSection.style.display = "none";
-    calendarSection.style.display = "none";
     customersSection.style.display = "block";
     renderCustomers();
 });
