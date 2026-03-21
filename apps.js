@@ -18,11 +18,12 @@
     });
 
     // ===== DASHBOARD SIDEBAR CLICK =====
-    const dashboardTab = document.getElementById("dashboardTab");
-    dashboardTab?.addEventListener("click", () => {
-        dashboardSection.style.display = "block";
-        calendarSection.style.display = "none";
-    });
+const dashboardTab = document.getElementById("dashboardTab");
+dashboardTab?.addEventListener("click", () => {
+    dashboardSection.style.display = "block";   // show dashboard
+    calendarSection.style.display = "none";     // hide calendar
+    customersSection.style.display = "none";    // hide customers
+});
 
     // ===== CALENDAR =====
     let currentMonth = new Date().getMonth();
