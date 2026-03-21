@@ -18,11 +18,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ===== DASHBOARD SIDEBAR CLICK =====
-    const dashboardTab = document.getElementById("dashboardTab");
-    dashboardTab?.addEventListener("click", () => {
-        dashboardSection.style.display = "block";
-        calendarSection.style.display = "none";
-    });
+const dashboardTab = document.getElementById("dashboardTab");
+dashboardTab?.addEventListener("click", () => {
+    dashboardSection.style.display = "block";
+    calendarSection.style.display = "none";
+});
+
+// ===== DASHBOARD TO CUSTOMERS SWITCH =====
+const customersTab = document.getElementById("customersTab");
+customersTab?.addEventListener("click", () => {
+    dashboardSection.style.display = "none";
+    calendarSection.style.display = "none";
+    customersSection.style.display = "block";
+});
 
     // ===== CALENDAR =====
     let currentMonth = new Date().getMonth();
