@@ -306,16 +306,20 @@ function showAddCustomerModal(editIndex = null) {
 
     const content = document.getElementById("customerModalContent");
 
-    let customerData = { name: "", phone: "" };
+    let customerData = { firstName: "", surname: "", phone: "", email: "" };
     if (editIndex !== null) customerData = customers[editIndex];
 
     content.innerHTML = `
         <h3>${editIndex !== null ? "Edit" : "Add"} Customer</h3>
         <form id="customerFormFields">
-            <label>Name:</label>
-            <input type="text" placeholder="Customer Name" value="${customerData.name}"><br><br>
+            <label>First Name:</label>
+            <input type="text" placeholder="First Name" value="${customerData.firstName}"><br><br>
+            <label>Surname:</label>
+            <input type="text" placeholder="Surname" value="${customerData.surname}"><br><br>
             <label>Phone:</label>
             <input type="text" placeholder="Phone Number" value="${customerData.phone}"><br><br>
+            <label>Email:</label>
+            <input type="email" placeholder="Email" value="${customerData.email}"><br><br>
             <button type="button" id="saveCustomerBtn">${editIndex !== null ? "Update" : "Add"}</button>
         </form>
     `;
@@ -325,12 +329,14 @@ function showAddCustomerModal(editIndex = null) {
     document.getElementById("saveCustomerBtn").onclick = () => {
         const inputs = document.querySelectorAll("#customerFormFields input");
         const newCustomer = {
-            name: inputs[0].value.trim(),
-            phone: inputs[1].value.trim()
+            firstName: inputs[0].value.trim(),
+            surname: inputs[1].value.trim(),
+            phone: inputs[2].value.trim(),
+            email: inputs[3].value.trim()
         };
 
-        if (!newCustomer.name) {
-            alert("Name is required.");
+        if (!newCustomer.firstName || !newCustomer.surname) {
+            alert("First Name and Surname are required.");
             return;
         }
 
@@ -344,6 +350,51 @@ function showAddCustomerModal(editIndex = null) {
         modal.style.display = "none";
         renderCustomers();
     };
+}
+
+// ===== RENDER CUSTOMERS LIST =====
+function renderCustomers() {
+    customersList.innerHTML = "";
+    if (customers.length === 0) {
+        customersList.textContent = "No customers yet.";
+        return;
+    }
+    customers.forEach((c, index) => {
+        const item = document.createElement("div");
+        item.style.border = "1px solid #ccc";
+        item.style.padding = "5px";
+        item.style.marginTop = "5px";
+        item.style.display = "flex";
+        item.style.justifyContent = "space-between";
+        item.style.alignItems = "center";
+
+        const text = document.createElement("span");
+        text.textContent = `${c.firstName} ${c.surname} - ${c.phone} - ${c.email}`;
+        item.appendChild(text);
+
+        const btnContainer = document.createElement("span");
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => {
+            showAddCustomerModal(index);
+        });
+        btnContainer.appendChild(editBtn);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", () => {
+            if (confirm("Delete this customer?")) {
+                customers.splice(index, 1);
+                localStorage.setItem("customers", JSON.stringify(customers));
+                renderCustomers();
+            }
+        });
+        btnContainer.appendChild(deleteBtn);
+
+        item.appendChild(btnContainer);
+        customersList.appendChild(item);
+    });
 }
 
 // Open modal on button click
