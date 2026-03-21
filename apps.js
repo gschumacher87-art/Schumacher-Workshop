@@ -243,7 +243,7 @@ const addCustomerBtn = document.getElementById("addCustomerBtn");
 const customersList = document.getElementById("customersList");
 
 // Single source of truth for customers
-let customers = JSON.parse(localStorage.getItem("customers")) || [];
+let customers = JSON.parse(localStorage.getItem("customer")) || [];
 
 // Show customers section and hide dashboard/calendar
 customersTab?.addEventListener("click", () => {
