@@ -264,7 +264,7 @@ const calendarSection = document.getElementById("calendarSection");
     renderCustomers();                          // refresh list
 });
     
-});
+
                 
    
         
