@@ -260,7 +260,37 @@ function renderCustomers() {
         item.style.border = "1px solid #ccc";
         item.style.padding = "5px";
         item.style.marginTop = "5px";
-        item.textContent = `${c.name} - ${c.phone} - ${c.email}`;
+        item.style.display = "flex";
+        item.style.justifyContent = "space-between";
+        item.style.alignItems = "center";
+
+        const text = document.createElement("span");
+        text.textContent = `${c.name} - ${c.phone} - ${c.email}`;
+        item.appendChild(text);
+
+        const btnContainer = document.createElement("span");
+
+        // Edit button
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => {
+            showCustomerModal(index);
+        });
+        btnContainer.appendChild(editBtn);
+
+        // Delete button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", () => {
+            if (confirm("Delete this customer?")) {
+                customers.splice(index, 1);
+                localStorage.setItem("customers", JSON.stringify(customers));
+                renderCustomers();
+            }
+        });
+        btnContainer.appendChild(deleteBtn);
+
+        item.appendChild(btnContainer);
         customersList.appendChild(item);
     });
 }
