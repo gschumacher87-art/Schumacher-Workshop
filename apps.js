@@ -235,29 +235,20 @@ function showBookingModal(day, month, year, editIndex = null) {
     // Initial calendar render
     showCalendar(currentMonth, currentYear);
 });
-
-// ===== CUSTOMER DATABASE ISOLATED =====
+// ===== CUSTOMERS JS (isolated) =====
 document.addEventListener("DOMContentLoaded", () => {
-    const customersTab = document.getElementById("customersTab");
+
     const customersSection = document.getElementById("customersSection");
     const addCustomerBtn = document.getElementById("addCustomerBtn");
     const customersList = document.getElementById("customersList");
 
-    // Separate storage for customers
-    let customerDB = JSON.parse(localStorage.getItem("customerDB")) || [];
-
-    // Show customers section
-    customersTab?.addEventListener("click", () => {
-        document.getElementById("dashboardSection").style.display = "none";
-        document.getElementById("calendarSection").style.display = "none";
-        customersSection.style.display = "block";
-        renderCustomers();
-    });
+    // Load customers from localStorage or empty
+    let customers = JSON.parse(localStorage.getItem("customers")) || [];
 
     // Render customer list
     function renderCustomers() {
         customersList.innerHTML = "";
-        customerDB.forEach((c, index) => {
+        customers.forEach((c, index) => {
             const item = document.createElement("div");
             item.style.border = "1px solid #ccc";
             item.style.padding = "5px";
@@ -272,19 +263,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const btnContainer = document.createElement("span");
 
-            // Edit button
             const editBtn = document.createElement("button");
             editBtn.textContent = "Edit";
             editBtn.addEventListener("click", () => showCustomerModal(index));
             btnContainer.appendChild(editBtn);
 
-            // Delete button
             const deleteBtn = document.createElement("button");
             deleteBtn.textContent = "Delete";
             deleteBtn.addEventListener("click", () => {
                 if (confirm("Delete this customer?")) {
-                    customerDB.splice(index, 1);
-                    localStorage.setItem("customerDB", JSON.stringify(customerDB));
+                    customers.splice(index, 1);
+                    localStorage.setItem("customers", JSON.stringify(customers));
                     renderCustomers();
                 }
             });
@@ -295,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Customer modal popup
+    // ===== CUSTOMER POPUP =====
     function showCustomerModal(editIndex = null) {
         let modal = document.getElementById("customerModal");
         if (!modal) {
@@ -333,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const content = document.getElementById("customerModalContent");
         let c = { name: "", phone: "", email: "" };
-        if (editIndex !== null) c = customerDB[editIndex];
+        if (editIndex !== null) c = customers[editIndex];
 
         content.innerHTML = `
             <h3>${editIndex !== null ? "Edit" : "New"} Customer</h3>
@@ -359,17 +348,20 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             if (editIndex !== null) {
-                customerDB[editIndex] = customerData;
+                customers[editIndex] = customerData;
             } else {
-                customerDB.push(customerData);
+                customers.push(customerData);
             }
 
-            localStorage.setItem("customerDB", JSON.stringify(customerDB));
+            localStorage.setItem("customers", JSON.stringify(customers));
             modal.style.display = "none";
             renderCustomers();
         };
     }
 
-    // Add Customer button
+    // Add customer button
     addCustomerBtn?.addEventListener("click", () => showCustomerModal());
+
+    // Initial render
+    renderCustomers();
 });
