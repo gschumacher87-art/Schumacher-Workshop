@@ -236,7 +236,7 @@ function showBookingModal(day, month, year, editIndex = null) {
     showCalendar(currentMonth, currentYear);
 });
 
-    document.addEventListener("DOMContentLoaded", () => {
+
     const customersSection = document.getElementById("customersSection");
     const customersTab = document.getElementById("customersTab");
     const customersList = document.getElementById("customersList");
