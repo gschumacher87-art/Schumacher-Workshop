@@ -234,6 +234,18 @@ function showBookingModal(day, month, year, editIndex = null) {
 
     // Initial calendar render
     showCalendar(currentMonth, currentYear);
+});// ===== SIDEBAR CLICK =====
+document.addEventListener("DOMContentLoaded", () => {
+    const dashboardSection = document.getElementById("dashboardSection");
+    const calendarSection = document.getElementById("calendarSection");
+    const customersSection = document.getElementById("customersSection");
+    const customersTab = document.getElementById("customersTab");
+
+    customersTab?.addEventListener("click", () => {
+        dashboardSection.style.display = "none";
+        calendarSection.style.display = "none";
+        customersSection.style.display = "block";
+    });
 });
 
 // ===== BASIC CUSTOMERS BLOCK =====
