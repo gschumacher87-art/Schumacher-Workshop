@@ -237,28 +237,28 @@ function showBookingModal(day, month, year, editIndex = null) {
     showCalendar(currentMonth, currentYear);
 });
 
-const dashboardSection = document.getElementById("dashboardSection");
-const calendarSection = document.getElementById("calendarSection");
-    const customersSection = document.getElementById("customersSection");
-    const customersTab = document.getElementById("customersTab");
-    const customersList = document.getElementById("customersList");
+// ===== CUSTOMERS SIDEBAR CLICK =====
+const customersSection = document.getElementById("customersSection");
+const customersTab = document.getElementById("customersTab");
+const customersList = document.getElementById("customersList");
 
-    let customers = JSON.parse(localStorage.getItem("customers")) || [];
+let customers = JSON.parse(localStorage.getItem("customers")) || [];
 
-    function renderCustomers() {
-        customersList.innerHTML = "";
-        if (customers.length === 0) {
-            customersList.textContent = "No customers yet.";
-            return;
-        }
-        customers.forEach((c, index) => {
-            const item = document.createElement("div");
-            item.textContent = `${c.name} - ${c.phone || ""}`;
-            customersList.appendChild(item);
-        });
+function renderCustomers() {
+    customersList.innerHTML = "";
+    if (customers.length === 0) {
+        customersList.textContent = "No customers yet.";
+        return;
     }
+    customers.forEach((c, index) => {
+        const item = document.createElement("div");
+        item.textContent = `${c.name} - ${c.phone || ""}`;
+        customersList.appendChild(item);
+    });
+}
 
-    customersTab?.addEventListener("click", () => {
+customersTab?.addEventListener("click", () => {
+    // ===== SHOW CUSTOMERS & HIDE OTHERS =====
     dashboardSection.style.display = "none";   // hide dashboard
     calendarSection.style.display = "none";    // hide calendar
     customersSection.style.display = "block";  // show customers
