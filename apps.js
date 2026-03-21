@@ -236,11 +236,16 @@ function showBookingModal(day, month, year, editIndex = null) {
     showCalendar(currentMonth, currentYear);
 });
 
-    const dashboardTab = document.getElementById("customersTab");
-    dashboardTab?.addEventListener("click", () => {
-        dashboardSection.style.display = "block";
-        customerssection.style.display = "none";
+    // Grab the section and sidebar tab
+    const customersSection = document.getElementById("customersSection");
+    const customersTab = document.getElementById("customersTab");
+
+    // Click event to show customers
+    customersTab?.addEventListener("click", () => {
+        // Only show customers
+        customersSection.style.display = "block";
     });
+});
                 
    
         
