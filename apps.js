@@ -236,88 +236,140 @@ function showBookingModal(day, month, year, editIndex = null) {
     showCalendar(currentMonth, currentYear);
 });
 
-// ===== DASHBOARD TO CUSTOMERS SWITCH =====
-const customersTab = document.getElementById("customersTab");
-const customersSection = document.getElementById("customersSection");
-const addCustomerBtn = document.getElementById("addCustomerBtn");
-const customersList = document.getElementById("customersList");
+// ===== CUSTOMERS BLOCK =====
+document.addEventListener("DOMContentLoaded", () => {
 
-// Single source of truth for customers
-let customers = JSON.parse(localStorage.getItem("customers")) || [];
+    const customersTab = document.getElementById("customersTab");
+    const customersSection = document.getElementById("customersSection");
+    const customersList = document.getElementById("customersList");
+    const addCustomerBtn = document.getElementById("addCustomerBtn");
 
-// Sidebar click to show customers
-customersTab?.addEventListener("click", () => {
-    document.getElementById("dashboardSection").style.display = "none";
-    document.getElementById("calendarSection").style.display = "none";
-    customersSection.style.display = "block";
-    renderCustomers();
-});
+    // Load customers from isolated storage
+    let customers = JSON.parse(localStorage.getItem("customers")) || [];
 
-// Render customer list
-function renderCustomers() {
-    customersList.innerHTML = "";
-    customers.forEach((c, index) => {
-        const item = document.createElement("div");
-        item.style.border = "1px solid #ccc";
-        item.style.padding = "5px";
-        item.style.marginTop = "5px";
-        item.style.display = "flex";
-        item.style.justifyContent = "space-between";
-        item.style.alignItems = "center";
-
-        const text = document.createElement("span");
-        text.textContent = `${c.name} - ${c.phone} - ${c.email}`;
-        item.appendChild(text);
-
-        const btnContainer = document.createElement("span");
-
-        // Edit button
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => showCustomerModal(index));
-        btnContainer.appendChild(editBtn);
-
-        // Delete button
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.addEventListener("click", () => {
-            if (confirm("Delete this customer?")) {
-                customers.splice(index, 1);
-                localStorage.setItem("customers", JSON.stringify(customers));
-                renderCustomers();
-            }
-        });
-        btnContainer.appendChild(deleteBtn);
-
-        item.appendChild(btnContainer);
-        customersList.appendChild(item);
+    // Show customers section
+    customersTab?.addEventListener("click", () => {
+        // Hide other sections (dashboard/calendar handled elsewhere)
+        document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
+        customersSection.style.display = "block";
+        renderCustomers();
     });
-}
 
-// Customer modal popup
-function showCustomerModal(editIndex = null) {
-    // Simple prompt-based popup to avoid calendar interference
-    let c = { name: "", phone: "", email: "" };
-    if (editIndex !== null) c = customers[editIndex];
+    // Render customer list
+    function renderCustomers() {
+        customersList.innerHTML = "";
+        customers.forEach((c, index) => {
+            const item = document.createElement("div");
+            item.style.border = "1px solid #ccc";
+            item.style.padding = "5px";
+            item.style.marginTop = "5px";
+            item.style.display = "flex";
+            item.style.justifyContent = "space-between";
+            item.style.alignItems = "center";
 
-    const name = prompt("Customer Name:", c.name);
-    if (name === null) return; // cancel
-    const phone = prompt("Phone:", c.phone);
-    if (phone === null) return; // cancel
-    const email = prompt("Email:", c.email);
-    if (email === null) return; // cancel
+            const text = document.createElement("span");
+            text.textContent = `${c.name} - ${c.phone} - ${c.email}`;
+            item.appendChild(text);
 
-    const customerData = { name, phone, email };
+            const btnContainer = document.createElement("span");
 
-    if (editIndex !== null) {
-        customers[editIndex] = customerData;
-    } else {
-        customers.push(customerData);
+            // Edit button
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.addEventListener("click", () => showCustomerModal(index));
+            btnContainer.appendChild(editBtn);
+
+            // Delete button
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.addEventListener("click", () => {
+                if (confirm("Delete this customer?")) {
+                    customers.splice(index, 1);
+                    localStorage.setItem("customers", JSON.stringify(customers));
+                    renderCustomers();
+                }
+            });
+            btnContainer.appendChild(deleteBtn);
+
+            item.appendChild(btnContainer);
+            customersList.appendChild(item);
+        });
     }
 
-    localStorage.setItem("customers", JSON.stringify(customers));
-    renderCustomers();
-}
+    // ===== CUSTOMER POPUP =====
+    function showCustomerModal(editIndex = null) {
+        let modal = document.getElementById("customerModal");
+        if (!modal) {
+            modal = document.createElement("div");
+            modal.id = "customerModal";
+            Object.assign(modal.style, {
+                position: "fixed",
+                top: "0",
+                left: "0",
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0,0,0,0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: "1000",
+            });
 
-// Open popup when Add Customer clicked
-addCustomerBtn?.addEventListener("click", () => showCustomerModal());
+            const content = document.createElement("div");
+            content.id = "customerModalContent";
+            Object.assign(content.style, {
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "5px",
+                minWidth: "300px",
+            });
+
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) modal.style.display = "none";
+            });
+        }
+
+        const content = document.getElementById("customerModalContent");
+        let c = { name: "", phone: "", email: "" };
+        if (editIndex !== null) c = customers[editIndex];
+
+        content.innerHTML = `
+            <h3>${editIndex !== null ? "Edit" : "New"} Customer</h3>
+            <form id="customerFormFields">
+                <label>Name:</label>
+                <input type="text" placeholder="Customer Name" value="${c.name}"><br><br>
+                <label>Phone:</label>
+                <input type="text" placeholder="Phone" value="${c.phone}"><br><br>
+                <label>Email:</label>
+                <input type="text" placeholder="Email" value="${c.email}"><br><br>
+                <button type="button" id="saveCustomerBtn">${editIndex !== null ? "Update" : "Add"} Customer</button>
+            </form>
+        `;
+
+        modal.style.display = "flex";
+
+        document.getElementById("saveCustomerBtn").onclick = () => {
+            const inputs = document.querySelectorAll("#customerFormFields input");
+            const customerData = {
+                name: inputs[0].value,
+                phone: inputs[1].value,
+                email: inputs[2].value
+            };
+
+            if (editIndex !== null) {
+                customers[editIndex] = customerData;
+            } else {
+                customers.push(customerData);
+            }
+
+            localStorage.setItem("customers", JSON.stringify(customers));
+            modal.style.display = "none";
+            renderCustomers();
+        };
+    }
+
+    addCustomerBtn?.addEventListener("click", () => showCustomerModal());
+});
