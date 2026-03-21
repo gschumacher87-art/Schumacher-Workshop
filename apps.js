@@ -235,6 +235,12 @@ function showBookingModal(day, month, year, editIndex = null) {
     // Initial calendar render
     showCalendar(currentMonth, currentYear);
 });
+
+    const dashboardTab = document.getElementById("customersTab");
+    dashboardTab?.addEventListener("click", () => {
+        dashboardSection.style.display = "block";
+        customerssection.style.display = "none";
+    });
                 
    
         
