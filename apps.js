@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 customersTab?.addEventListener("click", () => {
-    customersSection.style.display = "block";
     renderCustomers();
 });
 
