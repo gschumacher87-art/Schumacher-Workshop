@@ -1,38 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
 const customersSection = document.getElementById("customersSection");
 
-    // ===== DASHBOARD TO CALENDAR SWITCH =====
-const calendarCard = document.querySelector(".calendar-card");
+    // ===== DASHBOARD / CALENDAR / CUSTOMERS SWITCH =====
 const dashboardSection = document.getElementById("dashboardSection");
 const calendarSection = document.getElementById("calendarSection");
-const customersSection = document.getElementById("customersSection"); // make sure this exists
-
-// Show today on dashboard card
-const bookingsCount = document.getElementById("bookingsCount");
-const today = new Date();
-const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-bookingsCount.textContent = today.toLocaleDateString('en-US', options);
-
-// Calendar card click
-calendarCard?.addEventListener("click", () => {
-    dashboardSection.style.display = "none";
-    customersSection.style.display = "none";
-    calendarSection.style.display = "block";
-});
+const customersSection = document.getElementById("customersSection");
 
 // Dashboard tab click
-const dashboardTab = document.getElementById("dashboardTab");
-dashboardTab?.addEventListener("click", () => {
+document.getElementById("dashboardTab")?.addEventListener("click", () => {
+    dashboardSection.style.display = "block";
     calendarSection.style.display = "none";
     customersSection.style.display = "none";
-    dashboardSection.style.display = "block";
+});
+
+// Calendar card click (from dashboard)
+document.querySelector(".calendar-card")?.addEventListener("click", () => {
+    dashboardSection.style.display = "none";
+    calendarSection.style.display = "block";
+    customersSection.style.display = "none";
+    showCalendar(currentMonth, currentYear); // calendar function untouched
 });
 
 // Customers tab click
-const customersTab = document.getElementById("customersTab");
-customersTab?.addEventListener("click", () => {
-    calendarSection.style.display = "none";
+document.getElementById("customersTab")?.addEventListener("click", () => {
     dashboardSection.style.display = "none";
+    calendarSection.style.display = "none";
     customersSection.style.display = "block";
 });
 
