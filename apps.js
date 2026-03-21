@@ -81,125 +81,156 @@ document.addEventListener("DOMContentLoaded", () => {
         showCalendar(currentMonth, currentYear);
     });
 
-    // ===== OPEN BOOKING FUNCTION =====
-    function openBooking(day, month, year) {
-        const bookingForm = document.getElementById("bookingForm");
-        bookingForm.style.display = "block";
-        bookingForm.innerHTML = "";
+    // ===== OPEN BOOKING FUNCTION WITH EDIT / DELETE =====
+function openBooking(day, month, year) {
+    const bookingForm = document.getElementById("bookingForm");
+    bookingForm.style.display = "block";
+    bookingForm.innerHTML = "";
 
-        const heading = document.createElement("h3");
-        heading.style.display = "inline-block";
-        heading.style.marginRight = "10px";
-        heading.textContent = `Booking for ${day}/${month + 1}/${year}`;
-        bookingForm.appendChild(heading);
+    const heading = document.createElement("h3");
+    heading.style.display = "inline-block";
+    heading.style.marginRight = "10px";
+    heading.textContent = `Bookings for ${day}/${month + 1}/${year}`;
+    bookingForm.appendChild(heading);
 
-        const addBtn = document.createElement("button");
-        addBtn.textContent = "Add Booking";
-        addBtn.addEventListener("click", () => {
-            showBookingModal(day, month, year);
-        });
-        bookingForm.appendChild(addBtn);
-    const key = `${day}-${month}-${year}`;
-
-const list = document.createElement("div");
-
-if (bookings[key] && bookings[key].length > 0) {
-    bookings[key].forEach((b, index) => {
-        const item = document.createElement("div");
-        item.style.border = "1px solid #ccc";
-        item.style.padding = "5px";
-        item.style.marginTop = "5px";
-        item.style.cursor = "pointer";
-
-        item.textContent = `${b.customer} - ${b.vehicle} - ${b.repair}`;
-
-        list.appendChild(item);
+    const addBtn = document.createElement("button");
+    addBtn.textContent = "Add Booking";
+    addBtn.addEventListener("click", () => {
+        showBookingModal(day, month, year);
     });
-} else {
-    list.textContent = "No bookings yet.";
+    bookingForm.appendChild(addBtn);
+
+    const key = `${day}-${month}-${year}`;
+    if (!bookings[key]) bookings[key] = [];
+
+    const list = document.createElement("div");
+    list.id = "bookingList";
+
+    if (bookings[key].length > 0) {
+        bookings[key].forEach((b, index) => {
+            const item = document.createElement("div");
+            item.style.border = "1px solid #ccc";
+            item.style.padding = "5px";
+            item.style.marginTop = "5px";
+            item.style.display = "flex";
+            item.style.justifyContent = "space-between";
+            item.style.alignItems = "center";
+
+            const text = document.createElement("span");
+            text.textContent = `${b.customer} - ${b.vehicle} - ${b.repair}`;
+            item.appendChild(text);
+
+            const btnContainer = document.createElement("span");
+
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.addEventListener("click", () => {
+                showBookingModal(day, month, year, index);
+            });
+            btnContainer.appendChild(editBtn);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.addEventListener("click", () => {
+                if (confirm("Delete this booking?")) {
+                    bookings[key].splice(index, 1);
+                    localStorage.setItem("bookings", JSON.stringify(bookings));
+                    openBooking(day, month, year); // refresh list
+                }
+            });
+            btnContainer.appendChild(deleteBtn);
+
+            item.appendChild(btnContainer);
+            list.appendChild(item);
+        });
+    } else {
+        list.textContent = "No bookings yet.";
+    }
+
+    bookingForm.appendChild(list);
 }
 
-bookingForm.appendChild(list);
-}
+// ===== GENERIC BOOKING POP-UP WITH EDIT SUPPORT =====
+function showBookingModal(day, month, year, editIndex = null) {
+    let modal = document.getElementById("bookingModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "bookingModal";
+        Object.assign(modal.style, {
+            position: "fixed",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: "1000",
+        });
 
+        const content = document.createElement("div");
+        content.id = "bookingModalContent";
+        Object.assign(content.style, {
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "5px",
+            minWidth: "300px",
+        });
 
-    // ===== GENERIC BOOKING POP-UP =====
-    function showBookingModal(day, month, year) {
-        let modal = document.getElementById("bookingModal");
-        if (!modal) {
-            modal = document.createElement("div");
-            modal.id = "bookingModal";
-            Object.assign(modal.style, {
-                position: "fixed",
-                top: "0",
-                left: "0",
-                width: "100%",
-                height: "100%",
-                backgroundColor: "rgba(0,0,0,0.5)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: "1000",
-            });
+        modal.appendChild(content);
+        document.body.appendChild(modal);
 
-            const content = document.createElement("div");
-            content.id = "bookingModalContent";
-            Object.assign(content.style, {
-                background: "#fff",
-                padding: "20px",
-                borderRadius: "5px",
-                minWidth: "300px",
-            });
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) modal.style.display = "none";
+        });
+    }
 
-            modal.appendChild(content);
-            document.body.appendChild(modal);
+    const content = document.getElementById("bookingModalContent");
 
-            modal.addEventListener("click", (e) => {
-                if (e.target === modal) modal.style.display = "none";
-            });
+    let b = { customer: "", vehicle: "", rego: "", repair: "" };
+    const key = `${day}-${month}-${year}`;
+    if (editIndex !== null) b = bookings[key][editIndex];
+
+    content.innerHTML = `
+        <h3>${editIndex !== null ? "Edit" : "New"} Booking for ${day}/${month + 1}/${year}</h3>
+        <form id="bookingFormFields">
+            <label>Customer Name:</label>
+            <input type="text" placeholder="Select customer" value="${b.customer}"><br><br>
+            <label>Vehicle:</label>
+            <input type="text" placeholder="Select vehicle" value="${b.vehicle}"><br><br>
+            <label>Rego:</label>
+            <input type="text" placeholder="Enter registration" value="${b.rego}"><br><br>
+            <label>Repair Type:</label>
+            <input type="text" placeholder="Select repair type" value="${b.repair}"><br><br>
+            <button type="button" id="saveBookingBtn">Save Booking</button>
+        </form>
+    `;
+
+    modal.style.display = "flex";
+
+    document.getElementById("saveBookingBtn").onclick = () => {
+        const inputs = document.querySelectorAll("#bookingFormFields input");
+        const bookingData = {
+            customer: inputs[0].value,
+            vehicle: inputs[1].value,
+            rego: inputs[2].value,
+            repair: inputs[3].value
+        };
+
+        if (!bookings[key]) bookings[key] = [];
+
+        if (editIndex !== null) {
+            bookings[key][editIndex] = bookingData;
+        } else {
+            bookings[key].push(bookingData);
         }
 
-        const content = document.getElementById("bookingModalContent");
-        content.innerHTML = `
-            <h3>New Booking for ${day}/${month + 1}/${year}</h3>
-            <form id="bookingFormFields">
-                <label>Customer Name:</label>
-                <input type="text" placeholder="Select customer"><br><br>
-                <label>Vehicle:</label>
-                <input type="text" placeholder="Select vehicle"><br><br>
-                <label>Rego:</label>
-                <input type="text" placeholder="Enter registration"><br><br>
-                <label>Repair Type:</label>
-                <input type="text" placeholder="Select repair type"><br><br>
-                <button type="button" id="saveBookingBtn">Save Booking</button>
-            </form>
-        `;
-
-        modal.style.display = "flex";
-        const saveBtn = document.getElementById("saveBookingBtn");
-
-        saveBtn.onclick = () => {
-    const inputs = document.querySelectorAll("#bookingFormFields input");
-
-    const bookingData = {
-        customer: inputs[0].value,
-        vehicle: inputs[1].value,
-        rego: inputs[2].value,
-        repair: inputs[3].value
+        localStorage.setItem("bookings", JSON.stringify(bookings));
+        modal.style.display = "none";
+        openBooking(day, month, year); // refresh list
     };
-
-    const key = `${day}-${month}-${year}`;
-
-    if (!bookings[key]) bookings[key] = [];
-    bookings[key].push(bookingData);
-
-    localStorage.setItem("bookings", JSON.stringify(bookings));
-
-    modal.style.display = "none";
-
-    openBooking(day, month, year); // refresh list
-};
-    }
+}
 
     // Initial calendar render
     showCalendar(currentMonth, currentYear);
