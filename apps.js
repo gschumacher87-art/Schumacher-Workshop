@@ -236,14 +236,30 @@ function showBookingModal(day, month, year, editIndex = null) {
     showCalendar(currentMonth, currentYear);
 });
 
-    // Grab the section and sidebar tab
+    document.addEventListener("DOMContentLoaded", () => {
     const customersSection = document.getElementById("customersSection");
     const customersTab = document.getElementById("customersTab");
+    const customersList = document.getElementById("customersList");
 
-    // Click event to show customers
+    let customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+    function renderCustomers() {
+        customersList.innerHTML = "";
+        if (customers.length === 0) {
+            customersList.textContent = "No customers yet.";
+            return;
+        }
+        customers.forEach((c, index) => {
+            const item = document.createElement("div");
+            item.textContent = `${c.name} - ${c.phone || ""}`;
+            customersList.appendChild(item);
+        });
+    }
+
     customersTab?.addEventListener("click", () => {
-        // Only show customers
+        // show customers section
         customersSection.style.display = "block";
+        renderCustomers();
     });
 });
                 
