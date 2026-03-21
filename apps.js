@@ -245,3 +245,32 @@ function showBookingModal(day, month, year, editIndex = null) {
 });
 // ===== END CALENDAR =====
 
+// ===== CUSTOMERS DATABASE / SECTION =====
+const customersSection = document.getElementById("customersSection");
+const customersList = document.getElementById("customersList");
+const addCustomerBtn = document.getElementById("addCustomerBtn");
+
+let customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+function renderCustomers() {
+    customersList.innerHTML = "";
+    customers.forEach((c, index) => {
+        const item = document.createElement("div");
+        item.textContent = `${c.name} - ${c.phone} - ${c.email}`;
+        customersList.appendChild(item);
+    });
+}
+
+addCustomerBtn?.addEventListener("click", () => {
+    const name = prompt("Customer Name:");
+    const phone = prompt("Phone:");
+    const email = prompt("Email:");
+    if (name) {
+        customers.push({ name, phone, email });
+        localStorage.setItem("customers", JSON.stringify(customers));
+        renderCustomers();
+    }
+});
+
+renderCustomers();
+
