@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+const customersSection = document.getElementById("customersSection");
 
     // ===== DASHBOARD TO CALENDAR SWITCH =====
     const calendarCard = document.querySelector(".calendar-card");
@@ -245,8 +246,7 @@ function showBookingModal(day, month, year, editIndex = null) {
 });
 // ===== END CALENDAR =====
 
-// ===== CUSTOMERS DATABASE / SECTION =====
-const customersSection = document.getElementById("customersSection");
+// ===== CUSTOMERS DATABASE / SECTION =====//
 const customersList = document.getElementById("customersList");
 const addCustomerBtn = document.getElementById("addCustomerBtn");
 
