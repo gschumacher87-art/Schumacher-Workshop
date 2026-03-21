@@ -372,13 +372,14 @@ function showAddCustomerModal(editIndex = null) {
 
     modal.style.display = "flex";
 
-    document.getElementById("saveCustomerBtn").onclick = () => {
+      document.getElementById("saveCustomerBtn").onclick = () => {
         const inputs = document.querySelectorAll("#customerFormFields input");
         const newCustomer = {
             firstName: inputs[0].value.trim(),
             surname: inputs[1].value.trim(),
             phone: inputs[2].value.trim(),
-            email: inputs[3].value.trim()
+            email: inputs[3].value.trim(),
+            vehicles: editIndex !== null ? customers[editIndex].vehicles : [] // <-- FIX: preserve vehicles on edit
         };
 
         if (!newCustomer.firstName || !newCustomer.surname) {
@@ -389,7 +390,6 @@ function showAddCustomerModal(editIndex = null) {
         if (editIndex !== null) {
             customers[editIndex] = newCustomer;
         } else {
-            newCustomer.vehicles = [];
             customers.push(newCustomer);
         }
 
@@ -398,6 +398,7 @@ function showAddCustomerModal(editIndex = null) {
         renderCustomers();
     };
 }
+    
 
 // ===== VEHICLE MODAL =====
 function showAddVehicleModal(customerIndex) {
