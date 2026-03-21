@@ -236,3 +236,23 @@ function showBookingModal(day, month, year, editIndex = null) {
     showCalendar(currentMonth, currentYear);
 });
 
+// ===== BASIC CUSTOMERS BLOCK =====
+document.addEventListener("DOMContentLoaded", () => {
+    const customersList = document.getElementById("customersList");
+
+    // Load customers from localStorage or start empty
+    let customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+    // Function to render customers
+    function renderCustomers() {
+        customersList.innerHTML = "";
+        customers.forEach((c, index) => {
+            const item = document.createElement("div");
+            item.textContent = `${c.name || "No Name"} - ${c.phone || ""} - ${c.email || ""}`;
+            customersList.appendChild(item);
+        });
+    }
+
+    // Initial render
+    renderCustomers();
+});
