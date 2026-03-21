@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+ document.addEventListener("DOMContentLoaded", () => {
 
     // ===== DASHBOARD TO CALENDAR SWITCH =====
     const calendarCard = document.querySelector(".calendar-card");
@@ -235,52 +235,6 @@ function showBookingModal(day, month, year, editIndex = null) {
     // Initial calendar render
     showCalendar(currentMonth, currentYear);
 });
-
-let customers = JSON.parse(localStorage.getItem("customers")) || [];
-
-function renderCustomers() {
-    const list = document.getElementById("customerList");
-    list.innerHTML = "";
-
-    if (customers.length === 0) {
-        list.textContent = "No customers yet.";
-        return;
-    }
-
-    customers.forEach((c, index) => {
-        const item = document.createElement("div");
-        item.style.border = "1px solid #ccc";
-        item.style.padding = "5px";
-        item.style.marginTop = "5px";
-        item.style.display = "flex";
-        item.style.justifyContent = "space-between";
-        item.style.alignItems = "center";
-
-        const text = document.createElement("span");
-        text.textContent = `${c.name} - ${c.phone || ""}`;
-        item.appendChild(text);
-
-        const btnContainer = document.createElement("span");
-
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => {
-            showCustomerModal(index);
-        });
-        btnContainer.appendChild(editBtn);
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.addEventListener("click", () => {
-            if (confirm("Delete this customer?")) {
-                customers.splice(index, 1);
-                localStorage.setItem("customers", JSON.stringify(customers));
-                renderCustomers();
-            }
-        });
-        btnContainer.appendChild(deleteBtn);
-
-        item.appendChild(btnContainer);
-        list.appendChild(item);
-    });
-}
+                
+   
+        
