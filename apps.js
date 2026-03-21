@@ -245,14 +245,15 @@ function showBookingModal(day, month, year, editIndex = null) {
 });
 // ===== END CALENDAR =====
 
-// ===== CUSTOMERS DATABASE / SECTION =====
+// // ===== CUSTOMERS DATABASE / SECTION =====
 const customersSection = document.getElementById("customersSection");
 const customersList = document.getElementById("customersList");
 const addCustomerBtn = document.getElementById("addCustomerBtn");
 
+// SINGLE source of truth for customers
 let customers = JSON.parse(localStorage.getItem("customers")) || [];
 
-// Render customer list
+// Render customer list in sidebar
 function renderCustomers() {
     customersList.innerHTML = "";
     customers.forEach((c, index) => {
@@ -270,7 +271,7 @@ function renderCustomers() {
 
         const btnContainer = document.createElement("span");
 
-        // Edit button
+        // EDIT button
         const editBtn = document.createElement("button");
         editBtn.textContent = "Edit";
         editBtn.addEventListener("click", () => {
@@ -278,7 +279,7 @@ function renderCustomers() {
         });
         btnContainer.appendChild(editBtn);
 
-        // Delete button
+        // DELETE button
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
         deleteBtn.addEventListener("click", () => {
@@ -369,11 +370,11 @@ function showCustomerModal(editIndex = null) {
         renderCustomers();
     };
 }
-// ===== END CUSTOMER POPUP =====
 
 // Open modal when Add Customer clicked
 addCustomerBtn?.addEventListener("click", () => {
     showCustomerModal();
 });
 
+// Initial render
 renderCustomers();
