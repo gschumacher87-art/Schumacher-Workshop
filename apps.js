@@ -247,6 +247,8 @@ let customers = JSON.parse(localStorage.getItem("customers")) || [];
 
 // Show customers section and hide dashboard/calendar
 customersTab?.addEventListener("click", () => {
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("calendarSection").style.display = "none";
     customersSection.style.display = "block";
     renderCustomers();
 });
