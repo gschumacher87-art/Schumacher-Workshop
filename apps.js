@@ -2,34 +2,37 @@ document.addEventListener("DOMContentLoaded", () => {
 const customersSection = document.getElementById("customersSection");
 
     // ===== DASHBOARD TO CALENDAR SWITCH =====
-    const calendarCard = document.querySelector(".calendar-card");
-    const dashboardSection = document.getElementById("dashboardSection");
-    const calendarSection = document.getElementById("calendarSection");
+const calendarCard = document.querySelector(".calendar-card");
+const dashboardSection = document.getElementById("dashboardSection");
+const calendarSection = document.getElementById("calendarSection");
+const customersSection = document.getElementById("customersSection"); // make sure this exists
 
-    // Show today on dashboard card
-    const bookingsCount = document.getElementById("bookingsCount");
-    const today = new Date();
-    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-    bookingsCount.textContent = today.toLocaleDateString('en-US', options);
+// Show today on dashboard card
+const bookingsCount = document.getElementById("bookingsCount");
+const today = new Date();
+const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+bookingsCount.textContent = today.toLocaleDateString('en-US', options);
 
-    calendarCard?.addEventListener("click", () => {
-        dashboardSection.style.display = "none";
-        calendarSection.style.display = "block";
-        showCalendar(currentMonth, currentYear);
-    });
-
-    // ===== DASHBOARD SIDEBAR CLICK =====
-const dashboardTab = document.getElementById("dashboardTab");
-dashboardTab?.addEventListener("click", () => {
-    dashboardSection.style.display = "block";
-    calendarSection.style.display = "none";
+// Calendar card click
+calendarCard?.addEventListener("click", () => {
+    dashboardSection.style.display = "none";
+    customersSection.style.display = "none";
+    calendarSection.style.display = "block";
 });
 
-// ===== DASHBOARD TO CUSTOMERS SWITCH =====
+// Dashboard tab click
+const dashboardTab = document.getElementById("dashboardTab");
+dashboardTab?.addEventListener("click", () => {
+    calendarSection.style.display = "none";
+    customersSection.style.display = "none";
+    dashboardSection.style.display = "block";
+});
+
+// Customers tab click
 const customersTab = document.getElementById("customersTab");
 customersTab?.addEventListener("click", () => {
-    dashboardSection.style.display = "none";
     calendarSection.style.display = "none";
+    dashboardSection.style.display = "none";
     customersSection.style.display = "block";
 });
 
