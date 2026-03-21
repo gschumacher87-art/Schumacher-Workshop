@@ -264,6 +264,92 @@ customersTab?.addEventListener("click", () => {
     customersSection.style.display = "block";  // show customers
     renderCustomers();                          // refresh list
 });
+
+// ===== CUSTOMER DATABASE & ADD CUSTOMER MODAL =====
+const addCustomerBtn = document.getElementById("addCustomerBtn");
+
+function showAddCustomerModal(editIndex = null) {
+    // Create modal if it doesn’t exist
+    let modal = document.getElementById("customerModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "customerModal";
+        Object.assign(modal.style, {
+            position: "fixed",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: "1000"
+        });
+
+        const content = document.createElement("div");
+        content.id = "customerModalContent";
+        Object.assign(content.style, {
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "5px",
+            minWidth: "300px"
+        });
+
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) modal.style.display = "none";
+        });
+    }
+
+    const content = document.getElementById("customerModalContent");
+
+    let customerData = { name: "", phone: "" };
+    if (editIndex !== null) customerData = customers[editIndex];
+
+    content.innerHTML = `
+        <h3>${editIndex !== null ? "Edit" : "Add"} Customer</h3>
+        <form id="customerFormFields">
+            <label>Name:</label>
+            <input type="text" placeholder="Customer Name" value="${customerData.name}"><br><br>
+            <label>Phone:</label>
+            <input type="text" placeholder="Phone Number" value="${customerData.phone}"><br><br>
+            <button type="button" id="saveCustomerBtn">${editIndex !== null ? "Update" : "Add"}</button>
+        </form>
+    `;
+
+    modal.style.display = "flex";
+
+    document.getElementById("saveCustomerBtn").onclick = () => {
+        const inputs = document.querySelectorAll("#customerFormFields input");
+        const newCustomer = {
+            name: inputs[0].value.trim(),
+            phone: inputs[1].value.trim()
+        };
+
+        if (!newCustomer.name) {
+            alert("Name is required.");
+            return;
+        }
+
+        if (editIndex !== null) {
+            customers[editIndex] = newCustomer;
+        } else {
+            customers.push(newCustomer);
+        }
+
+        localStorage.setItem("customers", JSON.stringify(customers));
+        modal.style.display = "none";
+        renderCustomers();
+    };
+}
+
+// Open modal on button click
+addCustomerBtn?.addEventListener("click", () => {
+    showAddCustomerModal();
+});
     
 
                 
