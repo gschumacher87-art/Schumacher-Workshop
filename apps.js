@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dashboardSection = document.getElementById("dashboardSection");
     const calendarSection = document.getElementById("calendarSection");
     // ===== CUSTOMERS SIDEBAR CLICK =====
-const customersTab = document.getElementById("customersTab");
+
 
 
 customersTab?.addEventListener("click", () => {
