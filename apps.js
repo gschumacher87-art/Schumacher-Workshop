@@ -5,20 +5,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const dashboardSection = document.getElementById("dashboardSection");
     const calendarSection = document.getElementById("calendarSection");
     const customersSection = document.getElementById("customersSection");
-    const quotesSection = document.getElementById("quotesSection"); // added
+    const quotesSection = document.getElementById("quotesSection");
+    const invoicesSection = document.getElementById("invoicesSection"); // added
 
     // ===== MODAL REFERENCES =====
     const bookingForm = document.getElementById("bookingForm");
     const bookingModal = document.getElementById("bookingModal");
     const customerModal = document.getElementById("customerModal");
     const vehicleModal = document.getElementById("vehicleModal");
-    const quoteModal = document.getElementById("quoteModal"); // added
+    const quoteModal = document.getElementById("quoteModal");
+    const invoiceModal = document.getElementById("invoiceModal"); // added
 
     function hideAllSections() {
         dashboardSection.classList.add("hidden");
         calendarSection.classList.add("hidden");
         customersSection.classList.add("hidden");
-        quotesSection.classList.add("hidden"); // added
+        quotesSection.classList.add("hidden");
+        invoicesSection.classList.add("hidden"); // added
     }
 
     function hideAllModals() {
@@ -26,7 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingModal.classList.add("hidden");
         customerModal.classList.add("hidden");
         vehicleModal.classList.add("hidden");
-        quoteModal.classList.add("hidden"); // added
+        quoteModal.classList.add("hidden");
+        invoiceModal.classList.add("hidden"); // added
     }
 
     function switchSection(showSection) {
@@ -56,11 +60,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    const quotesTab = document.getElementById("quotesTab"); // added
+    const quotesTab = document.getElementById("quotesTab");
     quotesTab?.addEventListener("click", () => {
         switchSection(quotesSection);
         if (typeof renderQuotes === "function") {
-            renderQuotes(); // quotes.js (you’ll create this function)
+            renderQuotes(); // quotes.js
+        }
+    });
+
+    const invoicesTab = document.getElementById("invoicesTab"); // added
+    invoicesTab?.addEventListener("click", () => {
+        switchSection(invoicesSection);
+        if (typeof renderInvoices === "function") {
+            renderInvoices(); // invoices.js
         }
     });
 
@@ -70,7 +82,17 @@ document.addEventListener("DOMContentLoaded", () => {
         hideAllModals();
         quoteModal.classList.remove("hidden");
         if (typeof openQuoteModal === "function") {
-            openQuoteModal(); // quotes.js (optional setup)
+            openQuoteModal(); // quotes.js
+        }
+    });
+
+    // ===== ADD INVOICE BUTTON =====
+    const addInvoiceBtn = document.getElementById("addInvoiceBtn"); // added
+    addInvoiceBtn?.addEventListener("click", () => {
+        hideAllModals();
+        invoiceModal.classList.remove("hidden");
+        if (typeof openInvoiceModal === "function") {
+            openInvoiceModal(); // invoices.js
         }
     });
 
