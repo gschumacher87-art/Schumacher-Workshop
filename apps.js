@@ -1,20 +1,24 @@
 // ===== APPS.JS =====
 document.addEventListener("DOMContentLoaded", () => {
+
     // ===== SECTION REFERENCES =====
     const dashboardSection = document.getElementById("dashboardSection");
     const calendarSection = document.getElementById("calendarSection");
     const customersSection = document.getElementById("customersSection");
+    const quotesSection = document.getElementById("quotesSection"); // added
 
     // ===== MODAL REFERENCES =====
     const bookingForm = document.getElementById("bookingForm");
     const bookingModal = document.getElementById("bookingModal");
     const customerModal = document.getElementById("customerModal");
     const vehicleModal = document.getElementById("vehicleModal");
+    const quoteModal = document.getElementById("quoteModal"); // added
 
     function hideAllSections() {
         dashboardSection.classList.add("hidden");
         calendarSection.classList.add("hidden");
         customersSection.classList.add("hidden");
+        quotesSection.classList.add("hidden"); // added
     }
 
     function hideAllModals() {
@@ -22,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingModal.classList.add("hidden");
         customerModal.classList.add("hidden");
         vehicleModal.classList.add("hidden");
+        quoteModal.classList.add("hidden"); // added
     }
 
     function switchSection(showSection) {
@@ -39,11 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ===== DASHBOARD SIDEBAR CLICK =====
+    // ===== SIDEBAR TAB CLICKS =====
     const dashboardTab = document.getElementById("dashboardTab");
     dashboardTab?.addEventListener("click", () => switchSection(dashboardSection));
 
-    // ===== CUSTOMERS SIDEBAR CLICK =====
     const customersTab = document.getElementById("customersTab");
     customersTab?.addEventListener("click", () => {
         switchSection(customersSection);
@@ -51,4 +55,23 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCustomers(); // customers.js
         }
     });
-}); 
+
+    const quotesTab = document.getElementById("quotesTab"); // added
+    quotesTab?.addEventListener("click", () => {
+        switchSection(quotesSection);
+        if (typeof renderQuotes === "function") {
+            renderQuotes(); // quotes.js (you’ll create this function)
+        }
+    });
+
+    // ===== ADD QUOTE BUTTON =====
+    const addQuoteBtn = document.getElementById("addQuoteBtn");
+    addQuoteBtn?.addEventListener("click", () => {
+        hideAllModals();
+        quoteModal.classList.remove("hidden");
+        if (typeof openQuoteModal === "function") {
+            openQuoteModal(); // quotes.js (optional setup)
+        }
+    });
+
+});
