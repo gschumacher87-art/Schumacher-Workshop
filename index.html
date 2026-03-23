@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,8 +6,8 @@
 <title>Schumacher Automotive</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-  /* Minimal CSS for visibility control */
   .hidden { display: none; }
+  .sidebar ul li.active { font-weight: bold; }
 </style>
 </head>
 <body>
@@ -21,7 +21,8 @@
             <li class="active" id="dashboardTab">Dashboard</li>
             <li id="customersTab">Customers</li>
             <li id="quotesTab">Quotes</li>
-            <li id="invoicesTab">Invoices</li> <!-- added -->
+            <li id="invoicesTab">Invoices</li>
+            <li id="repairsTab">Repairs</li>
         </ul>
     </aside>
 
@@ -82,29 +83,37 @@
         </section>
 
         <!-- ===== INVOICES SECTION ===== -->
-        <section id="invoicesSection" class="section hidden"> <!-- added -->
+        <section id="invoicesSection" class="section hidden">
             <h2>Invoices</h2>
             <button id="addInvoiceBtn">Add Invoice</button>
             <div id="invoicesList"></div>
+        </section>
+
+        <!-- ===== REPAIRS SECTION ===== -->
+        <section id="repairsSection" class="section hidden">
+            <h2>Repair Types</h2>
+            <button id="addRepairBtn">Add Repair</button>
+            <ul id="repairsList"></ul>
         </section>
 
     </main>
 
 </div>
 
-<!-- ===== MODALS (shared across sections) ===== -->
+<!-- ===== MODALS ===== -->
 <div id="bookingModal" class="hidden"></div>
 <div id="customerModal" class="hidden"></div>
 <div id="vehicleModal" class="hidden"></div>
 <div id="quoteModal" class="hidden"></div>
-<div id="invoiceModal" class="hidden"></div> <!-- added -->
+<div id="invoiceModal" class="hidden"></div>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="apps.js"></script>
 <script src="bookings.js"></script>
 <script src="customers.js"></script>
 <script src="quotes.js"></script>
-<script src="invoices.js"></script> <!-- added -->
+<script src="invoices.js"></script>
+<script src="repairs.js"></script>
 
 </body>
 </html>
