@@ -6,13 +6,77 @@
 <title>Schumacher Automotive</title>
 <link rel="stylesheet" href="styles.css">
 <style>
+  /* ===== GLOBAL ===== */
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+  }
+
   .hidden { display: none; }
-  .sidebar ul li.active { font-weight: bold; cursor: pointer; }
+
+  /* ===== SIDEBAR ===== */
   .container { display: flex; }
-  .sidebar { width: 200px; background: #f5f5f5; padding: 10px; }
-  .main { flex: 1; padding: 15px; }
-  .cards { display: flex; gap: 10px; margin-bottom: 15px; }
-  .card { background: #fff; padding: 10px; border: 1px solid #ccc; flex: 1; text-align: center; cursor: pointer; }
+  .sidebar {
+    width: 200px;
+    background: #222;
+    color: #fff;
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .sidebar-header {
+    text-align: center;
+    font-weight: bold;
+    color: yellow;
+    margin-bottom: 10px;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .sidebar ul li {
+    padding: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #333;
+  }
+  .sidebar ul li.active {
+    background: #333;
+  }
+
+  /* ===== MAIN ===== */
+  .main {
+    flex: 1;
+    padding: 20px;
+  }
+
+  /* ===== CARDS ===== */
+  .cards {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .card {
+    flex: 1 1 150px;
+    background: #fff;
+    padding: 15px;
+    text-align: center;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+  }
+  .card h3 { margin: 0 0 10px 0; font-size: 16px; }
+  .card p { font-size: 24px; margin: 0; }
+
+  /* ===== SECTIONS ===== */
+  section { margin-bottom: 20px; }
+  button { cursor: pointer; padding: 8px 12px; margin-bottom: 10px; }
+
+  /* ===== LISTS ===== */
+  ul { list-style: none; padding-left: 0; }
+  ul li { background: #fff; padding: 10px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
 </style>
 </head>
 <body>
@@ -28,14 +92,14 @@
       <li id="quotesTab">Quotes</li>
       <li id="invoicesTab">Invoices</li>
       <li id="repairsTab">Repairs</li>
-      <li id="partsTab">Parts</li> <!-- Added Parts tab -->
+      <li id="partsTab">Parts</li>
     </ul>
   </aside>
 
   <!-- ===== MAIN CONTENT ===== -->
   <main class="main">
 
-    <!-- ===== DASHBOARD SECTION ===== -->
+    <!-- DASHBOARD -->
     <section id="dashboardSection" class="section">
       <div class="cards">
         <div class="card calendar-card">
@@ -53,7 +117,7 @@
       </div>
     </section>
 
-    <!-- ===== CALENDAR SECTION ===== -->
+    <!-- CALENDAR -->
     <section id="calendarSection" class="section hidden">
       <div class="calendar-header">
         <button id="prevMonth">&lt;</button>
@@ -74,35 +138,35 @@
       <div id="bookingForm" class="hidden" style="margin-top:15px;"></div>
     </section>
 
-    <!-- ===== CUSTOMERS SECTION ===== -->
+    <!-- CUSTOMERS -->
     <section id="customersSection" class="section hidden">
       <h2>Customers</h2>
       <button id="addCustomerBtn">Add Customer</button>
       <div id="customersList"></div>
     </section>
 
-    <!-- ===== QUOTES SECTION ===== -->
+    <!-- QUOTES -->
     <section id="quotesSection" class="section hidden">
       <h2>Quotes</h2>
       <button id="addQuoteBtn">Add Quote / Repair</button>
       <div id="quotesList"></div>
     </section>
 
-    <!-- ===== INVOICES SECTION ===== -->
+    <!-- INVOICES -->
     <section id="invoicesSection" class="section hidden">
       <h2>Invoices</h2>
       <button id="addInvoiceBtn">Add Invoice</button>
       <div id="invoicesList"></div>
     </section>
 
-    <!-- ===== REPAIRS SECTION ===== -->
+    <!-- REPAIRS -->
     <section id="repairsSection" class="section hidden">
       <h2>Repair Types</h2>
       <button id="addRepairBtn">Add Repair</button>
       <ul id="repairsList"></ul>
     </section>
 
-    <!-- ===== PARTS SECTION ===== -->
+    <!-- PARTS -->
     <section id="partsSection" class="section hidden">
       <h2>Parts</h2>
       <button id="addPartBtn">Add Part</button>
@@ -113,21 +177,21 @@
 
 </div>
 
-<!-- ===== MODALS ===== -->
+<!-- MODALS -->
 <div id="bookingModal" class="hidden"></div>
 <div id="customerModal" class="hidden"></div>
 <div id="vehicleModal" class="hidden"></div>
 <div id="quoteModal" class="hidden"></div>
 <div id="invoiceModal" class="hidden"></div>
 
-<!-- ===== SCRIPTS ===== -->
+<!-- SCRIPTS -->
 <script src="apps.js"></script>
 <script src="bookings.js"></script>
 <script src="customers.js"></script>
 <script src="quotes.js"></script>
 <script src="invoices.js"></script>
 <script src="repairs.js"></script>
-<script src="parts.js"></script> <!-- Added parts.js -->
+<script src="parts.js"></script>
 
 </body>
 </html>
