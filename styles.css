@@ -1,29 +1,36 @@
 /* ===== GLOBAL ===== */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f4f9;
+    color: #333;
+}
+
+h2 {
+    margin-top: 0;
 }
 
 /* ===== SIDEBAR ===== */
 .sidebar {
     position: fixed;
-    left: 0;
     top: 0;
-    width: 200px;
+    left: 0;
+    width: 220px;
     height: 100vh;
-    background: #000;
+    background: #1b1b1b;
     color: #fff;
     display: flex;
     flex-direction: column;
+    box-shadow: 2px 0 6px rgba(0,0,0,0.2);
+    z-index: 100;
 }
 
 .sidebar-header {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
-    color: yellow;
-    padding: 20px;
+    color: #ffd700;
     text-align: center;
+    padding: 20px 10px;
     border-bottom: 1px solid #333;
 }
 
@@ -38,34 +45,26 @@ body {
     padding: 15px 20px;
     cursor: pointer;
     border-bottom: 1px solid #333;
-    transition: background 0.2s;
+    transition: background 0.3s;
 }
 
 .sidebar ul li:hover {
-    background: #222;
+    background: #333;
 }
 
 .sidebar ul li.active {
-    background: #333;
+    background: #444;
     font-weight: bold;
 }
 
 /* ===== MAIN CONTENT ===== */
 .main {
-    margin-left: 200px;
+    margin-left: 220px;
     padding: 20px;
+    min-height: 100vh;
 }
 
-/* ===== SECTION STYLE ===== */
-.section {
-    display: block;
-    background: #fff;
-    border-radius: 6px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-/* ===== DASHBOARD CARDS ===== */
+/* ===== CARDS ===== */
 .cards {
     display: flex;
     gap: 20px;
@@ -75,76 +74,135 @@ body {
 .card {
     background: #fff;
     padding: 20px;
-    flex: 1 1 150px;
+    flex: 1 1 180px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     text-align: center;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
     transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
 .card h3 {
     margin: 0 0 10px 0;
     font-size: 16px;
+    color: #555;
 }
 
 .card p {
     font-size: 24px;
     margin: 0;
+    font-weight: bold;
+    color: #222;
 }
 
-/* ===== CALENDAR ===== */
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+/* ===== SECTIONS ===== */
+.section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
 }
 
-.calendar-header button {
-    padding: 5px 12px;
-    cursor: pointer;
-}
-
-#calendarTable {
+/* ===== TABLES ===== */
+table {
     width: 100%;
     border-collapse: collapse;
     background: #fff;
 }
 
-#calendarTable th,
-#calendarTable td {
+table th, table td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
 }
 
-/* ===== MODALS (hidden by default) ===== */
-.hidden {
-    display: none;
+table th {
+    background: #f0f0f0;
+}
+
+/* ===== BUTTONS ===== */
+button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    background: #1b1b1b;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #333;
+}
+
+button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+/* ===== LISTS ===== */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+ul li:hover {
+    background: #f0f0f0;
+}
+
+ul li button {
+    margin-left: 5px;
+}
+
+/* ===== MODALS ===== */
+.hidden { display: none; }
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 300px;
+    max-width: 90%;
 }
 
 /* ===== RESPONSIVE ===== */
-
-/* Tablets */
 @media (max-width: 992px) {
-    .sidebar {
-        width: 160px;
-    }
-    .main {
-        margin-left: 160px;
-        padding: 15px;
-    }
-    .cards {
-        gap: 15px;
-    }
+    .sidebar { width: 180px; }
+    .main { margin-left: 180px; padding: 15px; }
+    .cards { gap: 15px; }
 }
 
-/* Phones */
 @media (max-width: 600px) {
     .sidebar {
         position: relative;
@@ -154,19 +212,7 @@ body {
         justify-content: space-around;
         padding: 10px 0;
     }
-    .sidebar-header {
-        display: none;
-    }
-    .main {
-        margin-left: 0;
-        padding: 10px;
-    }
-    .cards {
-        flex-direction: column;
-        gap: 10px;
-    }
-    #calendarTable th,
-    #calendarTable td {
-        padding: 6px;
-    }
+    .sidebar-header { display: none; }
+    .main { margin-left: 0; padding: 10px; }
+    .cards { flex-direction: column; gap: 10px; }
 }
