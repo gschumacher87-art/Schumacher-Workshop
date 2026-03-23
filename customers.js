@@ -191,4 +191,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Expose render function globally for apps.js
     window.renderCustomers = renderCustomers;
-});
+}); 
