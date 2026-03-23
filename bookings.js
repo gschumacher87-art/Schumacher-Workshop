@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
-    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || {};
 
     // ===== ELEMENT REFERENCES =====
     const bookingsCount = document.getElementById("bookingsCount");
@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function openBooking(day, month, year) {
         const bookingForm = document.getElementById("bookingForm");
         bookingForm.innerHTML = "";
+        bookingForm.classList.remove("hidden");
 
         const heading = document.createElement("h3");
         heading.textContent = `Bookings for ${day}/${month + 1}/${year}`;
@@ -102,13 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const btnContainer = document.createElement("span");
 
-                // Edit
                 const editBtn = document.createElement("button");
                 editBtn.textContent = "Edit";
                 editBtn.addEventListener("click", () => showBookingModal(day, month, year, idx));
                 btnContainer.appendChild(editBtn);
 
-                // Delete
                 const deleteBtn = document.createElement("button");
                 deleteBtn.textContent = "Delete";
                 deleteBtn.addEventListener("click", () => {
@@ -120,7 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 btnContainer.appendChild(deleteBtn);
 
-                // Clock On
                 const clockOnBtn = document.createElement("button");
                 clockOnBtn.textContent = "Clock On";
                 clockOnBtn.disabled = !!b.finished;
@@ -134,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 btnContainer.appendChild(clockOnBtn);
 
-                // Clock Off
                 const clockOffBtn = document.createElement("button");
                 clockOffBtn.textContent = "Clock Off";
                 clockOffBtn.disabled = !!b.finished || !b.sessions || b.sessions[b.sessions.length-1]?.end;
@@ -147,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 btnContainer.appendChild(clockOffBtn);
 
-                // Finish
                 const finishBtn = document.createElement("button");
                 finishBtn.textContent = "Finish";
                 finishBtn.disabled = !!b.finished || !b.sessions || b.sessions.some(s => !s.end);
@@ -166,9 +162,10 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== BOOKING MODAL WITH CUSTOMER/VEHICLE/REPAIR SELECT =====
-    function showBookingModal(day, month, year, editIndex=null) {
+    // ===== BOOKING MODAL =====
+    function showBookingModal(day, month, year, editIndex = null) {
         const modal = document.getElementById("bookingModal");
+        modal.classList.remove("hidden");
         modal.classList.add("show");
 
         let content = document.getElementById("bookingModalContent");
@@ -178,14 +175,13 @@ document.addEventListener("DOMContentLoaded", () => {
             Object.assign(content.style, { background:"#fff", padding:"20px", borderRadius:"5px", minWidth:"300px" });
             modal.appendChild(content);
 
-            modal.addEventListener("click", e => { if(e.target === modal) modal.classList.remove("show"); });
+            modal.addEventListener("click", e => { if(e.target === modal) modal.classList.add("hidden"); });
         }
 
         const key = `${day}-${month}-${year}`;
         let b = { customer:"", vehicle:"", rego:"", repair:"", sessions:[], finished:null };
         if (editIndex !== null) b = bookings[key][editIndex];
 
-        // Get customer and repair lists from localStorage
         const customers = JSON.parse(localStorage.getItem("customers")) || [];
         const repairs = JSON.parse(localStorage.getItem("repairs")) || [];
 
@@ -217,7 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </form>
         `;
 
-        // Update vehicle options when customer changes
         const custSelect = document.getElementById("bookingCustomer");
         custSelect.addEventListener("change", () => {
             const vehicleSelect = document.getElementById("bookingVehicle");
@@ -245,6 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
             else bookings[key].push(bookingData);
             localStorage.setItem("bookings", JSON.stringify(bookings));
             modal.classList.remove("show");
+            modal.classList.add("hidden");
             openBooking(day, month, year);
         };
     }
