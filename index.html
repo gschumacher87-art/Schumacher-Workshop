@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,97 +6,103 @@
 <title>Schumacher Automotive</title>
 <link rel="stylesheet" href="styles.css">
 <style>
+  /* Visibility and sidebar styling */
   .hidden { display: none; }
-  .sidebar ul li.active { font-weight: bold; }
+  .sidebar ul li.active { font-weight: bold; cursor: pointer; }
+  .container { display: flex; }
+  .sidebar { width: 200px; background: #f5f5f5; padding: 10px; }
+  .main { flex: 1; padding: 15px; }
+  .cards { display: flex; gap: 10px; margin-bottom: 15px; }
+  .card { background: #fff; padding: 10px; border: 1px solid #ccc; flex: 1; text-align: center; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <div class="container">
 
-    <!-- ===== SIDEBAR ===== -->
-    <aside class="sidebar">
-        <div class="sidebar-header">Schumacher Automotive</div>
-        <ul>
-            <li class="active" id="dashboardTab">Dashboard</li>
-            <li id="customersTab">Customers</li>
-            <li id="quotesTab">Quotes</li>
-            <li id="invoicesTab">Invoices</li>
-            <li id="repairsTab">Repairs</li>
-        </ul>
-    </aside>
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">Schumacher Automotive</div>
+    <ul>
+      <li class="active" id="dashboardTab">Dashboard</li>
+      <li id="customersTab">Customers</li>
+      <li id="quotesTab">Quotes</li>
+      <li id="invoicesTab">Invoices</li>
+      <li id="repairsTab">Repairs</li>
+    </ul>
+  </aside>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main">
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main">
 
-        <!-- ===== DASHBOARD SECTION ===== -->
-        <section id="dashboardSection" class="section">
-            <div class="cards">
-                <div class="card calendar-card">
-                    <h3>Calendar</h3>
-                    <p id="bookingsCount">0</p>
-                </div>
-                <div class="card vehicles-card">
-                    <h3>Vehicles in Workshop</h3>
-                    <p id="vehiclesCount">0</p>
-                </div>
-                <div class="card jobs-card">
-                    <h3>Today's Jobs</h3>
-                    <p id="jobsCount">0</p>
-                </div>
-            </div>
-        </section>
+    <!-- ===== DASHBOARD SECTION ===== -->
+    <section id="dashboardSection" class="section">
+      <div class="cards">
+        <div class="card calendar-card">
+          <h3>Calendar</h3>
+          <p id="bookingsCount">0</p>
+        </div>
+        <div class="card vehicles-card">
+          <h3>Vehicles in Workshop</h3>
+          <p id="vehiclesCount">0</p>
+        </div>
+        <div class="card jobs-card">
+          <h3>Today's Jobs</h3>
+          <p id="jobsCount">0</p>
+        </div>
+      </div>
+    </section>
 
-        <!-- ===== CALENDAR SECTION ===== -->
-        <section id="calendarSection" class="section hidden">
-            <div class="calendar-header">
-                <button id="prevMonth">&lt;</button>
-                <span id="monthYear"></span>
-                <button id="nextMonth">&gt;</button>
-            </div>
-            <div class="calendar-table-container">
-                <table id="calendarTable">
-                    <thead>
-                        <tr>
-                            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
-                            <th>Thu</th><th>Fri</th><th>Sat</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div id="bookingForm" class="hidden" style="margin-top:15px;"></div>
-        </section>
+    <!-- ===== CALENDAR SECTION ===== -->
+    <section id="calendarSection" class="section hidden">
+      <div class="calendar-header">
+        <button id="prevMonth">&lt;</button>
+        <span id="monthYear"></span>
+        <button id="nextMonth">&gt;</button>
+      </div>
+      <div class="calendar-table-container">
+        <table id="calendarTable">
+          <thead>
+            <tr>
+              <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
+              <th>Thu</th><th>Fri</th><th>Sat</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="bookingForm" class="hidden" style="margin-top:15px;"></div>
+    </section>
 
-        <!-- ===== CUSTOMERS SECTION ===== -->
-        <section id="customersSection" class="section hidden">
-            <h2>Customers</h2>
-            <button id="addCustomerBtn">Add Customer</button>
-            <div id="customersList"></div>
-        </section>
+    <!-- ===== CUSTOMERS SECTION ===== -->
+    <section id="customersSection" class="section hidden">
+      <h2>Customers</h2>
+      <button id="addCustomerBtn">Add Customer</button>
+      <div id="customersList"></div>
+    </section>
 
-        <!-- ===== QUOTES SECTION ===== -->
-        <section id="quotesSection" class="section hidden">
-            <h2>Quotes</h2>
-            <button id="addQuoteBtn">Add Quote / Repair</button>
-            <div id="quotesList"></div>
-        </section>
+    <!-- ===== QUOTES SECTION ===== -->
+    <section id="quotesSection" class="section hidden">
+      <h2>Quotes</h2>
+      <button id="addQuoteBtn">Add Quote / Repair</button>
+      <div id="quotesList"></div>
+    </section>
 
-        <!-- ===== INVOICES SECTION ===== -->
-        <section id="invoicesSection" class="section hidden">
-            <h2>Invoices</h2>
-            <button id="addInvoiceBtn">Add Invoice</button>
-            <div id="invoicesList"></div>
-        </section>
+    <!-- ===== INVOICES SECTION ===== -->
+    <section id="invoicesSection" class="section hidden">
+      <h2>Invoices</h2>
+      <button id="addInvoiceBtn">Add Invoice</button>
+      <div id="invoicesList"></div>
+    </section>
 
-        <!-- ===== REPAIRS SECTION ===== -->
-        <section id="repairsSection" class="section hidden">
-            <h2>Repair Types</h2>
-            <button id="addRepairBtn">Add Repair</button>
-            <ul id="repairsList"></ul>
-        </section>
+    <!-- ===== REPAIRS SECTION ===== -->
+    <section id="repairsSection" class="section hidden">
+      <h2>Repair Types</h2>
+      <button id="addRepairBtn">Add Repair</button>
+      <ul id="repairsList"></ul>
+    </section>
 
-    </main>
+  </main>
 
 </div>
 
