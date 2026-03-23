@@ -12,7 +12,6 @@
     font-family: Arial, sans-serif;
     background: #f4f4f4;
   }
-
   .hidden { display: none; }
 
   /* ===== SIDEBAR ===== */
@@ -31,25 +30,16 @@
     color: yellow;
     margin-bottom: 10px;
   }
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+  .sidebar ul { list-style: none; padding: 0; margin: 0; }
   .sidebar ul li {
     padding: 12px;
     cursor: pointer;
     border-bottom: 1px solid #333;
   }
-  .sidebar ul li.active {
-    background: #333;
-  }
+  .sidebar ul li.active { background: #333; }
 
   /* ===== MAIN ===== */
-  .main {
-    flex: 1;
-    padding: 20px;
-  }
+  .main { flex: 1; padding: 20px; }
 
   /* ===== CARDS ===== */
   .cards {
@@ -76,7 +66,15 @@
 
   /* ===== LISTS ===== */
   ul { list-style: none; padding-left: 0; }
-  ul li { background: #fff; padding: 10px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+  ul li { 
+    background: #fff; 
+    padding: 10px; 
+    margin-bottom: 5px; 
+    border-radius: 4px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+  }
 </style>
 </head>
 <body>
@@ -93,6 +91,7 @@
       <li id="invoicesTab">Invoices</li>
       <li id="repairsTab">Repairs</li>
       <li id="partsTab">Parts</li>
+      <li id="techniciansTab">Technicians</li> <!-- Added Technicians tab -->
     </ul>
   </aside>
 
@@ -173,6 +172,13 @@
       <ul id="partsList"></ul>
     </section>
 
+    <!-- TECHNICIANS -->
+    <section id="techniciansSection" class="section hidden">
+      <h2>Technicians</h2>
+      <button id="addTechnicianBtn">Add Technician</button>
+      <ul id="techniciansList"></ul>
+    </section>
+
   </main>
 
 </div>
@@ -192,6 +198,7 @@
 <script src="invoices.js"></script>
 <script src="repairs.js"></script>
 <script src="parts.js"></script>
+<script src="technicians.js"></script> <!-- Added technicians.js -->
 
 </body>
 </html>
