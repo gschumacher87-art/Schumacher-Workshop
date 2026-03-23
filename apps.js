@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         calendarSection.classList.remove("hidden");
         customersSection.classList.add("hidden");
         if (typeof showCalendar === "function") {
-            showCalendar(currentMonth, currentYear); // bookings.js function
+            showCalendar(currentMonth, currentYear); // bookings.js
         }
     });
 
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         calendarSection.classList.add("hidden");
         customersSection.classList.remove("hidden");
         if (typeof renderCustomers === "function") {
-            renderCustomers(); // customers.js function
+            renderCustomers(); // customers.js
         }
     });
 });
