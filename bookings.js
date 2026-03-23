@@ -31,9 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (row === 0 && col < firstDay || date > daysInMonth) {
                     td.textContent = "";
                 } else {
-                    td.textContent = date;
+                    const displayDate = date; // Fix: store current date before increment
+                    td.textContent = displayDate;
                     td.style.cursor = "pointer";
-                    td.addEventListener("click", () => openBooking(date, month, year));
+                    td.addEventListener("click", () => openBooking(displayDate, month, year));
                     date++;
                 }
 
