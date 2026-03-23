@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showCalendar(currentMonth, currentYear);
     });
 
-    // ===== OPEN BOOKINGS LIST =====
+    // ===== OPEN BOOKINGS LIST WITH CLOCK FEATURE =====
     function openBooking(day, month, year) {
         const bookingForm = document.getElementById("bookingForm");
         bookingForm.classList.remove("hidden");
@@ -89,8 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     alignItems: "center"
                 });
 
+                // Booking text with clock info
                 const text = document.createElement("span");
                 text.textContent = `${b.customer} - ${b.vehicle} - ${b.repair}`;
+                if (b.clockIn) text.textContent += ` | Clock In: ${new Date(b.clockIn).toLocaleTimeString()}`;
+                if (b.clockOut) text.textContent += ` | Clock Out: ${new Date(b.clockOut).toLocaleTimeString()}`;
                 item.appendChild(text);
 
                 const btnContainer = document.createElement("span");
@@ -111,6 +114,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 btnContainer.appendChild(deleteBtn);
 
+                // ===== Clock On/Off Buttons =====
+                const clockOnBtn = document.createElement("button");
+                clockOnBtn.textContent = "Clock On";
+                clockOnBtn.disabled = !!b.clockIn; // disable if already clocked in
+                clockOnBtn.addEventListener("click", () => {
+                    b.clockIn = new Date().toISOString();
+                    localStorage.setItem("bookings", JSON.stringify(bookings));
+                    openBooking(day, month, year);
+                });
+                btnContainer.appendChild(clockOnBtn);
+
+                const clockOffBtn = document.createElement("button");
+                clockOffBtn.textContent = "Clock Off";
+                clockOffBtn.disabled = !b.clockIn || !!b.clockOut; // disable if not clocked in or already clocked out
+                clockOffBtn.addEventListener("click", () => {
+                    b.clockOut = new Date().toISOString();
+                    localStorage.setItem("bookings", JSON.stringify(bookings));
+                    openBooking(day, month, year);
+                });
+                btnContainer.appendChild(clockOffBtn);
+
                 item.appendChild(btnContainer);
                 list.appendChild(item);
             });
@@ -121,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== BOOKING MODAL =====
+    // ===== BOOKING MODAL (preserve clock info) =====
     function showBookingModal(day, month, year, editIndex = null) {
         const modal = document.getElementById("bookingModal");
         modal.classList.remove("hidden");
@@ -144,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        let b = { customer: "", vehicle: "", rego: "", repair: "" };
+        let b = { customer: "", vehicle: "", rego: "", repair: "", clockIn: null, clockOut: null };
         const key = `${day}-${month}-${year}`;
         if (editIndex !== null) b = bookings[key][editIndex];
 
@@ -169,7 +193,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 customer: inputs[0].value,
                 vehicle: inputs[1].value,
                 rego: inputs[2].value,
-                repair: inputs[3].value
+                repair: inputs[3].value,
+                clockIn: b.clockIn || null,
+                clockOut: b.clockOut || null
             };
 
             if (!bookings[key]) bookings[key] = [];
