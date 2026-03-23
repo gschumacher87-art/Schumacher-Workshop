@@ -53,15 +53,18 @@ h2 {
     cursor: pointer;
     border-bottom: 1px solid #333;
     transition: background 0.3s, font-size 0.3s;
+    color: #000; /* Black text for all tabs */
 }
 
 .sidebar ul li:hover {
     background: #333;
+    color: #fff; /* Hover changes text to white */
 }
 
 .sidebar ul li.active {
     background: #444;
     font-weight: bold;
+    color: #fff; /* Active tab text white for contrast */
 }
 
 /* ===== MAIN CONTENT ===== */
@@ -211,7 +214,7 @@ button:disabled {
     left: 0;
     width: 100%;
     height: 100%;
-    background: transparent; /* Removed overlay */
+    background: transparent; /* No overlay */
     display: flex;
     justify-content: center;
     align-items: center;
