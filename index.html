@@ -20,6 +20,7 @@
         <ul>
             <li class="active" id="dashboardTab">Dashboard</li>
             <li id="customersTab">Customers</li>
+            <li id="quotesTab">Quotes</li>
         </ul>
     </aside>
 
@@ -72,6 +73,13 @@
             <div id="customersList"></div>
         </section>
 
+        <!-- ===== QUOTES SECTION ===== -->
+        <section id="quotesSection" class="section hidden">
+            <h2>Quotes</h2>
+            <button id="addQuoteBtn">Add Quote / Repair</button>
+            <div id="quotesList"></div>
+        </section>
+
     </main>
 
 </div>
@@ -80,11 +88,13 @@
 <div id="bookingModal" class="hidden"></div>
 <div id="customerModal" class="hidden"></div>
 <div id="vehicleModal" class="hidden"></div>
+<div id="quoteModal" class="hidden"></div>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="apps.js"></script>
 <script src="bookings.js"></script>
 <script src="customers.js"></script>
+<script src="quotes.js"></script>
 
 </body>
 </html>
