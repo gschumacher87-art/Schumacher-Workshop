@@ -1,60 +1,87 @@
-// ===== INTERACTIONS.JS =====
+// ================= INTERACTIONS.JS =================
+
+// Wait for DOM to load
 document.addEventListener("DOMContentLoaded", () => {
 
-    // ===== MODAL HANDLING =====
+    // ===== MODAL HANDLERS =====
     const modals = document.querySelectorAll(".modal");
     const modalContents = document.querySelectorAll(".modal-content");
 
+    // Open modal
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) modal.classList.add("show");
     }
 
+    // Close modal
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) modal.classList.remove("show");
     }
 
-    // Close modal when clicking outside content
+    // Close modal on clicking outside content
     modals.forEach(modal => {
-        modal.addEventListener("click", e => {
+        modal.addEventListener("click", (e) => {
             if (e.target === modal) modal.classList.remove("show");
         });
     });
 
-    // Close modal with close buttons
-    const closeButtons = document.querySelectorAll(".modal-close");
-    closeButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const modal = btn.closest(".modal");
-            if (modal) modal.classList.remove("show");
+    // ===== GLOBAL BUTTON HANDLERS =====
+    document.body.addEventListener("click", (e) => {
+        const btn = e.target;
+
+        // Open customer popup
+        if (btn.matches("[data-open='customer']")) {
+            openModal("customerModal");
+        }
+
+        // Open booking popup
+        if (btn.matches("[data-open='booking']")) {
+            openModal("bookingModal");
+        }
+
+        // Open invoice popup
+        if (btn.matches("[data-open='invoice']")) {
+            openModal("invoiceModal");
+        }
+
+        // Open quote popup
+        if (btn.matches("[data-open='quote']")) {
+            openModal("quoteModal");
+        }
+
+        // Close buttons
+        if (btn.matches("[data-close]")) {
+            const modalId = btn.getAttribute("data-close");
+            closeModal(modalId);
+        }
+    });
+
+    // ===== ESC KEY TO CLOSE ANY MODAL =====
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            modals.forEach(modal => modal.classList.remove("show"));
+        }
+    });
+
+    // ===== TAB / SIDEBAR CLICK =====
+    const sidebarItems = document.querySelectorAll(".sidebar ul li");
+    sidebarItems.forEach(item => {
+        item.addEventListener("click", () => {
+            sidebarItems.forEach(i => i.classList.remove("active"));
+            item.classList.add("active");
         });
     });
 
-    // ===== SIDEBAR TABS =====
-    const sidebarTabs = document.querySelectorAll(".sidebar ul li");
-    sidebarTabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-            sidebarTabs.forEach(t => t.classList.remove("active"));
-            tab.classList.add("active");
-
-            // Optional: show/hide sections based on tab
-            const targetSection = tab.dataset.target;
-            if (targetSection) {
-                document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
-                const section = document.getElementById(targetSection);
-                if (section) section.classList.remove("hidden");
+    // ===== OPTIONAL: DYNAMIC CONTENT LOAD =====
+    // Example: load bookings when modal opens
+    const bookingModal = document.getElementById("bookingModal");
+    if (bookingModal) {
+        bookingModal.addEventListener("transitionend", () => {
+            if (bookingModal.classList.contains("show")) {
+                // bookings.render(); // call your bookings.js render function
             }
         });
-    });
-
-    // ===== GENERIC BUTTON OPEN MODAL =====
-    const openModalButtons = document.querySelectorAll("[data-modal]");
-    openModalButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const modalId = btn.dataset.modal;
-            if (modalId) openModal(modalId);
-        });
-    });
+    }
 
 });
