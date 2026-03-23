@@ -6,7 +6,6 @@
 <title>Schumacher Automotive</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-  /* Visibility and sidebar styling */
   .hidden { display: none; }
   .sidebar ul li.active { font-weight: bold; cursor: pointer; }
   .container { display: flex; }
@@ -29,6 +28,7 @@
       <li id="quotesTab">Quotes</li>
       <li id="invoicesTab">Invoices</li>
       <li id="repairsTab">Repairs</li>
+      <li id="partsTab">Parts</li> <!-- Added Parts tab -->
     </ul>
   </aside>
 
@@ -102,6 +102,13 @@
       <ul id="repairsList"></ul>
     </section>
 
+    <!-- ===== PARTS SECTION ===== -->
+    <section id="partsSection" class="section hidden">
+      <h2>Parts</h2>
+      <button id="addPartBtn">Add Part</button>
+      <ul id="partsList"></ul>
+    </section>
+
   </main>
 
 </div>
@@ -120,6 +127,7 @@
 <script src="quotes.js"></script>
 <script src="invoices.js"></script>
 <script src="repairs.js"></script>
+<script src="parts.js"></script> <!-- Added parts.js -->
 
 </body>
 </html>
