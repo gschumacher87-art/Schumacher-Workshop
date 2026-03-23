@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schumacher Automotive</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Minimal CSS for visibility control */
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+        <div class="sidebar-header">Schumacher Automotive</div>
+        <ul>
+            <li class="active" id="dashboardTab">Dashboard</li>
+            <li id="customersTab">Customers</li>
+        </ul>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main">
+
+        <!-- ===== DASHBOARD SECTION ===== -->
+        <section id="dashboardSection" class="section">
+            <div class="cards">
+                <div class="card calendar-card">
+                    <h3>Calendar</h3>
+                    <p id="bookingsCount">0</p>
+                </div>
+                <div class="card vehicles-card">
+                    <h3>Vehicles in Workshop</h3>
+                    <p id="vehiclesCount">0</p>
+                </div>
+                <div class="card jobs-card">
+                    <h3>Today's Jobs</h3>
+                    <p id="jobsCount">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CALENDAR SECTION ===== -->
+        <section id="calendarSection" class="section hidden">
+            <div class="calendar-header">
+                <button id="prevMonth">&lt;</button>
+                <span id="monthYear"></span>
+                <button id="nextMonth">&gt;</button>
+            </div>
+            <div class="calendar-table-container">
+                <table id="calendarTable">
+                    <thead>
+                        <tr>
+                            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
+                            <th>Thu</th><th>Fri</th><th>Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="bookingForm" class="hidden" style="margin-top:15px;"></div>
+        </section>
+
+        <!-- ===== CUSTOMERS SECTION ===== -->
+        <section id="customersSection" class="section hidden">
+            <h2>Customers</h2>
+            <button id="addCustomerBtn">Add Customer</button>
+            <div id="customersList"></div>
+        </section>
+
+    </main>
+
+</div>
+
+<!-- ===== MODALS (shared across sections) ===== -->
+<div id="bookingModal" class="hidden"></div>
+<div id="customerModal" class="hidden"></div>
+<div id="vehicleModal" class="hidden"></div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="app.js"></script>
+<script src="bookings.js"></script>
+<script src="customers.js"></script>
+
+</body>
+</html>
