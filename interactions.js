@@ -1,70 +1,51 @@
 // ================= INTERACTIONS.JS =================
-
-// Wait for DOM to load
 document.addEventListener("DOMContentLoaded", () => {
 
-    // ===== MODAL HANDLERS =====
-    const modals = document.querySelectorAll(".modal");
-    const modalContents = document.querySelectorAll(".modal-content");
-
-    // Open modal
+    // ===== MODAL UTILITY FUNCTIONS =====
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
-        if (modal) modal.classList.add("show");
+        if (!modal) return;
+        modal.classList.add("show");
     }
 
-    // Close modal
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
-        if (modal) modal.classList.remove("show");
+        if (!modal) return;
+        modal.classList.remove("show");
     }
 
-    // Close modal on clicking outside content
-    modals.forEach(modal => {
+    // Close modal when clicking outside content
+    document.querySelectorAll(".modal").forEach(modal => {
         modal.addEventListener("click", (e) => {
+            const content = modal.querySelector(".modal-content");
             if (e.target === modal) modal.classList.remove("show");
+            if (content && e.target === content) return; // allow clicks inside content
         });
     });
 
-    // ===== GLOBAL BUTTON HANDLERS =====
+    // Close modal with ESC key
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            document.querySelectorAll(".modal.show").forEach(m => m.classList.remove("show"));
+        }
+    });
+
+    // ===== GLOBAL BUTTON CLICK HANDLER =====
     document.body.addEventListener("click", (e) => {
         const btn = e.target;
 
-        // Open customer popup
-        if (btn.matches("[data-open='customer']")) {
-            openModal("customerModal");
+        // Open modals by data attribute
+        if (btn.dataset.open) {
+            openModal(btn.dataset.open + "Modal");
         }
 
-        // Open booking popup
-        if (btn.matches("[data-open='booking']")) {
-            openModal("bookingModal");
-        }
-
-        // Open invoice popup
-        if (btn.matches("[data-open='invoice']")) {
-            openModal("invoiceModal");
-        }
-
-        // Open quote popup
-        if (btn.matches("[data-open='quote']")) {
-            openModal("quoteModal");
-        }
-
-        // Close buttons
-        if (btn.matches("[data-close]")) {
-            const modalId = btn.getAttribute("data-close");
-            closeModal(modalId);
+        // Close modals by data attribute
+        if (btn.dataset.close) {
+            closeModal(btn.dataset.close);
         }
     });
 
-    // ===== ESC KEY TO CLOSE ANY MODAL =====
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            modals.forEach(modal => modal.classList.remove("show"));
-        }
-    });
-
-    // ===== TAB / SIDEBAR CLICK =====
+    // ===== SIDEBAR / TAB CLICK =====
     const sidebarItems = document.querySelectorAll(".sidebar ul li");
     sidebarItems.forEach(item => {
         item.addEventListener("click", () => {
@@ -73,15 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ===== OPTIONAL: DYNAMIC CONTENT LOAD =====
-    // Example: load bookings when modal opens
-    const bookingModal = document.getElementById("bookingModal");
-    if (bookingModal) {
-        bookingModal.addEventListener("transitionend", () => {
-            if (bookingModal.classList.contains("show")) {
-                // bookings.render(); // call your bookings.js render function
-            }
-        });
-    }
-
+    // ===== DYNAMIC MODAL HOOKS =====
+    // Expose openModal and closeModal globally for BOOKINGS / CUSTOMERS dynamic modals
+    window.openModal = openModal;
+    window.closeModal = closeModal;
 });
