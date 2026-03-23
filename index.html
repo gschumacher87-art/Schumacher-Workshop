@@ -21,6 +21,7 @@
             <li class="active" id="dashboardTab">Dashboard</li>
             <li id="customersTab">Customers</li>
             <li id="quotesTab">Quotes</li>
+            <li id="invoicesTab">Invoices</li> <!-- added -->
         </ul>
     </aside>
 
@@ -80,6 +81,13 @@
             <div id="quotesList"></div>
         </section>
 
+        <!-- ===== INVOICES SECTION ===== -->
+        <section id="invoicesSection" class="section hidden"> <!-- added -->
+            <h2>Invoices</h2>
+            <button id="addInvoiceBtn">Add Invoice</button>
+            <div id="invoicesList"></div>
+        </section>
+
     </main>
 
 </div>
@@ -89,12 +97,14 @@
 <div id="customerModal" class="hidden"></div>
 <div id="vehicleModal" class="hidden"></div>
 <div id="quoteModal" class="hidden"></div>
+<div id="invoiceModal" class="hidden"></div> <!-- added -->
 
 <!-- ===== SCRIPTS ===== -->
 <script src="apps.js"></script>
 <script src="bookings.js"></script>
 <script src="customers.js"></script>
 <script src="quotes.js"></script>
+<script src="invoices.js"></script> <!-- added -->
 
 </body>
 </html>
