@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         invoices: document.getElementById("invoicesSection"),
         repairs: document.getElementById("repairsSection"),
         parts: document.getElementById("partsSection"),
-        technicians: document.getElementById("techniciansSection") // new
+        technicians: document.getElementById("techniciansSection")
     };
 
     // ===== MODAL REFERENCES =====
@@ -32,10 +32,32 @@ document.addEventListener("DOMContentLoaded", () => {
         Object.values(modals).forEach(mod => mod?.classList.add("hidden"));
     }
 
+    // ===== SWITCH SECTION =====
     function switchSection(section) {
         hideAllSections();
         hideAllModals();
         section?.classList.remove("hidden");
+        updateActiveTab(section);
+    }
+
+    // ===== ACTIVE TAB HIGHLIGHT =====
+    const tabElements = {
+        dashboard: document.getElementById("dashboardTab"),
+        customers: document.getElementById("customersTab"),
+        quotes: document.getElementById("quotesTab"),
+        invoices: document.getElementById("invoicesTab"),
+        repairs: document.getElementById("repairsTab"),
+        parts: document.getElementById("partsTab"),
+        technicians: document.getElementById("techniciansTab")
+    };
+
+    function updateActiveTab(section) {
+        Object.values(tabElements).forEach(tab => tab.classList.remove("active"));
+        for (let key in sections) {
+            if (sections[key] === section) {
+                tabElements[key]?.classList.add("active");
+            }
+        }
     }
 
     // ===== DASHBOARD CARD CLICK =====
@@ -45,71 +67,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ===== SIDEBAR TAB CLICKS =====
-    const tabs = {
-        dashboard: document.getElementById("dashboardTab"),
-        customers: document.getElementById("customersTab"),
-        quotes: document.getElementById("quotesTab"),
-        invoices: document.getElementById("invoicesTab"),
-        repairs: document.getElementById("repairsTab"),
-        parts: document.getElementById("partsTab"),
-        technicians: document.getElementById("techniciansTab") // new
-    };
-
-    tabs.dashboard?.addEventListener("click", () => switchSection(sections.dashboard));
-
-    tabs.customers?.addEventListener("click", () => {
-        switchSection(sections.customers);
-        if (typeof renderCustomers === "function") renderCustomers();
-    });
-
-    tabs.quotes?.addEventListener("click", () => {
-        switchSection(sections.quotes);
-        if (typeof renderQuotes === "function") renderQuotes();
-    });
-
-    tabs.invoices?.addEventListener("click", () => {
-        switchSection(sections.invoices);
-        if (typeof renderInvoices === "function") renderInvoices();
-    });
-
-    tabs.repairs?.addEventListener("click", () => {
-        switchSection(sections.repairs);
-        if (typeof renderRepairs === "function") renderRepairs();
-    });
-
-    tabs.parts?.addEventListener("click", () => {
-        switchSection(sections.parts);
-        if (typeof renderParts === "function") renderParts();
-    });
-
-    tabs.technicians?.addEventListener("click", () => {
-        switchSection(sections.technicians);
-        if (typeof renderTechnicians === "function") renderTechnicians();
-    });
+    for (let key in tabElements) {
+        tabElements[key]?.addEventListener("click", () => {
+            switchSection(sections[key]);
+            if (typeof window["render" + capitalizeFirst(key)] === "function") {
+                window["render" + capitalizeFirst(key)]();
+            }
+        });
+    }
 
     // ===== ADD BUTTONS =====
-    document.getElementById("addQuoteBtn")?.addEventListener("click", () => {
-        hideAllModals();
-        modals.quoteModal?.classList.remove("hidden");
-        if (typeof openQuoteModal === "function") openQuoteModal();
+    const addButtons = {
+        addQuoteBtn: modals.quoteModal,
+        addInvoiceBtn: modals.invoiceModal,
+        addRepairBtn: "addOrEditRepair",
+        addPartBtn: "addOrEditPart",
+        addTechnicianBtn: "addOrEditTechnician"
+    };
+
+    Object.entries(addButtons).forEach(([btnId, action]) => {
+        document.getElementById(btnId)?.addEventListener("click", () => {
+            hideAllModals();
+            if (typeof action === "string") {
+                if (typeof window[action] === "function") window[action]();
+            } else {
+                action?.classList.remove("hidden");
+                if (btnId === "addQuoteBtn" && typeof openQuoteModal === "function") openQuoteModal();
+                if (btnId === "addInvoiceBtn" && typeof openInvoiceModal === "function") openInvoiceModal();
+            }
+        });
     });
 
-    document.getElementById("addInvoiceBtn")?.addEventListener("click", () => {
-        hideAllModals();
-        modals.invoiceModal?.classList.remove("hidden");
-        if (typeof openInvoiceModal === "function") openInvoiceModal();
-    });
-
-    document.getElementById("addRepairBtn")?.addEventListener("click", () => {
-        if (typeof addOrEditRepair === "function") addOrEditRepair();
-    });
-
-    document.getElementById("addPartBtn")?.addEventListener("click", () => {
-        if (typeof addOrEditPart === "function") addOrEditPart();
-    });
-
-    document.getElementById("addTechnicianBtn")?.addEventListener("click", () => {
-        if (typeof addOrEditTechnician === "function") addOrEditTechnician();
-    });
+    // ===== HELPER =====
+    function capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
 });
