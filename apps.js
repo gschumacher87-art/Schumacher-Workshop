@@ -28,14 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
         Object.values(sections).forEach(sec => sec?.classList.add("hidden"));
     }
 
-    function hideAllModals() {
-        Object.values(modals).forEach(mod => mod?.classList.add("hidden"));
+    function hideAllModals(exclude=null) {
+        Object.entries(modals).forEach(([key, mod]) => {
+            if (mod && key !== exclude) mod.classList.add("hidden");
+        });
     }
 
     // ===== SWITCH SECTION =====
     function switchSection(section) {
         hideAllSections();
-        hideAllModals();
         section?.classList.remove("hidden");
         updateActiveTab(section);
     }
@@ -70,32 +71,30 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let key in tabElements) {
         tabElements[key]?.addEventListener("click", () => {
             switchSection(sections[key]);
-            if (typeof window["render" + capitalizeFirst(key)] === "function") {
-                window["render" + capitalizeFirst(key)]();
+            const renderFuncName = "render" + capitalizeFirst(key);
+            if (typeof window[renderFuncName] === "function") {
+                window[renderFuncName]();
             }
         });
     }
 
     // ===== ADD BUTTONS =====
     const addButtons = {
-        addQuoteBtn: modals.quoteModal,
-        addInvoiceBtn: modals.invoiceModal,
-        addRepairBtn: "addOrEditRepair",
-        addPartBtn: "addOrEditPart",
-        addTechnicianBtn: "addOrEditTechnician"
+        addQuoteBtn: () => {
+            hideAllModals("quoteModal");
+            if (typeof openQuoteModal === "function") openQuoteModal();
+        },
+        addInvoiceBtn: () => {
+            hideAllModals("invoiceModal");
+            if (typeof openInvoiceModal === "function") openInvoiceModal();
+        },
+        addRepairBtn: () => { if (typeof addOrEditRepair === "function") addOrEditRepair(); },
+        addPartBtn: () => { if (typeof addOrEditPart === "function") addOrEditPart(); },
+        addTechnicianBtn: () => { if (typeof addOrEditTechnician === "function") addOrEditTechnician(); }
     };
 
     Object.entries(addButtons).forEach(([btnId, action]) => {
-        document.getElementById(btnId)?.addEventListener("click", () => {
-            hideAllModals();
-            if (typeof action === "string") {
-                if (typeof window[action] === "function") window[action]();
-            } else {
-                action?.classList.remove("hidden");
-                if (btnId === "addQuoteBtn" && typeof openQuoteModal === "function") openQuoteModal();
-                if (btnId === "addInvoiceBtn" && typeof openInvoiceModal === "function") openInvoiceModal();
-            }
-        });
+        document.getElementById(btnId)?.addEventListener("click", action);
     });
 
     // ===== HELPER =====
