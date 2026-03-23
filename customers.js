@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     let customers = JSON.parse(localStorage.getItem("customers")) || [];
-    const customersSection = document.getElementById("customersSection");
     const customersList = document.getElementById("customersList");
     const addCustomerBtn = document.getElementById("addCustomerBtn");
 
@@ -191,7 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===== ADD CUSTOMER BUTTON CLICK =====
     addCustomerBtn?.addEventListener("click", () => showAddCustomerModal());
 
-    // Expose render function for app.js sidebar click
+    // Expose render function globally for apps.js
     window.renderCustomers = renderCustomers;
-
 });
