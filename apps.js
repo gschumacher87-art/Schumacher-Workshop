@@ -2,113 +2,114 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ===== SECTION REFERENCES =====
-    const dashboardSection = document.getElementById("dashboardSection");
-    const calendarSection = document.getElementById("calendarSection");
-    const customersSection = document.getElementById("customersSection");
-    const quotesSection = document.getElementById("quotesSection");
-    const invoicesSection = document.getElementById("invoicesSection");
-    const repairsSection = document.getElementById("repairsSection");
-    const partsSection = document.getElementById("partsSection"); // added
+    const sections = {
+        dashboard: document.getElementById("dashboardSection"),
+        calendar: document.getElementById("calendarSection"),
+        customers: document.getElementById("customersSection"),
+        quotes: document.getElementById("quotesSection"),
+        invoices: document.getElementById("invoicesSection"),
+        repairs: document.getElementById("repairsSection"),
+        parts: document.getElementById("partsSection"),
+        technicians: document.getElementById("techniciansSection") // new
+    };
 
     // ===== MODAL REFERENCES =====
-    const bookingForm = document.getElementById("bookingForm");
-    const bookingModal = document.getElementById("bookingModal");
-    const customerModal = document.getElementById("customerModal");
-    const vehicleModal = document.getElementById("vehicleModal");
-    const quoteModal = document.getElementById("quoteModal");
-    const invoiceModal = document.getElementById("invoiceModal");
+    const modals = {
+        bookingForm: document.getElementById("bookingForm"),
+        bookingModal: document.getElementById("bookingModal"),
+        customerModal: document.getElementById("customerModal"),
+        vehicleModal: document.getElementById("vehicleModal"),
+        quoteModal: document.getElementById("quoteModal"),
+        invoiceModal: document.getElementById("invoiceModal")
+    };
 
+    // ===== HIDE FUNCTIONS =====
     function hideAllSections() {
-        dashboardSection.classList.add("hidden");
-        calendarSection.classList.add("hidden");
-        customersSection.classList.add("hidden");
-        quotesSection.classList.add("hidden");
-        invoicesSection.classList.add("hidden");
-        repairsSection.classList.add("hidden");
-        partsSection.classList.add("hidden"); // added
+        Object.values(sections).forEach(sec => sec?.classList.add("hidden"));
     }
 
     function hideAllModals() {
-        bookingForm.classList.add("hidden");
-        bookingModal.classList.add("hidden");
-        customerModal.classList.add("hidden");
-        vehicleModal.classList.add("hidden");
-        quoteModal.classList.add("hidden");
-        invoiceModal.classList.add("hidden");
+        Object.values(modals).forEach(mod => mod?.classList.add("hidden"));
     }
 
-    function switchSection(showSection) {
+    function switchSection(section) {
         hideAllSections();
         hideAllModals();
-        showSection.classList.remove("hidden");
+        section?.classList.remove("hidden");
     }
 
     // ===== DASHBOARD CARD CLICK =====
-    const calendarCard = document.querySelector(".calendar-card");
-    calendarCard?.addEventListener("click", () => {
-        switchSection(calendarSection);
-        if (typeof showCalendar === "function") {
-            showCalendar(currentMonth, currentYear);
-        }
+    document.querySelector(".calendar-card")?.addEventListener("click", () => {
+        switchSection(sections.calendar);
+        if (typeof showCalendar === "function") showCalendar(currentMonth, currentYear);
     });
 
     // ===== SIDEBAR TAB CLICKS =====
-    const dashboardTab = document.getElementById("dashboardTab");
-    dashboardTab?.addEventListener("click", () => switchSection(dashboardSection));
+    const tabs = {
+        dashboard: document.getElementById("dashboardTab"),
+        customers: document.getElementById("customersTab"),
+        quotes: document.getElementById("quotesTab"),
+        invoices: document.getElementById("invoicesTab"),
+        repairs: document.getElementById("repairsTab"),
+        parts: document.getElementById("partsTab"),
+        technicians: document.getElementById("techniciansTab") // new
+    };
 
-    const customersTab = document.getElementById("customersTab");
-    customersTab?.addEventListener("click", () => {
-        switchSection(customersSection);
+    tabs.dashboard?.addEventListener("click", () => switchSection(sections.dashboard));
+
+    tabs.customers?.addEventListener("click", () => {
+        switchSection(sections.customers);
         if (typeof renderCustomers === "function") renderCustomers();
     });
 
-    const quotesTab = document.getElementById("quotesTab");
-    quotesTab?.addEventListener("click", () => {
-        switchSection(quotesSection);
+    tabs.quotes?.addEventListener("click", () => {
+        switchSection(sections.quotes);
         if (typeof renderQuotes === "function") renderQuotes();
     });
 
-    const invoicesTab = document.getElementById("invoicesTab");
-    invoicesTab?.addEventListener("click", () => {
-        switchSection(invoicesSection);
+    tabs.invoices?.addEventListener("click", () => {
+        switchSection(sections.invoices);
         if (typeof renderInvoices === "function") renderInvoices();
     });
 
-    const repairsTab = document.getElementById("repairsTab");
-    repairsTab?.addEventListener("click", () => {
-        switchSection(repairsSection);
+    tabs.repairs?.addEventListener("click", () => {
+        switchSection(sections.repairs);
         if (typeof renderRepairs === "function") renderRepairs();
     });
 
-    const partsTab = document.getElementById("partsTab"); // added
-    partsTab?.addEventListener("click", () => {
-        switchSection(partsSection);
+    tabs.parts?.addEventListener("click", () => {
+        switchSection(sections.parts);
         if (typeof renderParts === "function") renderParts();
     });
 
+    tabs.technicians?.addEventListener("click", () => {
+        switchSection(sections.technicians);
+        if (typeof renderTechnicians === "function") renderTechnicians();
+    });
+
     // ===== ADD BUTTONS =====
-    const addQuoteBtn = document.getElementById("addQuoteBtn");
-    addQuoteBtn?.addEventListener("click", () => {
+    document.getElementById("addQuoteBtn")?.addEventListener("click", () => {
         hideAllModals();
-        quoteModal.classList.remove("hidden");
+        modals.quoteModal?.classList.remove("hidden");
         if (typeof openQuoteModal === "function") openQuoteModal();
     });
 
-    const addInvoiceBtn = document.getElementById("addInvoiceBtn");
-    addInvoiceBtn?.addEventListener("click", () => {
+    document.getElementById("addInvoiceBtn")?.addEventListener("click", () => {
         hideAllModals();
-        invoiceModal.classList.remove("hidden");
+        modals.invoiceModal?.classList.remove("hidden");
         if (typeof openInvoiceModal === "function") openInvoiceModal();
     });
 
-    const addRepairBtn = document.getElementById("addRepairBtn");
-    addRepairBtn?.addEventListener("click", () => {
+    document.getElementById("addRepairBtn")?.addEventListener("click", () => {
         if (typeof addOrEditRepair === "function") addOrEditRepair();
     });
 
-    const addPartBtn = document.getElementById("addPartBtn"); // added
-    addPartBtn?.addEventListener("click", () => {
+    document.getElementById("addPartBtn")?.addEventListener("click", () => {
         if (typeof addOrEditPart === "function") addOrEditPart();
+    });
+
+    document.getElementById("addTechnicianBtn")?.addEventListener("click", () => {
+        if (typeof addOrEditTechnician === "function") addOrEditTechnician();
     });
 
 });
