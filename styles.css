@@ -31,22 +31,38 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
+    flex: 1;
 }
 
 .sidebar ul li {
     padding: 15px 20px;
     cursor: pointer;
     border-bottom: 1px solid #333;
+    transition: background 0.2s;
+}
+
+.sidebar ul li:hover {
+    background: #222;
 }
 
 .sidebar ul li.active {
     background: #333;
+    font-weight: bold;
 }
 
 /* ===== MAIN CONTENT ===== */
 .main {
     margin-left: 200px;
     padding: 20px;
+}
+
+/* ===== SECTION STYLE ===== */
+.section {
+    display: block;
+    background: #fff;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
 }
 
 /* ===== DASHBOARD CARDS ===== */
@@ -63,6 +79,12 @@ body {
     text-align: center;
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
 }
 
 .card h3 {
@@ -99,6 +121,11 @@ body {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
+}
+
+/* ===== MODALS (hidden by default) ===== */
+.hidden {
+    display: none;
 }
 
 /* ===== RESPONSIVE ===== */
