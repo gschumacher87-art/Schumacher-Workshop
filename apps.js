@@ -51,4 +51,4 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCustomers(); // customers.js
         }
     });
-});
+}); 
