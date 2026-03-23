@@ -4,78 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Schumacher Automotive</title>
+
+<!-- ONLY CSS -->
 <link rel="stylesheet" href="styles.css">
-<style>
-  /* ===== GLOBAL ===== */
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-  }
-  .hidden { display: none; }
 
-  /* ===== SIDEBAR ===== */
-  .container { display: flex; }
-  .sidebar {
-    width: 200px;
-    background: #222;
-    color: #fff;
-    height: 100vh;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-  .sidebar-header {
-    text-align: center;
-    font-weight: bold;
-    color: yellow;
-    margin-bottom: 10px;
-  }
-  .sidebar ul { list-style: none; padding: 0; margin: 0; }
-  .sidebar ul li {
-    padding: 12px;
-    cursor: pointer;
-    border-bottom: 1px solid #333;
-  }
-  .sidebar ul li.active { background: #333; }
-
-  /* ===== MAIN ===== */
-  .main { flex: 1; padding: 20px; }
-
-  /* ===== CARDS ===== */
-  .cards {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  .card {
-    flex: 1 1 150px;
-    background: #fff;
-    padding: 15px;
-    text-align: center;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    cursor: pointer;
-  }
-  .card h3 { margin: 0 0 10px 0; font-size: 16px; }
-  .card p { font-size: 24px; margin: 0; }
-
-  /* ===== SECTIONS ===== */
-  section { margin-bottom: 20px; }
-  button { cursor: pointer; padding: 8px 12px; margin-bottom: 10px; }
-
-  /* ===== LISTS ===== */
-  ul { list-style: none; padding-left: 0; }
-  ul li { 
-    background: #fff; 
-    padding: 10px; 
-    margin-bottom: 5px; 
-    border-radius: 4px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-  }
-</style>
 </head>
 <body>
 
@@ -91,7 +23,7 @@
       <li id="invoicesTab">Invoices</li>
       <li id="repairsTab">Repairs</li>
       <li id="partsTab">Parts</li>
-      <li id="techniciansTab">Technicians</li> <!-- Added Technicians tab -->
+      <li id="techniciansTab">Technicians</li>
     </ul>
   </aside>
 
@@ -105,10 +37,12 @@
           <h3>Calendar</h3>
           <p id="bookingsCount">0</p>
         </div>
+
         <div class="card vehicles-card">
           <h3>Vehicles in Workshop</h3>
           <p id="vehiclesCount">0</p>
         </div>
+
         <div class="card jobs-card">
           <h3>Today's Jobs</h3>
           <p id="jobsCount">0</p>
@@ -118,11 +52,13 @@
 
     <!-- CALENDAR -->
     <section id="calendarSection" class="section hidden">
+      
       <div class="calendar-header">
         <button id="prevMonth">&lt;</button>
         <span id="monthYear"></span>
         <button id="nextMonth">&gt;</button>
       </div>
+
       <div class="calendar-table-container">
         <table id="calendarTable">
           <thead>
@@ -134,7 +70,10 @@
           <tbody></tbody>
         </table>
       </div>
-      <div id="bookingForm" class="hidden" style="margin-top:15px;"></div>
+
+      <!-- BOOKINGS LIST -->
+      <div id="bookingForm" class="hidden"></div>
+
     </section>
 
     <!-- CUSTOMERS -->
@@ -183,14 +122,14 @@
 
 </div>
 
-<!-- MODALS -->
-<div id="bookingModal" class="hidden"></div>
-<div id="customerModal" class="hidden"></div>
-<div id="vehicleModal" class="hidden"></div>
-<div id="quoteModal" class="hidden"></div>
-<div id="invoiceModal" class="hidden"></div>
+<!-- ===== MODALS ===== -->
+<div id="bookingModal" class="modal hidden"></div>
+<div id="customerModal" class="modal hidden"></div>
+<div id="vehicleModal" class="modal hidden"></div>
+<div id="quoteModal" class="modal hidden"></div>
+<div id="invoiceModal" class="modal hidden"></div>
 
-<!-- SCRIPTS -->
+<!-- ===== SCRIPTS ===== -->
 <script src="apps.js"></script>
 <script src="bookings.js"></script>
 <script src="customers.js"></script>
@@ -198,7 +137,7 @@
 <script src="invoices.js"></script>
 <script src="repairs.js"></script>
 <script src="parts.js"></script>
-<script src="technicians.js"></script> <!-- Added technicians.js -->
+<script src="technicians.js"></script>
 
 </body>
 </html>
