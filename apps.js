@@ -1,4 +1,4 @@
-// ===== APPS.JS =====
+  // ===== APPS.JS =====
 document.addEventListener("DOMContentLoaded", () => {
 
     // ===== SECTION REFERENCES =====
@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const calendarSection = document.getElementById("calendarSection");
     const customersSection = document.getElementById("customersSection");
     const quotesSection = document.getElementById("quotesSection");
-    const invoicesSection = document.getElementById("invoicesSection"); // added
+    const invoicesSection = document.getElementById("invoicesSection");
+    const repairsSection = document.getElementById("repairsSection"); // added
 
     // ===== MODAL REFERENCES =====
     const bookingForm = document.getElementById("bookingForm");
@@ -14,14 +15,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const customerModal = document.getElementById("customerModal");
     const vehicleModal = document.getElementById("vehicleModal");
     const quoteModal = document.getElementById("quoteModal");
-    const invoiceModal = document.getElementById("invoiceModal"); // added
+    const invoiceModal = document.getElementById("invoiceModal");
 
     function hideAllSections() {
         dashboardSection.classList.add("hidden");
         calendarSection.classList.add("hidden");
         customersSection.classList.add("hidden");
         quotesSection.classList.add("hidden");
-        invoicesSection.classList.add("hidden"); // added
+        invoicesSection.classList.add("hidden");
+        repairsSection.classList.add("hidden"); // added
     }
 
     function hideAllModals() {
@@ -30,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         customerModal.classList.add("hidden");
         vehicleModal.classList.add("hidden");
         quoteModal.classList.add("hidden");
-        invoiceModal.classList.add("hidden"); // added
+        invoiceModal.classList.add("hidden");
     }
 
     function switchSection(showSection) {
@@ -56,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     customersTab?.addEventListener("click", () => {
         switchSection(customersSection);
         if (typeof renderCustomers === "function") {
-            renderCustomers(); // customers.js
+            renderCustomers();
         }
     });
 
@@ -64,15 +66,23 @@ document.addEventListener("DOMContentLoaded", () => {
     quotesTab?.addEventListener("click", () => {
         switchSection(quotesSection);
         if (typeof renderQuotes === "function") {
-            renderQuotes(); // quotes.js
+            renderQuotes();
         }
     });
 
-    const invoicesTab = document.getElementById("invoicesTab"); // added
+    const invoicesTab = document.getElementById("invoicesTab");
     invoicesTab?.addEventListener("click", () => {
         switchSection(invoicesSection);
         if (typeof renderInvoices === "function") {
-            renderInvoices(); // invoices.js
+            renderInvoices();
+        }
+    });
+
+    const repairsTab = document.getElementById("repairsTab"); // added
+    repairsTab?.addEventListener("click", () => {
+        switchSection(repairsSection);
+        if (typeof renderRepairs === "function") {
+            renderRepairs();
         }
     });
 
@@ -82,17 +92,25 @@ document.addEventListener("DOMContentLoaded", () => {
         hideAllModals();
         quoteModal.classList.remove("hidden");
         if (typeof openQuoteModal === "function") {
-            openQuoteModal(); // quotes.js
+            openQuoteModal();
         }
     });
 
     // ===== ADD INVOICE BUTTON =====
-    const addInvoiceBtn = document.getElementById("addInvoiceBtn"); // added
+    const addInvoiceBtn = document.getElementById("addInvoiceBtn");
     addInvoiceBtn?.addEventListener("click", () => {
         hideAllModals();
         invoiceModal.classList.remove("hidden");
         if (typeof openInvoiceModal === "function") {
-            openInvoiceModal(); // invoices.js
+            openInvoiceModal();
+        }
+    });
+
+    // ===== ADD REPAIR BUTTON =====
+    const addRepairBtn = document.getElementById("addRepairBtn"); // optional if using repairs.js
+    addRepairBtn?.addEventListener("click", () => {
+        if (typeof addOrEditRepair === "function") {
+            addOrEditRepair();
         }
     });
 
