@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showCalendar(currentMonth, currentYear);
     });
 
-    // ===== OPEN BOOKINGS LIST WITH CLOCK FEATURE =====
+    // ===== OPEN BOOKINGS LIST =====
     function openBooking(day, month, year) {
         const bookingForm = document.getElementById("bookingForm");
         bookingForm.classList.remove("hidden");
@@ -89,11 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     alignItems: "center"
                 });
 
-                // Booking text with clock info
                 const text = document.createElement("span");
                 text.textContent = `${b.customer} - ${b.vehicle} - ${b.repair}`;
                 if (b.clockIn) text.textContent += ` | Clock In: ${new Date(b.clockIn).toLocaleTimeString()}`;
                 if (b.clockOut) text.textContent += ` | Clock Out: ${new Date(b.clockOut).toLocaleTimeString()}`;
+                if (b.finished) text.textContent += ` | Finished: ${new Date(b.finished).toLocaleTimeString()}`;
                 item.appendChild(text);
 
                 const btnContainer = document.createElement("span");
@@ -114,10 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 btnContainer.appendChild(deleteBtn);
 
-                // ===== Clock On/Off Buttons =====
+                // ===== CLOCK ON/OFF/FINISH =====
                 const clockOnBtn = document.createElement("button");
                 clockOnBtn.textContent = "Clock On";
-                clockOnBtn.disabled = !!b.clockIn; // disable if already clocked in
+                clockOnBtn.disabled = !!b.clockIn;
                 clockOnBtn.addEventListener("click", () => {
                     b.clockIn = new Date().toISOString();
                     localStorage.setItem("bookings", JSON.stringify(bookings));
@@ -127,13 +127,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const clockOffBtn = document.createElement("button");
                 clockOffBtn.textContent = "Clock Off";
-                clockOffBtn.disabled = !b.clockIn || !!b.clockOut; // disable if not clocked in or already clocked out
+                clockOffBtn.disabled = !b.clockIn || !!b.clockOut;
                 clockOffBtn.addEventListener("click", () => {
                     b.clockOut = new Date().toISOString();
                     localStorage.setItem("bookings", JSON.stringify(bookings));
                     openBooking(day, month, year);
                 });
                 btnContainer.appendChild(clockOffBtn);
+
+                const finishBtn = document.createElement("button");
+                finishBtn.textContent = "Finish";
+                finishBtn.disabled = !b.clockOut || !!b.finished;
+                finishBtn.addEventListener("click", () => {
+                    b.finished = new Date().toISOString();
+                    localStorage.setItem("bookings", JSON.stringify(bookings));
+                    openBooking(day, month, year);
+                });
+                btnContainer.appendChild(finishBtn);
 
                 item.appendChild(btnContainer);
                 list.appendChild(item);
@@ -145,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== BOOKING MODAL (preserve clock info) =====
+    // ===== BOOKING MODAL =====
     function showBookingModal(day, month, year, editIndex = null) {
         const modal = document.getElementById("bookingModal");
         modal.classList.remove("hidden");
@@ -168,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        let b = { customer: "", vehicle: "", rego: "", repair: "", clockIn: null, clockOut: null };
+        let b = { customer: "", vehicle: "", rego: "", repair: "", clockIn: null, clockOut: null, finished: null };
         const key = `${day}-${month}-${year}`;
         if (editIndex !== null) b = bookings[key][editIndex];
 
@@ -195,7 +205,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 rego: inputs[2].value,
                 repair: inputs[3].value,
                 clockIn: b.clockIn || null,
-                clockOut: b.clockOut || null
+                clockOut: b.clockOut || null,
+                finished: b.finished || null
             };
 
             if (!bookings[key]) bookings[key] = [];
@@ -211,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===== INITIAL CALENDAR RENDER =====
     showCalendar(currentMonth, currentYear);
 
-    // Expose functions for app.js
+    // Expose functions for apps.js
     window.showCalendar = showCalendar;
     window.openBooking = openBooking;
 
