@@ -103,56 +103,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const btnContainer = document.createElement("span");
 
-                const editBtn = document.createElement("button");
-                editBtn.textContent = "Edit";
-                editBtn.addEventListener("click", () => showBookingModal(day, month, year, idx));
-                btnContainer.appendChild(editBtn);
+                ["Edit","Delete","Clock On","Clock Off","Finish"].forEach(action => {
+                    const btn = document.createElement("button");
+                    btn.textContent = action;
+                    btnContainer.appendChild(btn);
+                });
 
-                const deleteBtn = document.createElement("button");
-                deleteBtn.textContent = "Delete";
+                const [editBtn, deleteBtn, clockOnBtn, clockOffBtn, finishBtn] = btnContainer.children;
+
+                editBtn.addEventListener("click", () => showBookingModal(day, month, year, idx));
+
                 deleteBtn.addEventListener("click", () => {
-                    if (confirm("Delete this booking?")) {
-                        bookings[key].splice(idx, 1);
+                    if(confirm("Delete this booking?")){
+                        bookings[key].splice(idx,1);
                         localStorage.setItem("bookings", JSON.stringify(bookings));
                         openBooking(day, month, year);
                     }
                 });
-                btnContainer.appendChild(deleteBtn);
 
-                const clockOnBtn = document.createElement("button");
-                clockOnBtn.textContent = "Clock On";
                 clockOnBtn.disabled = !!b.finished;
                 clockOnBtn.addEventListener("click", () => {
-                    if (!b.sessions) b.sessions = [];
-                    if (!b.sessions.length || b.sessions[b.sessions.length-1].end) {
-                        b.sessions.push({ start: new Date().toISOString(), end: null });
+                    if(!b.sessions) b.sessions=[];
+                    if(!b.sessions.length || b.sessions[b.sessions.length-1].end){
+                        b.sessions.push({start:new Date().toISOString(),end:null});
                         localStorage.setItem("bookings", JSON.stringify(bookings));
                         openBooking(day, month, year);
                     }
                 });
-                btnContainer.appendChild(clockOnBtn);
 
-                const clockOffBtn = document.createElement("button");
-                clockOffBtn.textContent = "Clock Off";
                 clockOffBtn.disabled = !!b.finished || !b.sessions || b.sessions[b.sessions.length-1]?.end;
                 clockOffBtn.addEventListener("click", () => {
-                    if (b.sessions?.length && !b.sessions[b.sessions.length-1].end) {
+                    if(b.sessions?.length && !b.sessions[b.sessions.length-1].end){
                         b.sessions[b.sessions.length-1].end = new Date().toISOString();
                         localStorage.setItem("bookings", JSON.stringify(bookings));
                         openBooking(day, month, year);
                     }
                 });
-                btnContainer.appendChild(clockOffBtn);
 
-                const finishBtn = document.createElement("button");
-                finishBtn.textContent = "Finish";
                 finishBtn.disabled = !!b.finished || !b.sessions || b.sessions.some(s => !s.end);
                 finishBtn.addEventListener("click", () => {
                     b.finished = new Date().toISOString();
                     localStorage.setItem("bookings", JSON.stringify(bookings));
                     openBooking(day, month, year);
                 });
-                btnContainer.appendChild(finishBtn);
 
                 item.appendChild(btnContainer);
                 list.appendChild(item);
@@ -162,46 +155,36 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== BOOKING MODAL =====
-    function showBookingModal(day, month, year, editIndex = null) {
+    // ===== BOOKING MODAL WITH AUTOCOMPLETE SEARCH =====
+    function showBookingModal(day, month, year, editIndex=null) {
         const modal = document.getElementById("bookingModal");
-        modal.classList.remove("hidden");
         modal.classList.add("show");
+        modal.classList.remove("hidden");
 
         let content = document.getElementById("bookingModalContent");
-        if (!content) {
+        if(!content){
             content = document.createElement("div");
             content.id = "bookingModalContent";
             Object.assign(content.style, { background:"#fff", padding:"20px", borderRadius:"5px", minWidth:"300px" });
             modal.appendChild(content);
-
-            modal.addEventListener("click", e => { if(e.target === modal) modal.classList.add("hidden"); });
+            modal.addEventListener("click", e=>{if(e.target===modal) modal.classList.remove("show")});
         }
 
         const key = `${day}-${month}-${year}`;
-        let b = { customer:"", vehicle:"", rego:"", repair:"", sessions:[], finished:null };
-        if (editIndex !== null) b = bookings[key][editIndex];
+        let b = {customer:"",vehicle:"",rego:"",repair:"",sessions:[],finished:null};
+        if(editIndex!==null) b = bookings[key][editIndex];
 
-        const customers = JSON.parse(localStorage.getItem("customers")) || [];
-        const repairs = JSON.parse(localStorage.getItem("repairs")) || [];
+        const customers = JSON.parse(localStorage.getItem("customers"))||[];
+        const repairs = JSON.parse(localStorage.getItem("repairs"))||[];
 
         content.innerHTML = `
             <h3>${editIndex!==null?"Edit":"New"} Booking for ${day}/${month+1}/${year}</h3>
             <form id="bookingFormFields">
-                <label>Customer:</label>
-                <select id="bookingCustomer">
-                    <option value="">Select customer</option>
-                    ${customers.map(c=>`<option value="${c.firstName} ${c.surname}" ${b.customer===c.firstName+' '+c.surname?'selected':''}>${c.firstName} ${c.surname}</option>`).join('')}
-                </select><br><br>
+                <label>Customer / Contact:</label>
+                <input type="text" id="bookingCustomer" value="${b.customer}" placeholder="Type customer or contact number"><br><br>
 
-                <label>Vehicle:</label>
-                <select id="bookingVehicle">
-                    <option value="">Select vehicle</option>
-                    ${customers.find(c=>c.firstName+' '+c.surname===b.customer)?.vehicles.map(v=>`<option value="${v.make} ${v.model}">${v.make} ${v.model}</option>`).join('')||''}
-                </select><br><br>
-
-                <label>Rego:</label>
-                <input type="text" id="bookingRego" value="${b.rego}" placeholder="Enter registration"><br><br>
+                <label>Vehicle / Rego:</label>
+                <input type="text" id="bookingVehicle" value="${b.vehicle}" placeholder="Type vehicle or rego"><br><br>
 
                 <label>Repair Type:</label>
                 <select id="bookingRepair">
@@ -211,32 +194,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 <button type="button" id="saveBookingBtn">Save Booking</button>
             </form>
+            <div id="autocompleteList" style="border:1px solid #ccc;max-height:150px;overflow:auto;margin-top:2px;"></div>
         `;
 
-        const custSelect = document.getElementById("bookingCustomer");
-        custSelect.addEventListener("change", () => {
-            const vehicleSelect = document.getElementById("bookingVehicle");
-            vehicleSelect.innerHTML = "<option value=''>Select vehicle</option>";
-            const cust = customers.find(c => c.firstName+' '+c.surname === custSelect.value);
-            cust?.vehicles.forEach(v => {
-                const opt = document.createElement("option");
-                opt.value = `${v.make} ${v.model}`;
-                opt.textContent = `${v.make} ${v.model}`;
-                vehicleSelect.appendChild(opt);
-            });
-        });
+        const custInput = document.getElementById("bookingCustomer");
+        const vehInput = document.getElementById("bookingVehicle");
+        const autoList = document.getElementById("autocompleteList");
 
-        document.getElementById("saveBookingBtn").onclick = () => {
+        function updateAutocomplete(){
+            const val = custInput.value.toLowerCase();
+            autoList.innerHTML = "";
+            if(!val) return;
+            const matches = customers.filter(c=>{
+                return c.firstName.toLowerCase().includes(val) ||
+                       c.surname.toLowerCase().includes(val) ||
+                       c.contact?.includes(val);
+            });
+            matches.forEach(c=>{
+                const div = document.createElement("div");
+                div.style.padding="5px";
+                div.style.cursor="pointer";
+                div.textContent=`${c.firstName} ${c.surname} | ${c.contact || ''}`;
+                div.addEventListener("click", ()=>{
+                    custInput.value=`${c.firstName} ${c.surname}`;
+                    vehInput.value=c.vehicles?.[0]?.make+' '+c.vehicles?.[0]?.model || '';
+                    regoInput.value=c.vehicles?.[0]?.rego||'';
+                    autoList.innerHTML="";
+                });
+                autoList.appendChild(div);
+            });
+        }
+
+        custInput.addEventListener("input", updateAutocomplete);
+
+        const regoInput = document.createElement("input");
+        regoInput.type="hidden";
+        content.appendChild(regoInput);
+
+        document.getElementById("saveBookingBtn").onclick = ()=>{
             const bookingData = {
-                customer: document.getElementById("bookingCustomer").value,
-                vehicle: document.getElementById("bookingVehicle").value,
-                rego: document.getElementById("bookingRego").value,
-                repair: document.getElementById("bookingRepair").value,
-                sessions: b.sessions || [],
-                finished: b.finished || null
+                customer:custInput.value,
+                vehicle:vehInput.value,
+                rego:regoInput.value,
+                repair:document.getElementById("bookingRepair").value,
+                sessions:b.sessions||[],
+                finished:b.finished||null
             };
-            if (!bookings[key]) bookings[key] = [];
-            if (editIndex !== null) bookings[key][editIndex] = bookingData;
+            if(!bookings[key]) bookings[key]=[];
+            if(editIndex!==null) bookings[key][editIndex]=bookingData;
             else bookings[key].push(bookingData);
             localStorage.setItem("bookings", JSON.stringify(bookings));
             modal.classList.remove("show");
@@ -246,9 +251,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===== INITIAL CALENDAR =====
-    showCalendar(currentMonth, currentYear);
+    showCalendar(currentMonth,currentYear);
 
     // ===== EXPOSE FUNCTIONS =====
-    window.showCalendar = showCalendar;
-    window.openBooking = openBooking;
+    window.showCalendar=showCalendar;
+    window.openBooking=openBooking;
 });
