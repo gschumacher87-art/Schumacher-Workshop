@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showCalendar(currentMonth, currentYear);
     });
 
-    // ===== OPEN BOOKINGS LIST =====
+    // ===== OPEN BOOKINGS LIST WITH SESSIONS =====
     function openBooking(day, month, year) {
         const bookingForm = document.getElementById("bookingForm");
         bookingForm.classList.remove("hidden");
@@ -89,13 +89,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     alignItems: "center"
                 });
 
+                // ===== DISPLAY TEXT =====
                 const text = document.createElement("span");
                 text.textContent = `${b.customer} - ${b.vehicle} - ${b.repair}`;
-                if (b.clockIn) text.textContent += ` | Clock In: ${new Date(b.clockIn).toLocaleTimeString()}`;
-                if (b.clockOut) text.textContent += ` | Clock Out: ${new Date(b.clockOut).toLocaleTimeString()}`;
+
+                if (b.sessions && b.sessions.length > 0) {
+                    b.sessions.forEach((s, i) => {
+                        const start = new Date(s.start).toLocaleTimeString();
+                        const end = s.end ? new Date(s.end).toLocaleTimeString() : "-";
+                        text.textContent += ` | Session ${i + 1}: ${start} - ${end}`;
+                    });
+                }
                 if (b.finished) text.textContent += ` | Finished: ${new Date(b.finished).toLocaleTimeString()}`;
                 item.appendChild(text);
 
+                // ===== BUTTONS =====
                 const btnContainer = document.createElement("span");
 
                 const editBtn = document.createElement("button");
@@ -114,30 +122,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 btnContainer.appendChild(deleteBtn);
 
-                // ===== CLOCK ON/OFF/FINISH =====
+                // ===== CLOCK ON =====
                 const clockOnBtn = document.createElement("button");
                 clockOnBtn.textContent = "Clock On";
-                clockOnBtn.disabled = !!b.clockIn;
+                clockOnBtn.disabled = !!b.finished; // disable if finished
                 clockOnBtn.addEventListener("click", () => {
-                    b.clockIn = new Date().toISOString();
-                    localStorage.setItem("bookings", JSON.stringify(bookings));
-                    openBooking(day, month, year);
+                    if (!b.sessions) b.sessions = [];
+                    // Only add new session if last session ended or none exist
+                    if (b.sessions.length === 0 || b.sessions[b.sessions.length - 1].end) {
+                        b.sessions.push({ start: new Date().toISOString(), end: null });
+                        localStorage.setItem("bookings", JSON.stringify(bookings));
+                        openBooking(day, month, year);
+                    }
                 });
                 btnContainer.appendChild(clockOnBtn);
 
+                // ===== CLOCK OFF =====
                 const clockOffBtn = document.createElement("button");
                 clockOffBtn.textContent = "Clock Off";
-                clockOffBtn.disabled = !b.clockIn || !!b.clockOut;
+                clockOffBtn.disabled = !!b.finished || !b.sessions || b.sessions[b.sessions.length - 1]?.end;
                 clockOffBtn.addEventListener("click", () => {
-                    b.clockOut = new Date().toISOString();
-                    localStorage.setItem("bookings", JSON.stringify(bookings));
-                    openBooking(day, month, year);
+                    if (b.sessions && b.sessions.length > 0 && !b.sessions[b.sessions.length - 1].end) {
+                        b.sessions[b.sessions.length - 1].end = new Date().toISOString();
+                        localStorage.setItem("bookings", JSON.stringify(bookings));
+                        openBooking(day, month, year);
+                    }
                 });
                 btnContainer.appendChild(clockOffBtn);
 
+                // ===== FINISH =====
                 const finishBtn = document.createElement("button");
                 finishBtn.textContent = "Finish";
-                finishBtn.disabled = !b.clockOut || !!b.finished;
+                finishBtn.disabled = !!b.finished || !b.sessions || b.sessions.length === 0 || b.sessions.some(s => !s.end);
                 finishBtn.addEventListener("click", () => {
                     b.finished = new Date().toISOString();
                     localStorage.setItem("bookings", JSON.stringify(bookings));
@@ -178,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        let b = { customer: "", vehicle: "", rego: "", repair: "", clockIn: null, clockOut: null, finished: null };
+        let b = { customer: "", vehicle: "", rego: "", repair: "", sessions: [], finished: null };
         const key = `${day}-${month}-${year}`;
         if (editIndex !== null) b = bookings[key][editIndex];
 
@@ -204,8 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 vehicle: inputs[1].value,
                 rego: inputs[2].value,
                 repair: inputs[3].value,
-                clockIn: b.clockIn || null,
-                clockOut: b.clockOut || null,
+                sessions: b.sessions || [],
                 finished: b.finished || null
             };
 
