@@ -70,6 +70,7 @@ h2 {
     margin-left: 230px;
     padding: 25px;
     width: 100%;
+    position: relative; /* ensures stacking context */
 }
 
 /* ===== CARDS ===== */
@@ -180,6 +181,8 @@ ul li,
     border: 1px solid #e2e8f0;
     margin-bottom: 10px;
     transition: all 0.2s;
+    position: relative; /* for internal layering */
+    z-index: 1;
 }
 
 .booking-item:hover {
@@ -229,9 +232,14 @@ ul li,
     position: fixed;
     inset: 0;
     background: rgba(15, 23, 42, 0.6);
-    display: flex;
+    display: none; /* HIDDEN by default */
     justify-content: center;
     align-items: center;
+    z-index: 300; /* always above sidebar and main */
+}
+
+.modal.show {
+    display: flex; /* only visible when JS adds .show */
 }
 
 .modal-content {
@@ -241,6 +249,8 @@ ul li,
     width: 100%;
     max-width: 420px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 310; /* above overlay */
 }
 
 /* ===== RESPONSIVE ===== */
