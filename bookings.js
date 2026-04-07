@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (row === 0 && col < firstDay || date > daysInMonth) {
                     td.textContent = "";
                 } else {
-                    const displayDate = date; // Fix: store current date before increment
+                    const displayDate = date;
                     td.textContent = displayDate;
                     td.style.cursor = "pointer";
                     td.addEventListener("click", () => openBooking(displayDate, month, year));
@@ -203,17 +203,15 @@ document.addEventListener("DOMContentLoaded", () => {
         content.appendChild(regoInput);
 
         function updateAutocomplete(){
-            const val=custInput.value.toLowerCase();
+            const val=custInput.value.toLowerCase().trim();
             autoList.innerHTML="";
             if(!val) return;
 
             const matches=customers.filter(c=>{
-                return c.firstName.toLowerCase().includes(val) ||
-                       c.surname.toLowerCase().includes(val) ||
-                       c.contact?.includes(val) ||
-                       c.vehicles?.some(v=>v.make.toLowerCase().includes(val)||
-                                           v.model.toLowerCase().includes(val)||
-                                           v.rego.toLowerCase().includes(val));
+                const fullName = `${c.firstName} ${c.surname}`.toLowerCase();
+
+                // FIX: strict name-only, start match only
+                return fullName.startsWith(val);
             });
 
             matches.forEach(c=>{
