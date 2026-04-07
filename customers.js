@@ -162,8 +162,13 @@ document.addEventListener("DOMContentLoaded", () => {
             </form>
         `;
 
-        document.getElementById("saveVehicleBtn").onclick = () => {
-            const inputs = document.querySelectorAll("#vehicleFormFields input");
+        // 🔥 FIX: scope inputs + lock correct customer
+        const form = document.getElementById("vehicleFormFields");
+        const btn = document.getElementById("saveVehicleBtn");
+
+        btn.onclick = () => {
+            const inputs = form.querySelectorAll("input");
+
             const vehicle = {
                 make: inputs[0].value.trim(),
                 model: inputs[1].value.trim(),
@@ -191,4 +196,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Expose render function globally for apps.js
     window.renderCustomers = renderCustomers;
-}); 
+});
