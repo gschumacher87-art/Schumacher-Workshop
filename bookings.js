@@ -179,10 +179,66 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.classList.add("hidden");
         };
 
+        // ✅ ONLY CHANGE IS HERE
         document.getElementById("existingCustomerBtn").onclick=()=>{
-            modal.classList.remove("show");
-            modal.classList.add("hidden");
-            setTimeout(()=>showBookingModal(day, month, year),100);
+            const customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+            content.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <h3>Search Customer</h3>
+                    <button id="closeModalBtn">X</button>
+                </div>
+                <input type="text" id="searchInput" placeholder="First / Last / Rego / Contact"><br><br>
+                <div id="searchResults"></div>
+            `;
+
+            document.getElementById("closeModalBtn").onclick=()=>{
+                modal.classList.remove("show");
+                modal.classList.add("hidden");
+            };
+
+            const input = document.getElementById("searchInput");
+            const results = document.getElementById("searchResults");
+
+            input.addEventListener("input", ()=>{
+                const val = input.value.toLowerCase().trim();
+                results.innerHTML = "";
+                if(!val) return;
+
+                customers.forEach(c=>{
+                    const first = (c.firstName||"").toLowerCase();
+                    const last = (c.surname||"").toLowerCase();
+                    const contact = (c.phone||"").toLowerCase();
+
+                    c.vehicles?.forEach(v=>{
+                        const rego = (v.rego||"").toLowerCase();
+
+                        if(first.includes(val) || last.includes(val) || contact.includes(val) || rego.includes(val)){
+                            const div = document.createElement("div");
+                            div.style.padding="5px";
+                            div.style.cursor="pointer";
+                            div.textContent = `${c.firstName} ${c.surname} | ${v.rego}`;
+
+                            div.onclick = ()=>{
+                                modal.classList.remove("show");
+                                modal.classList.add("hidden");
+
+                                setTimeout(()=>{
+                                    showBookingModal(day, month, year);
+
+                                    setTimeout(()=>{
+                                        document.getElementById("bookingCustomer").value = `${c.firstName} ${c.surname}`;
+                                        document.getElementById("bookingVehicle").value = `${v.make} ${v.model}`;
+                                    },50);
+
+                                },100);
+                            };
+
+                            results.appendChild(div);
+                        }
+                    });
+                });
+            });
         };
 
         document.getElementById("newCustomerBtn").onclick=()=>{
