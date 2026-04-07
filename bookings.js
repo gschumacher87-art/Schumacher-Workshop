@@ -179,16 +179,16 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.classList.add("hidden");
         };
 
-        // ✅ ONLY CHANGE IS HERE
+        // ✅ UPDATED ONLY THIS BLOCK
         document.getElementById("existingCustomerBtn").onclick=()=>{
             const customers = JSON.parse(localStorage.getItem("customers")) || [];
 
             content.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <h3>Search Customer</h3>
+                    <h3>Select Customer</h3>
                     <button id="closeModalBtn">X</button>
                 </div>
-                <input type="text" id="searchInput" placeholder="First / Last / Rego / Contact"><br><br>
+                <input type="text" id="searchInput" placeholder="Search..."><br><br>
                 <div id="searchResults"></div>
             `;
 
@@ -200,26 +200,28 @@ document.addEventListener("DOMContentLoaded", () => {
             const input = document.getElementById("searchInput");
             const results = document.getElementById("searchResults");
 
-            input.addEventListener("input", ()=>{
-                const val = input.value.toLowerCase().trim();
+            function render(list){
                 results.innerHTML = "";
-                if(!val) return;
 
-                customers.forEach(c=>{
-                    const first = (c.firstName||"").toLowerCase();
-                    const last = (c.surname||"").toLowerCase();
-                    const contact = (c.phone||"").toLowerCase();
+                list.forEach((c, index)=>{
+                    const item = document.createElement("div");
+                    item.style.padding="5px";
+                    item.style.cursor="pointer";
+                    item.style.borderBottom="1px solid #ccc";
 
-                    c.vehicles?.forEach(v=>{
-                        const rego = (v.rego||"").toLowerCase();
+                    item.textContent = `${c.firstName} ${c.surname}`;
 
-                        if(first.includes(val) || last.includes(val) || contact.includes(val) || rego.includes(val)){
-                            const div = document.createElement("div");
-                            div.style.padding="5px";
-                            div.style.cursor="pointer";
-                            div.textContent = `${c.firstName} ${c.surname} | ${v.rego}`;
+                    item.onclick = ()=>{
+                        results.innerHTML = "";
 
-                            div.onclick = ()=>{
+                        c.vehicles?.forEach(v=>{
+                            const vRow = document.createElement("div");
+                            vRow.style.padding="5px";
+                            vRow.style.cursor="pointer";
+
+                            vRow.textContent = `${v.make} ${v.model} - ${v.rego}`;
+
+                            vRow.onclick = ()=>{
                                 modal.classList.remove("show");
                                 modal.classList.add("hidden");
 
@@ -234,10 +236,29 @@ document.addEventListener("DOMContentLoaded", () => {
                                 },100);
                             };
 
-                            results.appendChild(div);
-                        }
-                    });
+                            results.appendChild(vRow);
+                        });
+                    };
+
+                    results.appendChild(item);
                 });
+            }
+
+            render(customers);
+
+            input.addEventListener("input", ()=>{
+                const val = input.value.toLowerCase();
+
+                const filtered = customers.filter(c=>{
+                    return (
+                        c.firstName.toLowerCase().includes(val) ||
+                        c.surname.toLowerCase().includes(val) ||
+                        (c.phone||"").toLowerCase().includes(val) ||
+                        c.vehicles?.some(v=> (v.rego||"").toLowerCase().includes(val))
+                    );
+                });
+
+                render(filtered);
             });
         };
 
