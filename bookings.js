@@ -68,7 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const addBtn = document.createElement("button");
         addBtn.textContent = "Add Booking";
-        addBtn.addEventListener("click", () => showBookingModal(day, month, year));
+        // ✅ ONLY CHANGE HERE
+        addBtn.addEventListener("click", () => showCustomerPopup(day, month, year));
         bookingForm.appendChild(addBtn);
 
         const key = `${day}-${month}-${year}`;
@@ -156,7 +157,53 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== BOOKING MODAL WITH AUTOCOMPLETE =====
+    // ===== NEW CUSTOMER POPUP =====
+    function showCustomerPopup(day, month, year){
+        const modal = document.getElementById("bookingModal");
+        modal.classList.add("show");
+        modal.classList.remove("hidden");
+
+        const content = document.getElementById("bookingModalContent");
+
+        const customers = JSON.parse(localStorage.getItem("customers"))||[];
+
+        content.innerHTML = `
+            <h3>Select Customer</h3>
+            <input type="text" id="custSearch" placeholder="Search customer"><br><br>
+            <div id="custResults" style="border:1px solid #ccc;max-height:150px;overflow:auto;"></div><br>
+            <button id="newCustomer">Add New Customer</button>
+        `;
+
+        const results = document.getElementById("custResults");
+
+        document.getElementById("custSearch").addEventListener("input", e=>{
+            const val = e.target.value.toLowerCase();
+            results.innerHTML="";
+
+            customers.forEach(c=>{
+                const name = `${c.firstName} ${c.surname}`.toLowerCase();
+                if(name.includes(val)){
+                    const div=document.createElement("div");
+                    div.textContent=`${c.firstName} ${c.surname}`;
+                    div.style.cursor="pointer";
+                    div.onclick=()=>{
+                        modal.classList.remove("show");
+                        modal.classList.add("hidden");
+                        setTimeout(()=>showBookingModal(day, month, year),100);
+                    };
+                    results.appendChild(div);
+                }
+            });
+        });
+
+        document.getElementById("newCustomer").onclick=()=>{
+            modal.classList.remove("show");
+            modal.classList.add("hidden");
+            setTimeout(()=>showBookingModal(day, month, year),100);
+        };
+    }
+
+    // ===== ORIGINAL MODAL (UNCHANGED) =====
     function showBookingModal(day, month, year, editIndex=null){
         const modal = document.getElementById("bookingModal");
         modal.classList.add("show");
@@ -287,10 +334,8 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // ===== INITIAL CALENDAR =====
     showCalendar(currentMonth,currentYear);
 
-    // ===== EXPOSE FUNCTIONS =====
     window.showCalendar=showCalendar;
     window.openBooking=openBooking;
 
