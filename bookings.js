@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== FIXED CUSTOMER POPUP (2 BUTTONS ONLY) =====
+    // ===== FIXED CUSTOMER POPUP (NOW WITH X) =====
     function showCustomerPopup(day, month, year){
         const modal = document.getElementById("bookingModal");
         modal.classList.add("show");
@@ -167,10 +167,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         content.innerHTML = `
-            <h3>Select Customer</h3>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h3>Select Customer</h3>
+                <button id="closeModalBtn">X</button>
+            </div>
             <button id="existingCustomerBtn">Existing Customer</button><br><br>
             <button id="newCustomerBtn">New Customer</button>
         `;
+
+        // ✅ CLOSE BUTTON
+        document.getElementById("closeModalBtn").onclick=()=>{
+            modal.classList.remove("show");
+            modal.classList.add("hidden");
+        };
 
         document.getElementById("existingCustomerBtn").onclick=()=>{
             modal.classList.remove("show");
