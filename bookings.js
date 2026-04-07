@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const addBtn = document.createElement("button");
         addBtn.textContent = "Add Booking";
-        addBtn.onclick = () => showCustomerPopup(day, month, year); // FIXED
+        addBtn.onclick = () => showCustomerPopup(day, month, year);
         bookingForm.appendChild(addBtn);
 
         const key = `${day}-${month}-${year}`;
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== FIXED CUSTOMER POPUP =====
+    // ===== FIXED CUSTOMER POPUP (2 BUTTONS ONLY) =====
     function showCustomerPopup(day, month, year){
         const modal = document.getElementById("bookingModal");
         modal.classList.add("show");
@@ -166,38 +166,19 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.appendChild(content);
         }
 
-        const customers = JSON.parse(localStorage.getItem("customers"))||[];
-
         content.innerHTML = `
             <h3>Select Customer</h3>
-            <input type="text" id="custSearch" placeholder="Search customer"><br><br>
-            <div id="custResults" style="border:1px solid #ccc;max-height:150px;overflow:auto;"></div><br>
-            <button id="newCustomer">Add New Customer</button>
+            <button id="existingCustomerBtn">Existing Customer</button><br><br>
+            <button id="newCustomerBtn">New Customer</button>
         `;
 
-        const results = document.getElementById("custResults");
+        document.getElementById("existingCustomerBtn").onclick=()=>{
+            modal.classList.remove("show");
+            modal.classList.add("hidden");
+            setTimeout(()=>showBookingModal(day, month, year),100);
+        };
 
-        document.getElementById("custSearch").addEventListener("input", e=>{
-            const val = e.target.value.toLowerCase();
-            results.innerHTML="";
-
-            customers.forEach(c=>{
-                const name = `${c.firstName} ${c.surname}`.toLowerCase();
-                if(name.includes(val)){
-                    const div=document.createElement("div");
-                    div.textContent=`${c.firstName} ${c.surname}`;
-                    div.style.cursor="pointer";
-                    div.onclick=()=>{
-                        modal.classList.remove("show");
-                        modal.classList.add("hidden");
-                        setTimeout(()=>showBookingModal(day, month, year),100);
-                    };
-                    results.appendChild(div);
-                }
-            });
-        });
-
-        document.getElementById("newCustomer").onclick=()=>{
+        document.getElementById("newCustomerBtn").onclick=()=>{
             modal.classList.remove("show");
             modal.classList.add("hidden");
             setTimeout(()=>showBookingModal(day, month, year),100);
