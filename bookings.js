@@ -202,16 +202,17 @@ document.addEventListener("DOMContentLoaded", () => {
         regoInput.type="hidden";
         content.appendChild(regoInput);
 
-        function updateAutocomplete(){
+        function runSearch(){
             const val=custInput.value.toLowerCase().trim();
             autoList.innerHTML="";
             if(!val) return;
 
             const matches=customers.filter(c=>{
                 const fullName = `${c.firstName} ${c.surname}`.toLowerCase();
+                const contact = (c.contact||"").toLowerCase();
+                const regos = c.vehicles?.map(v=>v.rego.toLowerCase()) || [];
 
-                // FIX: strict name-only, start match only
-                return fullName.startsWith(val);
+                return fullName === val || contact === val || regos.includes(val);
             });
 
             matches.forEach(c=>{
@@ -230,8 +231,19 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        custInput.addEventListener("input", updateAutocomplete);
-        vehInput.addEventListener("input", updateAutocomplete);
+        custInput.addEventListener("keydown", e=>{
+            if(e.key==="Enter"){
+                e.preventDefault();
+                runSearch();
+            }
+        });
+
+        vehInput.addEventListener("keydown", e=>{
+            if(e.key==="Enter"){
+                e.preventDefault();
+                runSearch();
+            }
+        });
 
         document.getElementById("saveBookingBtn").onclick=()=>{
             const bookingData={
