@@ -5,13 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentYear = new Date().getFullYear();
     let bookings = JSON.parse(localStorage.getItem("bookings")) || {};
 
-    // ===== ELEMENT REFERENCES =====
     const bookingsCount = document.getElementById("bookingsCount");
     const today = new Date();
     const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
     bookingsCount.textContent = today.toLocaleDateString('en-US', options);
 
-    // ===== CALENDAR RENDER =====
     function showCalendar(month, year) {
         const monthYearEl = document.getElementById("monthYear");
         monthYearEl.textContent = `${month + 1}/${year}`;
@@ -44,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ===== NAVIGATION =====
     document.getElementById("prevMonth")?.addEventListener("click", () => {
         currentMonth--;
         if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -56,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
         showCalendar(currentMonth, currentYear);
     });
 
-    // ===== OPEN BOOKINGS LIST =====
     function openBooking(day, month, year) {
         const bookingForm = document.getElementById("bookingForm");
         bookingForm.innerHTML = "";
@@ -68,8 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const addBtn = document.createElement("button");
         addBtn.textContent = "Add Booking";
-        // ✅ ONLY CHANGE HERE
-        addBtn.addEventListener("click", () => showCustomerPopup(day, month, year));
+        addBtn.onclick = () => showCustomerPopup(day, month, year); // FIXED
         bookingForm.appendChild(addBtn);
 
         const key = `${day}-${month}-${year}`;
@@ -157,13 +152,19 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== NEW CUSTOMER POPUP =====
+    // ===== FIXED CUSTOMER POPUP =====
     function showCustomerPopup(day, month, year){
         const modal = document.getElementById("bookingModal");
         modal.classList.add("show");
         modal.classList.remove("hidden");
 
-        const content = document.getElementById("bookingModalContent");
+        let content = document.getElementById("bookingModalContent");
+        if(!content){
+            content = document.createElement("div");
+            content.id = "bookingModalContent";
+            Object.assign(content.style,{background:"#fff",padding:"20px",borderRadius:"5px",minWidth:"300px"});
+            modal.appendChild(content);
+        }
 
         const customers = JSON.parse(localStorage.getItem("customers"))||[];
 
@@ -203,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // ===== ORIGINAL MODAL (UNCHANGED) =====
+    // ===== ORIGINAL MODAL UNTOUCHED =====
     function showBookingModal(day, month, year, editIndex=null){
         const modal = document.getElementById("bookingModal");
         modal.classList.add("show");
