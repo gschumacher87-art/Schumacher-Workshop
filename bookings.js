@@ -152,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.appendChild(list);
     }
 
-    // ===== FIXED CUSTOMER POPUP (NOW WITH X) =====
     function showCustomerPopup(day, month, year){
         const modal = document.getElementById("bookingModal");
         modal.classList.add("show");
@@ -175,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
             <button id="newCustomerBtn">New Customer</button>
         `;
 
-        // ✅ CLOSE BUTTON
         document.getElementById("closeModalBtn").onclick=()=>{
             modal.classList.remove("show");
             modal.classList.add("hidden");
@@ -194,7 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // ===== ORIGINAL MODAL UNTOUCHED =====
     function showBookingModal(day, month, year, editIndex=null){
         const modal = document.getElementById("bookingModal");
         modal.classList.add("show");
@@ -217,7 +214,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const repairs=JSON.parse(localStorage.getItem("repairs"))||[];
 
         content.innerHTML=`
-            <h3>${editIndex!==null?"Edit":"New"} Booking for ${day}/${month+1}/${year}</h3>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h3>${editIndex!==null?"Edit":"New"} Booking for ${day}/${month+1}/${year}</h3>
+                <button id="closeModalBtn">X</button>
+            </div>
             <form id="bookingFormFields">
                 <label>Customer / Contact:</label>
                 <input type="text" id="bookingCustomer" value="${b.customer}" placeholder="Type customer or contact number"><br><br>
@@ -232,6 +232,11 @@ document.addEventListener("DOMContentLoaded", () => {
             </form>
             <div id="autocompleteList" style="border:1px solid #ccc;max-height:150px;overflow:auto;margin-top:2px;"></div>
         `;
+
+        document.getElementById("closeModalBtn").onclick=()=>{
+            modal.classList.remove("show");
+            modal.classList.add("hidden");
+        };
 
         const custInput=document.getElementById("bookingCustomer");
         const vehInput=document.getElementById("bookingVehicle");
