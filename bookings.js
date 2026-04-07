@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         regoInput.type="hidden";
         content.appendChild(regoInput);
 
-        function runSearch(){
+        function runCustomerSearch(){
             const val=custInput.value.toLowerCase().trim();
             autoList.innerHTML="";
             if(!val) return;
@@ -210,9 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const matches=customers.filter(c=>{
                 const fullName = `${c.firstName} ${c.surname}`.toLowerCase();
                 const contact = (c.contact||"").toLowerCase();
-                const regos = c.vehicles?.map(v=>v.rego.toLowerCase()) || [];
-
-                return fullName === val || contact === val || regos.includes(val);
+                return fullName === val || contact === val;
             });
 
             matches.forEach(c=>{
@@ -231,17 +229,42 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
+        function runVehicleSearch(){
+            const val=vehInput.value.toLowerCase().trim();
+            autoList.innerHTML="";
+            if(!val) return;
+
+            const matches=customers.filter(c=>{
+                return c.vehicles?.some(v=>v.rego.toLowerCase() === val);
+            });
+
+            matches.forEach(c=>{
+                const vehicle=c.vehicles?.find(v=>v.rego.toLowerCase()===val);
+                const div=document.createElement("div");
+                div.style.padding="5px";
+                div.style.cursor="pointer";
+                div.textContent=`${c.firstName} ${c.surname} | ${vehicle.rego}`;
+                div.addEventListener("click", ()=>{
+                    custInput.value=`${c.firstName} ${c.surname}`;
+                    vehInput.value=vehicle.make+' '+vehicle.model;
+                    regoInput.value=vehicle.rego;
+                    autoList.innerHTML="";
+                });
+                autoList.appendChild(div);
+            });
+        }
+
         custInput.addEventListener("keydown", e=>{
             if(e.key==="Enter"){
                 e.preventDefault();
-                runSearch();
+                runCustomerSearch();
             }
         });
 
         vehInput.addEventListener("keydown", e=>{
             if(e.key==="Enter"){
                 e.preventDefault();
-                runSearch();
+                runVehicleSearch();
             }
         });
 
