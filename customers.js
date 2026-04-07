@@ -218,4 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
     addCustomerBtn?.addEventListener("click", () => showAddCustomerModal());
 
     window.renderCustomers = renderCustomers;
+
+    // 🔥 THIS WAS MISSING
+    renderCustomers();
 });
