@@ -26,12 +26,20 @@ document.addEventListener("DOMContentLoaded", () => {
             item.appendChild(customerText);
 
             if (c.vehicles && c.vehicles.length > 0) {
-                c.vehicles.forEach((v) => {
-                    const vehicleText = document.createElement("span");
-                    vehicleText.style.marginLeft = "10px";
-                    vehicleText.style.fontSize = "0.9em";
-                    vehicleText.textContent = `Vehicle: ${v.make} ${v.model}, ${v.year}, Rego: ${v.rego}, VIN: ${v.vin}`;
-                    item.appendChild(vehicleText);
+                c.vehicles.forEach((v, vIndex) => {
+                    const row = document.createElement("span");
+                    row.style.marginLeft = "10px";
+                    row.style.fontSize = "0.9em";
+
+                    row.textContent = `Vehicle: ${v.make} ${v.model}, ${v.year}, Rego: ${v.rego}, VIN: ${v.vin}`;
+
+                    const editBtn = document.createElement("button");
+                    editBtn.textContent = "Edit";
+                    editBtn.style.marginLeft = "5px";
+                    editBtn.onclick = () => showAddVehicleModal(index, vIndex);
+
+                    row.appendChild(editBtn);
+                    item.appendChild(row);
                 });
             }
 
@@ -129,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===== VEHICLE MODAL =====
-    function showAddVehicleModal(customerIndex) {
+    function showAddVehicleModal(customerIndex, vehicleIndex = null) {
         const modal = document.getElementById("vehicleModal");
         modal.classList.remove("hidden");
 
@@ -150,24 +158,25 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
+        let vehicleData = { make: "", model: "", year: "", rego: "", vin: "" };
+        if (vehicleIndex !== null) {
+            vehicleData = customers[customerIndex].vehicles[vehicleIndex];
+        }
+
         content.innerHTML = `
-            <h3>Add Vehicle</h3>
+            <h3>${vehicleIndex !== null ? "Edit" : "Add"} Vehicle</h3>
             <form id="vehicleFormFields">
-                <label>Make:</label><input type="text"><br><br>
-                <label>Model:</label><input type="text"><br><br>
-                <label>Year:</label><input type="text"><br><br>
-                <label>Rego:</label><input type="text"><br><br>
-                <label>VIN:</label><input type="text"><br><br>
-                <button type="button" id="saveVehicleBtn">Add Vehicle</button>
+                <label>Make:</label><input type="text" value="${vehicleData.make}"><br><br>
+                <label>Model:</label><input type="text" value="${vehicleData.model}"><br><br>
+                <label>Year:</label><input type="text" value="${vehicleData.year}"><br><br>
+                <label>Rego:</label><input type="text" value="${vehicleData.rego}"><br><br>
+                <label>VIN:</label><input type="text" value="${vehicleData.vin}"><br><br>
+                <button type="button" id="saveVehicleBtn">${vehicleIndex !== null ? "Update" : "Add"} Vehicle</button>
             </form>
         `;
 
-        // 🔥 FIX: scope inputs + lock correct customer
-        const form = document.getElementById("vehicleFormFields");
-        const btn = document.getElementById("saveVehicleBtn");
-
-        btn.onclick = () => {
-            const inputs = form.querySelectorAll("input");
+        document.getElementById("saveVehicleBtn").onclick = () => {
+            const inputs = content.querySelectorAll("input");
 
             const vehicle = {
                 make: inputs[0].value.trim(),
@@ -182,8 +191,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            if (!customers[customerIndex].vehicles) customers[customerIndex].vehicles = [];
-            customers[customerIndex].vehicles.push(vehicle);
+            if (!customers[customerIndex].vehicles) {
+                customers[customerIndex].vehicles = [];
+            }
+
+            if (vehicleIndex !== null) {
+                customers[customerIndex].vehicles[vehicleIndex] = vehicle;
+            } else {
+                customers[customerIndex].vehicles.push(vehicle);
+            }
 
             localStorage.setItem("customers", JSON.stringify(customers));
             modal.classList.add("hidden");
@@ -194,6 +210,5 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===== ADD CUSTOMER BUTTON CLICK =====
     addCustomerBtn?.addEventListener("click", () => showAddCustomerModal());
 
-    // Expose render function globally for apps.js
     window.renderCustomers = renderCustomers;
 });
