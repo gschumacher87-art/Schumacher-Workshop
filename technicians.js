@@ -29,6 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       techniciansList.appendChild(li);
     });
+
+    // ===== ADDED =====
+    window.technicians = technicians;
   }
 
   // ===== SAVE TECHNICIANS =====
