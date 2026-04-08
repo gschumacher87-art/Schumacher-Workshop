@@ -1,54 +1,88 @@
 /*****************************************
- * repairs.js
- * ---------------------------------------
- * Repairs Block - CRUD for repair types
- * Stored in localStorage
+ * repairs.js (TEMPLATES VERSION)
  *****************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ===== LOAD REPAIRS =====
+
   let repairs = JSON.parse(localStorage.getItem("repairs")) || [];
 
-  const repairsList = document.getElementById("repairsList"); // container for list
-  const addRepairBtn = document.getElementById("addRepairBtn"); // button to open add form
+  const repairsList = document.getElementById("repairsList");
+  const addRepairBtn = document.getElementById("addRepairBtn");
 
-  // ===== RENDER REPAIRS =====
+
+  // ===== RENDER =====
   function renderRepairs() {
     repairsList.innerHTML = "";
+
     if (repairs.length === 0) {
-      repairsList.textContent = "No repair types yet.";
+      repairsList.textContent = "No repair templates yet.";
       return;
     }
 
     repairs.forEach((repair, index) => {
+
       const li = document.createElement("li");
+
       li.innerHTML = `
-        <strong>${repair.name}</strong> - Duration: ${repair.duration}h - Cost: $${repair.cost}
+        <strong>${repair.name}</strong>
+        <br>
+        ${repair.checklist?.length ? repair.checklist.map(c => `☑ ${c}`).join("<br>") : "No checklist"}
+        <br>
         <button class="editRepair" data-index="${index}">Edit</button>
         <button class="deleteRepair" data-index="${index}">Delete</button>
       `;
+
       repairsList.appendChild(li);
     });
   }
 
-  // ===== SAVE REPAIRS =====
+
+  // ===== SAVE =====
   function saveRepairs() {
     localStorage.setItem("repairs", JSON.stringify(repairs));
     renderRepairs();
   }
 
-  // ===== ADD OR EDIT REPAIR =====
+
+  // ===== ADD / EDIT TEMPLATE =====
   function addOrEditRepair(index = null) {
-    const name = prompt("Repair Name:", index !== null ? repairs[index].name : "");
+
+    const existing = index !== null ? repairs[index] : null;
+
+    const name = prompt("Service / Repair Name:", existing?.name || "");
     if (!name) return;
 
-    const duration = prompt("Duration in hours:", index !== null ? repairs[index].duration : "");
-    if (!duration || isNaN(duration)) return alert("Invalid duration");
+    // ===== CHECKLIST BUILDER =====
+    let checklist = existing?.checklist ? [...existing.checklist] : [];
 
-    const cost = prompt("Default Cost:", index !== null ? repairs[index].cost : "");
-    if (!cost || isNaN(cost)) return alert("Invalid cost");
+    while (true) {
 
-    const repairObj = { name, duration: parseFloat(duration), cost: parseFloat(cost) };
+      let message = "Checklist items:\n\n";
+
+      checklist.forEach((item, i) => {
+        message += `${i + 1}. ${item}\n`;
+      });
+
+      message += "\nType new item\nOR type number to remove\nOR leave blank to finish";
+
+      const input = prompt(message);
+
+      if (!input) break;
+
+      // remove item
+      if (!isNaN(input)) {
+        const idx = parseInt(input) - 1;
+        if (checklist[idx]) checklist.splice(idx, 1);
+      } else {
+        // add item
+        checklist.push(input);
+      }
+    }
+
+    const repairObj = {
+      name,
+      checklist
+    };
 
     if (index === null) {
       repairs.push(repairObj);
@@ -59,25 +93,33 @@ document.addEventListener("DOMContentLoaded", () => {
     saveRepairs();
   }
 
-  // ===== DELETE REPAIR =====
+
+  // ===== DELETE =====
   function deleteRepair(index) {
-    if (confirm(`Delete repair "${repairs[index].name}"?`)) {
+    if (confirm(`Delete template "${repairs[index].name}"?`)) {
       repairs.splice(index, 1);
       saveRepairs();
     }
   }
 
-  // ===== EVENT LISTENERS =====
+
+  // ===== EVENTS =====
   addRepairBtn.addEventListener("click", () => addOrEditRepair());
 
   repairsList.addEventListener("click", (e) => {
+
     if (e.target.classList.contains("editRepair")) {
       addOrEditRepair(e.target.dataset.index);
-    } else if (e.target.classList.contains("deleteRepair")) {
+    }
+
+    if (e.target.classList.contains("deleteRepair")) {
       deleteRepair(e.target.dataset.index);
     }
+
   });
 
-  // ===== INITIAL RENDER =====
+
+  // ===== INIT =====
   renderRepairs();
+
 });
