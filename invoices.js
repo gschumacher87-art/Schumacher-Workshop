@@ -103,7 +103,112 @@ function getFinishedBookings() {
 }
 
 
-// ===== AUTO RENDER FINISHED JOBS + CLICK TO INVOICE =====
+// ===== OPEN INVOICE MODAL FROM BOOKING =====
+function openInvoiceFromBooking(booking) {
+
+    const modal = document.getElementById("invoiceModal");
+    modal.classList.add("show");
+    modal.classList.remove("hidden");
+
+    let content = document.getElementById("invoiceModalContent");
+
+    if (!content) {
+        content = document.createElement("div");
+        content.id = "invoiceModalContent";
+        Object.assign(content.style, {
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "5px",
+            minWidth: "300px"
+        });
+        modal.appendChild(content);
+
+        modal.addEventListener("click", e => {
+            if (e.target === modal) modal.classList.remove("show");
+        });
+    }
+
+    let labourMs = 0;
+
+    if (booking.sessions?.length) {
+        booking.sessions.forEach(s => {
+            if (s.start && s.end) {
+                labourMs += (new Date(s.end) - new Date(s.start));
+            }
+        });
+    }
+
+    let labourHours = labourMs / (1000 * 60 * 60);
+    let rate = 100;
+
+    content.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Invoice</h3>
+            <button id="closeInvoiceModal">X</button>
+        </div>
+
+        <p><strong>Customer:</strong> ${booking.customer}</p>
+        <p><strong>Vehicle:</strong> ${booking.vehicle}</p>
+        <p><strong>Repair:</strong> ${booking.repair}</p>
+
+        <label>Hours:</label>
+        <input type="number" id="invoiceHours" value="${labourHours.toFixed(2)}"><br><br>
+
+        <label>Hourly Rate:</label>
+        <input type="number" id="invoiceRate" value="${rate}"><br><br>
+
+        <h4 id="invoiceTotal">Total: $${(labourHours * rate).toFixed(2)}</h4>
+
+        <button id="saveInvoiceBtn">Save Invoice</button>
+    `;
+
+    document.getElementById("closeInvoiceModal").onclick = () => {
+        modal.classList.remove("show");
+        modal.classList.add("hidden");
+    };
+
+    const hoursInput = document.getElementById("invoiceHours");
+    const rateInput = document.getElementById("invoiceRate");
+    const totalEl = document.getElementById("invoiceTotal");
+
+    function updateTotal() {
+        const h = parseFloat(hoursInput.value) || 0;
+        const r = parseFloat(rateInput.value) || 0;
+        totalEl.textContent = `Total: $${(h * r).toFixed(2)}`;
+    }
+
+    hoursInput.addEventListener("input", updateTotal);
+    rateInput.addEventListener("input", updateTotal);
+
+    document.getElementById("saveInvoiceBtn").onclick = () => {
+
+        const hours = parseFloat(hoursInput.value) || 0;
+        const rate = parseFloat(rateInput.value) || 0;
+
+        const invoice = {
+            customer: booking.customer,
+            vehicle: booking.vehicle,
+            rego: booking.rego,
+            repair: booking.repair,
+            labourHours: hours,
+            labourCost: hours * rate,
+            total: hours * rate,
+            date: booking.finished,
+            source: "booking"
+        };
+
+        invoices.push(invoice);
+        localStorage.setItem("invoices", JSON.stringify(invoices));
+
+        alert("Invoice saved");
+
+        modal.classList.remove("show");
+        modal.classList.add("hidden");
+    };
+}
+
+
+// ===== AUTO RENDER FINISHED JOBS =====
 document.addEventListener("DOMContentLoaded", () => {
 
     const container = document.getElementById("finishedJobsList");
@@ -132,15 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
         text.textContent = `${job.customer} - ${job.vehicle} - ${job.repair}`;
 
         const btn = document.createElement("button");
-        btn.textContent = "Create Invoice";
+        btn.textContent = "Open Invoice";
 
         btn.onclick = () => {
-            const invoice = addInvoiceFromBooking(job);
-            if (invoice) {
-                alert("Invoice created");
-            } else {
-                alert("Invoice failed");
-            }
+            openInvoiceFromBooking(job);
         };
 
         row.appendChild(text);
