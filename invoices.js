@@ -81,3 +81,23 @@ function getInvoicesByCustomer(email) {
 function getInvoicesByVehicle(rego) {
     return invoices.filter(inv => inv.rego === rego);
 }
+
+
+// ===== GET FINISHED BOOKINGS (FOR INVOICE SCREEN) =====
+function getFinishedBookings() {
+    const bookings = JSON.parse(localStorage.getItem("bookings")) || {};
+    let finished = [];
+
+    Object.keys(bookings).forEach(dateKey => {
+        bookings[dateKey].forEach(b => {
+            if (b.finished) {
+                finished.push({
+                    ...b,
+                    dateKey: dateKey
+                });
+            }
+        });
+    });
+
+    return finished;
+}
