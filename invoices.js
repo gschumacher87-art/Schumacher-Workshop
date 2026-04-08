@@ -22,6 +22,51 @@ function addInvoice(customerEmail, vehicleRego, quotesIncluded) {
     return invoice;
 }
 
+
+// ===== ADD INVOICE FROM COMPLETED BOOKING (YOUR STRUCTURE) =====
+function addInvoiceFromBooking(booking) {
+
+    // MUST be finished (your system)
+    if (!booking || !booking.finished) return null;
+
+    // ===== CALCULATE LABOUR FROM SESSIONS =====
+    let labourMs = 0;
+
+    if (booking.sessions?.length) {
+        booking.sessions.forEach(s => {
+            if (s.start && s.end) {
+                labourMs += (new Date(s.end) - new Date(s.start));
+            }
+        });
+    }
+
+    // Convert ms → hours
+    let labourHours = labourMs / (1000 * 60 * 60);
+
+    // Simple hourly rate (you can change later)
+    let HOURLY_RATE = 100;
+
+    let labourCost = labourHours * HOURLY_RATE;
+
+    let invoice = {
+        customer: booking.customer,
+        vehicle: booking.vehicle,
+        rego: booking.rego,
+        repair: booking.repair,
+        sessions: booking.sessions || [],
+        labourHours: labourHours,
+        labourCost: labourCost,
+        total: labourCost,
+        date: new Date().toISOString(),
+        source: "booking"
+    };
+
+    invoices.push(invoice);
+    localStorage.setItem("invoices", JSON.stringify(invoices));
+    return invoice;
+}
+
+
 // ===== GET ALL INVOICES =====
 function getAllInvoices() {
     return invoices;
@@ -29,10 +74,10 @@ function getAllInvoices() {
 
 // ===== GET INVOICES BY CUSTOMER =====
 function getInvoicesByCustomer(email) {
-    return invoices.filter(inv => inv.customerEmail === email);
+    return invoices.filter(inv => inv.customer === email);
 }
 
 // ===== GET INVOICES BY VEHICLE =====
 function getInvoicesByVehicle(rego) {
-    return invoices.filter(inv => inv.vehicleRego === rego);
+    return invoices.filter(inv => inv.rego === rego);
 }
