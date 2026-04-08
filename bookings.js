@@ -89,25 +89,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const text = document.createElement("span");
                 text.textContent = `${b.customer} - ${b.vehicle} - ${b.repair}`;
-                if (b.sessions?.length) {
-                    b.sessions.forEach((s, i) => {
-                        const start = new Date(s.start).toLocaleTimeString();
-                        const end = s.end ? new Date(s.end).toLocaleTimeString() : "-";
-                        text.textContent += ` | Session ${i+1}: ${start} - ${end}`;
-                    });
-                }
-                if (b.finished) text.textContent += ` | Finished: ${new Date(b.finished).toLocaleTimeString()}`;
                 item.appendChild(text);
 
                 const btnContainer = document.createElement("span");
 
-                ["Edit","Delete","Clock On","Clock Off","Finish"].forEach(a=>{
+                ["Edit","Delete","Start Job"].forEach(a=>{
                     const btn=document.createElement("button");
                     btn.textContent=a;
                     btnContainer.appendChild(btn);
                 });
 
-                const [editBtn, deleteBtn, clockOnBtn, clockOffBtn, finishBtn] = btnContainer.children;
+                const [editBtn, deleteBtn, startJobBtn] = btnContainer.children;
 
                 editBtn.addEventListener("click", ()=>showBookingModal(day, month, year, idx));
 
@@ -119,30 +111,38 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-                clockOnBtn.disabled = !!b.finished;
-                clockOnBtn.addEventListener("click", ()=>{
-                    if(!b.sessions) b.sessions=[];
-                    if(!b.sessions.length || b.sessions[b.sessions.length-1].end){
-                        b.sessions.push({start:new Date().toISOString(),end:null});
-                        localStorage.setItem("bookings", JSON.stringify(bookings));
-                        openBooking(day, month, year);
-                    }
-                });
+                // ===== NEW: START JOB =====
+                startJobBtn.addEventListener("click", ()=>{
 
-                clockOffBtn.disabled = !!b.finished || !b.sessions || b.sessions[b.sessions.length-1]?.end;
-                clockOffBtn.addEventListener("click", ()=>{
-                    if(b.sessions?.length && !b.sessions[b.sessions.length-1].end){
-                        b.sessions[b.sessions.length-1].end=new Date().toISOString();
-                        localStorage.setItem("bookings", JSON.stringify(bookings));
-                        openBooking(day, month, year);
-                    }
-                });
+                    let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
 
-                finishBtn.disabled = !!b.finished || !b.sessions || b.sessions.some(s=>!s.end);
-                finishBtn.addEventListener("click", ()=>{
-                    b.finished=new Date().toISOString();
-                    localStorage.setItem("bookings", JSON.stringify(bookings));
-                    openBooking(day, month, year);
+                    const technicians = JSON.parse(localStorage.getItem("technicians")) || [];
+                    if(!technicians.length){
+                        alert("No technicians available");
+                        return;
+                    }
+
+                    const techNames = technicians.map(t=>t.name).join(", ");
+                    const selected = prompt(`Select Technician:\n${techNames}`);
+
+                    if(!selected) return;
+
+                    const job = {
+                        id: Date.now(),
+                        customer: b.customer,
+                        vehicle: b.vehicle,
+                        repair: b.repair,
+                        technician: selected,
+                        sessions: [],
+                        status: "active",
+                        createdAt: new Date().toISOString()
+                    };
+
+                    jobs.push(job);
+                    localStorage.setItem("jobs", JSON.stringify(jobs));
+
+                    alert("Job started");
+
                 });
 
                 item.appendChild(btnContainer);
@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const key=`${day}-${month}-${year}`;
-        let b={customer:"",vehicle:"",rego:"",repair:"",sessions:[],finished:null};
+        let b={customer:"",vehicle:"",rego:"",repair:""};
         if(editIndex!==null) b=bookings[key][editIndex];
 
         const customers=JSON.parse(localStorage.getItem("customers"))||[];
@@ -297,17 +297,15 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <form id="bookingFormFields">
                 <label>Customer / Contact:</label>
-                <input type="text" id="bookingCustomer" value="${b.customer}" placeholder="Type customer or contact number"><br><br>
-                <label>Vehicle / Rego:</label>
-                <input type="text" id="bookingVehicle" value="${b.vehicle}" placeholder="Type vehicle or rego"><br><br>
-                <label>Repair Type:</label>
+                <input type="text" id="bookingCustomer" value="${b.customer}"><br><br>
+                <label>Vehicle:</label>
+                <input type="text" id="bookingVehicle" value="${b.vehicle}"><br><br>
+                <label>Repair:</label>
                 <select id="bookingRepair">
-                    <option value="">Select repair</option>
-                    ${repairs.map(r=>`<option value="${r.type}" ${b.repair===r.type?'selected':''}>${r.type}</option>`).join('')}
+                    ${repairs.map(r=>`<option value="${r.name}" ${b.repair===r.name?'selected':''}>${r.name}</option>`).join('')}
                 </select><br><br>
                 <button type="button" id="saveBookingBtn">Save Booking</button>
             </form>
-            <div id="autocompleteList" style="border:1px solid #ccc;max-height:150px;overflow:auto;margin-top:2px;"></div>
         `;
 
         document.getElementById("closeModalBtn").onclick=()=>{
@@ -315,94 +313,23 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.classList.add("hidden");
         };
 
-        const custInput=document.getElementById("bookingCustomer");
-        const vehInput=document.getElementById("bookingVehicle");
-        const autoList=document.getElementById("autocompleteList");
-        const regoInput=document.createElement("input");
-        regoInput.type="hidden";
-        content.appendChild(regoInput);
-
-        function runCustomerSearch(){
-            const val=custInput.value.toLowerCase().trim();
-            autoList.innerHTML="";
-            if(!val) return;
-
-            const matches=customers.filter(c=>{
-                const fullName = `${c.firstName} ${c.surname}`.toLowerCase();
-                const contact = (c.contact||"").toLowerCase();
-                return fullName === val || contact === val;
-            });
-
-            matches.forEach(c=>{
-                const div=document.createElement("div");
-                div.style.padding="5px";
-                div.style.cursor="pointer";
-                div.textContent=`${c.firstName} ${c.surname} | ${c.contact || ''}`;
-                div.addEventListener("click", ()=>{
-                    custInput.value=`${c.firstName} ${c.surname}`;
-                    const vehicle=c.vehicles?.[0];
-                    vehInput.value=vehicle? vehicle.make+' '+vehicle.model : '';
-                    regoInput.value=vehicle? vehicle.rego : '';
-                    autoList.innerHTML="";
-                });
-                autoList.appendChild(div);
-            });
-        }
-
-        function runVehicleSearch(){
-            const val=vehInput.value.toLowerCase().trim();
-            autoList.innerHTML="";
-            if(!val) return;
-
-            const matches=customers.filter(c=>{
-                return c.vehicles?.some(v=>v.rego.toLowerCase() === val);
-            });
-
-            matches.forEach(c=>{
-                const vehicle=c.vehicles?.find(v=>v.rego.toLowerCase()===val);
-                const div=document.createElement("div");
-                div.style.padding="5px";
-                div.style.cursor="pointer";
-                div.textContent=`${c.firstName} ${c.surname} | ${vehicle.rego}`;
-                div.addEventListener("click", ()=>{
-                    custInput.value=`${c.firstName} ${c.surname}`;
-                    vehInput.value=vehicle.make+' '+vehicle.model;
-                    regoInput.value=vehicle.rego;
-                    autoList.innerHTML="";
-                });
-                autoList.appendChild(div);
-            });
-        }
-
-        custInput.addEventListener("keydown", e=>{
-            if(e.key==="Enter"){
-                e.preventDefault();
-                runCustomerSearch();
-            }
-        });
-
-        vehInput.addEventListener("keydown", e=>{
-            if(e.key==="Enter"){
-                e.preventDefault();
-                runVehicleSearch();
-            }
-        });
-
         document.getElementById("saveBookingBtn").onclick=()=>{
             const bookingData={
-                customer:custInput.value,
-                vehicle:vehInput.value,
-                rego:regoInput.value,
-                repair:document.getElementById("bookingRepair").value,
-                sessions:b.sessions||[],
-                finished:b.finished||null
+                customer:document.getElementById("bookingCustomer").value,
+                vehicle:document.getElementById("bookingVehicle").value,
+                repair:document.getElementById("bookingRepair").value
             };
+
             if(!bookings[key]) bookings[key]=[];
+
             if(editIndex!==null) bookings[key][editIndex]=bookingData;
             else bookings[key].push(bookingData);
+
             localStorage.setItem("bookings", JSON.stringify(bookings));
+
             modal.classList.remove("show");
             modal.classList.add("hidden");
+
             openBooking(day, month, year);
         };
     }
