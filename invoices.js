@@ -1,119 +1,37 @@
 // ===== invoices.js =====
 
-// Load existing invoices or start empty
 let invoices = JSON.parse(localStorage.getItem("invoices")) || [];
 
 
-// ===== ADD INVOICE =====
-function addInvoice(customerEmail, vehicleRego, quotesIncluded) {
-    let total = quotesIncluded.reduce((sum, q) => sum + (q.repairCost || 0), 0);
-
-    let invoice = {
-        customerEmail,
-        vehicleRego,
-        quotesIncluded,
-        total,
-        date: new Date().toISOString()
-    };
-
-    invoices.push(invoice);
-    localStorage.setItem("invoices", JSON.stringify(invoices));
-    return invoice;
-}
-
-
-// ===== ADD INVOICE FROM COMPLETED BOOKING =====
-function addInvoiceFromBooking(booking) {
-    if (!booking || !booking.finished) return null;
-
-    let labourMs = 0;
-
-    if (Array.isArray(booking.sessions)) {
-        booking.sessions.forEach(s => {
-            if (s.start && s.end) {
-                labourMs += (new Date(s.end) - new Date(s.start));
-            }
-        });
-    }
-
-    let labourHours = labourMs / (1000 * 60 * 60);
-    let HOURLY_RATE = 100;
-    let labourCost = labourHours * HOURLY_RATE;
-
-    let invoice = {
-        customer: booking.customer,
-        vehicle: booking.vehicle,
-        rego: booking.rego,
-        repair: booking.repair,
-        sessions: booking.sessions || [],
-        labourHours,
-        labourCost,
-        total: labourCost,
-        date: new Date().toISOString(),
-        source: "booking"
-    };
-
-    invoices.push(invoice);
-    localStorage.setItem("invoices", JSON.stringify(invoices));
-    return invoice;
-}
-
-
-// ===== GET ALL INVOICES =====
-function getAllInvoices() {
-    return invoices;
-}
-
-function getInvoicesByCustomer(email) {
-    return invoices.filter(inv => inv.customer === email);
-}
-
-function getInvoicesByVehicle(rego) {
-    return invoices.filter(inv => inv.rego === rego);
-}
-
-
-// ===== FIXED: GET FINISHED BOOKINGS =====
+// ===== GET FINISHED BOOKINGS =====
 function getFinishedBookings() {
-    const raw = localStorage.getItem("bookings");
-    if (!raw) return [];
-
-    let bookings;
-    try {
-        bookings = JSON.parse(raw);
-    } catch {
-        return [];
-    }
-
+    const bookings = JSON.parse(localStorage.getItem("bookings")) || {};
     let finished = [];
 
     Object.keys(bookings).forEach(dateKey => {
+        const day = bookings[dateKey];
+        if (!Array.isArray(day)) return;
 
-        const dayBookings = bookings[dateKey];
-
-        if (!Array.isArray(dayBookings)) return;
-
-        dayBookings.forEach(b => {
-
-            // 🔴 STRICT CHECK
-            if (b && b.finished && b.finished !== null) {
-                finished.push({
-                    ...b,
-                    dateKey
-                });
+        day.forEach(b => {
+            if (b && b.finished) {
+                finished.push({ ...b, dateKey });
             }
-
         });
     });
-
-    console.log("FINISHED JOBS FOUND:", finished);
 
     return finished;
 }
 
 
-// ===== OPEN INVOICE MODAL =====
-function openInvoiceFromBooking(booking) {
+// ===== SAVE INVOICE =====
+function saveInvoice(data) {
+    invoices.push(data);
+    localStorage.setItem("invoices", JSON.stringify(invoices));
+}
+
+
+// ===== OPEN FULL INVOICE FORM =====
+function openInvoiceForm(job) {
 
     const modal = document.getElementById("invoiceModal");
     modal.classList.add("show");
@@ -127,75 +45,99 @@ function openInvoiceFromBooking(booking) {
         Object.assign(content.style, {
             background: "#fff",
             padding: "20px",
-            borderRadius: "5px",
-            minWidth: "300px"
+            borderRadius: "6px",
+            minWidth: "320px",
+            maxWidth: "90vw"
         });
         modal.appendChild(content);
-
-        modal.addEventListener("click", e => {
-            if (e.target === modal) modal.classList.remove("show");
-        });
     }
 
+    // ===== CALCULATE DEFAULT LABOUR =====
     let labourMs = 0;
 
-    if (Array.isArray(booking.sessions)) {
-        booking.sessions.forEach(s => {
+    if (Array.isArray(job.sessions)) {
+        job.sessions.forEach(s => {
             if (s.start && s.end) {
                 labourMs += (new Date(s.end) - new Date(s.start));
             }
         });
     }
 
-    let labourHours = labourMs / (1000 * 60 * 60);
+    let hours = labourMs / (1000 * 60 * 60);
     let rate = 100;
 
     content.innerHTML = `
-        <h3>Invoice</h3>
-        <p>${booking.customer}</p>
-        <p>${booking.vehicle}</p>
-        <p>${booking.repair}</p>
+        <div style="display:flex;justify-content:space-between;">
+            <h3>Create Invoice</h3>
+            <button id="closeInvoice">X</button>
+        </div>
 
-        <input id="h" type="number" value="${labourHours.toFixed(2)}"><br>
-        <input id="r" type="number" value="${rate}"><br>
-        <h4 id="t">$${(labourHours * rate).toFixed(2)}</h4>
+        <hr>
 
-        <button id="save">Save</button>
+        <label>Customer</label><br>
+        <input id="invCustomer" value="${job.customer}"><br><br>
+
+        <label>Vehicle</label><br>
+        <input id="invVehicle" value="${job.vehicle}"><br><br>
+
+        <label>Repair</label><br>
+        <input id="invRepair" value="${job.repair}"><br><br>
+
+        <h4>Labour</h4>
+
+        <label>Hours</label><br>
+        <input type="number" id="invHours" value="${hours.toFixed(2)}"><br><br>
+
+        <label>Hourly Rate</label><br>
+        <input type="number" id="invRate" value="${rate}"><br><br>
+
+        <h4>Parts (manual for now)</h4>
+        <input id="invParts" placeholder="e.g. Brake pads - 120"><br><br>
+
+        <h3 id="invTotal">Total: $0.00</h3>
+
+        <button id="saveInvoiceBtn">Save Invoice</button>
     `;
 
-    const h = document.getElementById("h");
-    const r = document.getElementById("r");
-    const t = document.getElementById("t");
+    const h = document.getElementById("invHours");
+    const r = document.getElementById("invRate");
+    const totalEl = document.getElementById("invTotal");
 
-    function update() {
-        const hours = parseFloat(h.value) || 0;
-        const rate = parseFloat(r.value) || 0;
-        t.textContent = "$" + (hours * rate).toFixed(2);
+    function updateTotal() {
+        const hoursVal = parseFloat(h.value) || 0;
+        const rateVal = parseFloat(r.value) || 0;
+        totalEl.textContent = "Total: $" + (hoursVal * rateVal).toFixed(2);
     }
 
-    h.oninput = update;
-    r.oninput = update;
+    h.oninput = updateTotal;
+    r.oninput = updateTotal;
+    updateTotal();
 
-    document.getElementById("save").onclick = () => {
-        const hours = parseFloat(h.value) || 0;
-        const rate = parseFloat(r.value) || 0;
-
-        invoices.push({
-            customer: booking.customer,
-            vehicle: booking.vehicle,
-            rego: booking.rego,
-            repair: booking.repair,
-            labourHours: hours,
-            labourCost: hours * rate,
-            total: hours * rate,
-            date: booking.finished,
-            source: "booking"
-        });
-
-        localStorage.setItem("invoices", JSON.stringify(invoices));
-
-        alert("Saved");
+    document.getElementById("closeInvoice").onclick = () => {
         modal.classList.remove("show");
+        modal.classList.add("hidden");
+    };
+
+    document.getElementById("saveInvoiceBtn").onclick = () => {
+
+        const invoice = {
+            customer: document.getElementById("invCustomer").value,
+            vehicle: document.getElementById("invVehicle").value,
+            repair: document.getElementById("invRepair").value,
+            labourHours: parseFloat(h.value) || 0,
+            rate: parseFloat(r.value) || 0,
+            total: (parseFloat(h.value) || 0) * (parseFloat(r.value) || 0),
+            parts: document.getElementById("invParts").value,
+            date: new Date().toISOString(),
+            source: "booking"
+        };
+
+        saveInvoice(invoice);
+
+        alert("Invoice saved");
+
+        modal.classList.remove("show");
+        modal.classList.add("hidden");
     };
 }
 
@@ -219,12 +161,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const row = document.createElement("div");
         row.style.border = "1px solid #ccc";
-        row.style.padding = "6px";
+        row.style.padding = "8px";
         row.style.marginTop = "6px";
+        row.style.cursor = "pointer";
 
         row.textContent = `${job.customer} - ${job.vehicle} - ${job.repair}`;
 
-        row.onclick = () => openInvoiceFromBooking(job);
+        row.onclick = () => openInvoiceForm(job);
 
         container.appendChild(row);
     });
