@@ -101,15 +101,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const btnContainer = document.createElement("span");
 
-                // ✅ ADDED "Invoice"
-                ["Edit","Delete","Clock On","Clock Off","Finish","Invoice"].forEach(a=>{
+                ["Edit","Delete","Clock On","Clock Off","Finish"].forEach(a=>{
                     const btn=document.createElement("button");
                     btn.textContent=a;
                     btnContainer.appendChild(btn);
                 });
 
-                // ✅ ADDED invoiceBtn
-                const [editBtn, deleteBtn, clockOnBtn, clockOffBtn, finishBtn, invoiceBtn] = btnContainer.children;
+                const [editBtn, deleteBtn, clockOnBtn, clockOffBtn, finishBtn] = btnContainer.children;
 
                 editBtn.addEventListener("click", ()=>showBookingModal(day, month, year, idx));
 
@@ -145,21 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     b.finished=new Date().toISOString();
                     localStorage.setItem("bookings", JSON.stringify(bookings));
                     openBooking(day, month, year);
-                });
-
-                // ===== NEW: INVOICE BUTTON =====
-                invoiceBtn.disabled = !b.finished;
-
-                invoiceBtn.addEventListener("click", ()=>{
-                    if(!b.finished) return;
-
-                    const invoice = addInvoiceFromBooking(b);
-
-                    if(invoice){
-                        alert("Invoice created");
-                    } else {
-                        alert("Invoice failed");
-                    }
                 });
 
                 item.appendChild(btnContainer);
