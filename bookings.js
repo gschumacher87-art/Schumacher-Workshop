@@ -100,13 +100,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 item.appendChild(text);
 
                 const btnContainer = document.createElement("span");
-                ["Edit","Delete","Clock On","Clock Off","Finish"].forEach(a=>{
+
+                // ✅ ADDED "Invoice"
+                ["Edit","Delete","Clock On","Clock Off","Finish","Invoice"].forEach(a=>{
                     const btn=document.createElement("button");
                     btn.textContent=a;
                     btnContainer.appendChild(btn);
                 });
 
-                const [editBtn, deleteBtn, clockOnBtn, clockOffBtn, finishBtn] = btnContainer.children;
+                // ✅ ADDED invoiceBtn
+                const [editBtn, deleteBtn, clockOnBtn, clockOffBtn, finishBtn, invoiceBtn] = btnContainer.children;
 
                 editBtn.addEventListener("click", ()=>showBookingModal(day, month, year, idx));
 
@@ -144,6 +147,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     openBooking(day, month, year);
                 });
 
+                // ===== NEW: INVOICE BUTTON =====
+                invoiceBtn.disabled = !b.finished;
+
+                invoiceBtn.addEventListener("click", ()=>{
+                    if(!b.finished) return;
+
+                    const invoice = addInvoiceFromBooking(b);
+
+                    if(invoice){
+                        alert("Invoice created");
+                    } else {
+                        alert("Invoice failed");
+                    }
+                });
+
                 item.appendChild(btnContainer);
                 list.appendChild(item);
             });
@@ -179,7 +197,6 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.classList.add("hidden");
         };
 
-        // ✅ UPDATED ONLY THIS BLOCK
         document.getElementById("existingCustomerBtn").onclick=()=>{
             const customers = JSON.parse(localStorage.getItem("customers")) || [];
 
