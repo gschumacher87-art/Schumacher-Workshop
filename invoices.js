@@ -4,19 +4,16 @@ let invoices = JSON.parse(localStorage.getItem("invoices")) || [];
 
 
 // ===== GET FINISHED BOOKINGS =====
+// ❗ CHANGED SOURCE: now pulls from jobs instead of bookings
 function getFinishedBookings() {
-    const bookings = JSON.parse(localStorage.getItem("bookings")) || {};
+
+    const jobs = JSON.parse(localStorage.getItem("jobs")) || [];
     let finished = [];
 
-    Object.keys(bookings).forEach(dateKey => {
-        const day = bookings[dateKey];
-        if (!Array.isArray(day)) return;
-
-        day.forEach(b => {
-            if (b && b.finished) {
-                finished.push({ ...b, dateKey });
-            }
-        });
+    jobs.forEach(j => {
+        if (j && j.status === "finished") {
+            finished.push(j);
+        }
     });
 
     return finished;
@@ -30,7 +27,7 @@ function saveInvoice(data) {
 }
 
 
-// ===== OPEN INVOICE FORM =====
+// ===== OPEN FULL INVOICE FORM =====
 function openInvoiceForm(job) {
 
     const modal = document.getElementById("invoiceModal");
@@ -47,16 +44,12 @@ function openInvoiceForm(job) {
             padding: "20px",
             borderRadius: "6px",
             minWidth: "320px",
-            maxWidth: "95vw"
+            maxWidth: "90vw"
         });
         modal.appendChild(content);
     }
 
-    // ===== LOAD PARTS =====
-    const partsLibrary = JSON.parse(localStorage.getItem("parts")) || [];
-    let selectedParts = [];
-
-    // ===== CALCULATE LABOUR =====
+    // ===== CALCULATE DEFAULT LABOUR =====
     let labourMs = 0;
 
     if (Array.isArray(job.sessions)) {
@@ -95,20 +88,8 @@ function openInvoiceForm(job) {
         <label>Hourly Rate</label><br>
         <input type="number" id="invRate" value="${rate}"><br><br>
 
-        <h4>Parts</h4>
-
-        <select id="partsSelect">
-            <option value="">Select part</option>
-            ${partsLibrary.map((p, i) => `
-                <option value="${i}">
-                    ${p.partNumber} - ${p.description} ($${p.price})
-                </option>
-            `).join("")}
-        </select>
-
-        <button id="addPartBtn">Add Part</button>
-
-        <div id="partsList"></div>
+        <h4>Parts (manual for now)</h4>
+        <input id="invParts" placeholder="e.g. Brake pads - 120"><br><br>
 
         <h3 id="invTotal">Total: $0.00</h3>
 
@@ -118,76 +99,16 @@ function openInvoiceForm(job) {
     const h = document.getElementById("invHours");
     const r = document.getElementById("invRate");
     const totalEl = document.getElementById("invTotal");
-    const partsListEl = document.getElementById("partsList");
 
-    function renderParts() {
-        partsListEl.innerHTML = "";
-
-        selectedParts.forEach((p, index) => {
-            const row = document.createElement("div");
-            row.style.marginTop = "5px";
-
-            row.innerHTML = `
-                ${p.partNumber} - ${p.description} ($${p.price})
-                x <input type="number" value="${p.qty}" data-index="${index}" class="qtyInput" style="width:50px;">
-                = $${(p.price * p.qty).toFixed(2)}
-                <button data-index="${index}" class="removePart">X</button>
-            `;
-
-            partsListEl.appendChild(row);
-        });
+    function updateTotal() {
+        const hoursVal = parseFloat(h.value) || 0;
+        const rateVal = parseFloat(r.value) || 0;
+        totalEl.textContent = "Total: $" + (hoursVal * rateVal).toFixed(2);
     }
 
-    function calculateTotal() {
-        const labour = (parseFloat(h.value) || 0) * (parseFloat(r.value) || 0);
-
-        const partsTotal = selectedParts.reduce((sum, p) => {
-            return sum + (p.price * p.qty);
-        }, 0);
-
-        totalEl.textContent = "Total: $" + (labour + partsTotal).toFixed(2);
-    }
-
-    h.oninput = calculateTotal;
-    r.oninput = calculateTotal;
-
-    document.getElementById("addPartBtn").onclick = () => {
-        const select = document.getElementById("partsSelect");
-        const index = select.value;
-
-        if (index === "") return;
-
-        const part = partsLibrary[index];
-
-        selectedParts.push({
-            partNumber: part.partNumber,
-            description: part.description,
-            price: part.price,
-            qty: 1
-        });
-
-        renderParts();
-        calculateTotal();
-    };
-
-    partsListEl.addEventListener("input", (e) => {
-        if (e.target.classList.contains("qtyInput")) {
-            const i = e.target.dataset.index;
-            selectedParts[i].qty = parseInt(e.target.value) || 1;
-            renderParts();
-            calculateTotal();
-        }
-    });
-
-    partsListEl.addEventListener("click", (e) => {
-        if (e.target.classList.contains("removePart")) {
-            selectedParts.splice(e.target.dataset.index, 1);
-            renderParts();
-            calculateTotal();
-        }
-    });
-
-    calculateTotal();
+    h.oninput = updateTotal;
+    r.oninput = updateTotal;
+    updateTotal();
 
     document.getElementById("closeInvoice").onclick = () => {
         modal.classList.remove("show");
@@ -196,23 +117,16 @@ function openInvoiceForm(job) {
 
     document.getElementById("saveInvoiceBtn").onclick = () => {
 
-        const labourHours = parseFloat(h.value) || 0;
-        const labourRate = parseFloat(r.value) || 0;
-
-        const partsTotal = selectedParts.reduce((sum, p) => sum + (p.price * p.qty), 0);
-
         const invoice = {
             customer: document.getElementById("invCustomer").value,
             vehicle: document.getElementById("invVehicle").value,
             repair: document.getElementById("invRepair").value,
-            labourHours,
-            rate: labourRate,
-            labourTotal: labourHours * labourRate,
-            parts: selectedParts,
-            partsTotal,
-            total: (labourHours * labourRate) + partsTotal,
+            labourHours: parseFloat(h.value) || 0,
+            rate: parseFloat(r.value) || 0,
+            total: (parseFloat(h.value) || 0) * (parseFloat(r.value) || 0),
+            parts: document.getElementById("invParts").value,
             date: new Date().toISOString(),
-            source: "booking"
+            source: "job"
         };
 
         saveInvoice(invoice);
