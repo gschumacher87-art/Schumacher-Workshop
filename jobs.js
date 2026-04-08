@@ -2,10 +2,15 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+    let todayJobs = JSON.parse(localStorage.getItem("todayJobs")) || [];
+    let technicians = JSON.parse(localStorage.getItem("technicians")) || [];
 
-    const container = document.getElementById("invoicesList"); // reuse invoices section
+    // ===== CHANGED CONTAINERS =====
+    const todayContainer = document.getElementById("jobsTodayList");
+    const activeContainer = document.getElementById("jobsActiveList");
+    const techContainer = document.getElementById("availableTechs");
 
-    if (!container) return;
+    if (!todayContainer || !activeContainer || !techContainer) return;
 
 
     function saveJobs() {
@@ -13,19 +18,91 @@ document.addEventListener("DOMContentLoaded", () => {
         renderJobs();
     }
 
+    function saveToday() {
+        localStorage.setItem("todayJobs", JSON.stringify(todayJobs));
+        renderJobs();
+    }
 
     function getRepairTemplate(name) {
         const repairs = JSON.parse(localStorage.getItem("repairs")) || [];
         return repairs.find(r => r.name === name);
     }
 
+    // ===== BUSY CHECK =====
+    function isBusy(name) {
+        return jobs.some(j =>
+            j.technician === name &&
+            j.sessions?.some(s => !s.end)
+        );
+    }
+
 
     function renderJobs() {
 
-        container.innerHTML = "<h3>Active Jobs</h3>";
+        // ===== AVAILABLE TECHS =====
+        techContainer.innerHTML = "";
+
+        technicians.forEach(t => {
+            if (!isBusy(t.name)) {
+                const div = document.createElement("div");
+                div.textContent = t.name;
+                div.style.cursor = "pointer";
+                techContainer.appendChild(div);
+            }
+        });
+
+
+        // ===== TODAY JOBS (UNASSIGNED) =====
+        todayContainer.innerHTML = "";
+
+        if (todayJobs.length === 0) {
+            todayContainer.textContent = "No arrived jobs.";
+        }
+
+        todayJobs.forEach((job, index) => {
+
+            const row = document.createElement("div");
+
+            Object.assign(row.style, {
+                border: "1px solid #ccc",
+                padding: "10px",
+                marginTop: "8px",
+                cursor: "pointer"
+            });
+
+            row.textContent = `${job.customer} - ${job.vehicle} - ${job.repair}`;
+
+            // CLICK JOB → THEN CLICK TECH
+            row.onclick = () => {
+
+                techContainer.querySelectorAll("div").forEach(tDiv => {
+
+                    tDiv.onclick = () => {
+
+                        jobs.push({
+                            ...job,
+                            technician: tDiv.textContent,
+                            sessions: [],
+                            status: "active"
+                        });
+
+                        todayJobs.splice(index, 1);
+
+                        saveJobs();
+                        saveToday();
+                    };
+                });
+            };
+
+            todayContainer.appendChild(row);
+        });
+
+
+        // ===== ACTIVE JOBS =====
+        activeContainer.innerHTML = "<h3>Active Jobs</h3>";
 
         if (jobs.length === 0) {
-            container.innerHTML += "No jobs yet.";
+            activeContainer.innerHTML += "No jobs yet.";
             return;
         }
 
@@ -39,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 marginTop: "8px"
             });
 
-            // ===== HEADER =====
             const title = document.createElement("div");
             title.textContent = `${job.customer} - ${job.vehicle} - ${job.repair}`;
             row.appendChild(title);
@@ -95,8 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const finish = document.createElement("button");
             finish.textContent = "Finish";
 
-
-            // CLOCK ON
             clockOn.onclick = () => {
                 if (!job.sessions) job.sessions = [];
 
@@ -109,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             };
 
-            // CLOCK OFF
             clockOff.onclick = () => {
                 if (job.sessions?.length && !job.sessions[job.sessions.length - 1].end) {
                     job.sessions[job.sessions.length - 1].end = new Date().toISOString();
@@ -117,7 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             };
 
-            // FINISH
             finish.onclick = () => {
                 job.status = "finished";
                 job.finishedAt = new Date().toISOString();
@@ -131,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
             row.appendChild(btns);
 
 
-            // ===== SESSIONS DISPLAY =====
+            // ===== SESSIONS =====
             if (job.sessions?.length) {
                 const sess = document.createElement("div");
 
@@ -147,17 +219,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 row.appendChild(sess);
             }
 
-
-            // ===== STATUS =====
             if (job.status === "finished") {
                 row.style.opacity = "0.6";
             }
 
-            container.appendChild(row);
+            activeContainer.appendChild(row);
         });
     }
 
-
+    window.renderJobs = renderJobs;
     renderJobs();
 
 });
