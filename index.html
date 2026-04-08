@@ -21,6 +21,9 @@
       <li id="repairsTab">Repairs</li>
       <li id="partsTab">Parts</li>
       <li id="techniciansTab">Technicians</li>
+
+      <!-- ===== ADDED ===== -->
+      <li id="jobsTab">Jobs</li>
     </ul>
   </aside>
 
@@ -95,6 +98,20 @@
       <div id="invoicesList"></div>
     </section>
 
+    <!-- ===== NEW JOBS SECTION ===== -->
+    <section id="jobsSection" class="section hidden">
+      <h2>Jobs</h2>
+
+      <h3>Available Technicians</h3>
+      <div id="availableTechs"></div>
+
+      <h3>Today's Jobs</h3>
+      <div id="jobsTodayList"></div>
+
+      <h3>Active Jobs</h3>
+      <div id="jobsActiveList"></div>
+    </section>
+
     <!-- REPAIRS -->
     <section id="repairsSection" class="section hidden">
       <h2>Repair Types</h2>
@@ -137,6 +154,9 @@
 <script src="parts.js"></script>
 <script src="technicians.js"></script>
 <script src="interactions.js"></script>
+
+<!-- ===== ADDED ===== -->
+<script src="jobs.js"></script>
 
 </body>
 </html>
