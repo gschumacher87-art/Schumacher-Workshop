@@ -101,3 +101,51 @@ function getFinishedBookings() {
 
     return finished;
 }
+
+
+// ===== AUTO RENDER FINISHED JOBS + CLICK TO INVOICE =====
+document.addEventListener("DOMContentLoaded", () => {
+
+    const container = document.getElementById("finishedJobsList");
+    if (!container) return;
+
+    const jobs = getFinishedBookings();
+
+    container.innerHTML = "";
+
+    if (jobs.length === 0) {
+        container.textContent = "No finished jobs.";
+        return;
+    }
+
+    jobs.forEach(job => {
+
+        const row = document.createElement("div");
+        row.style.border = "1px solid #ccc";
+        row.style.padding = "6px";
+        row.style.marginTop = "6px";
+        row.style.display = "flex";
+        row.style.justifyContent = "space-between";
+        row.style.alignItems = "center";
+
+        const text = document.createElement("span");
+        text.textContent = `${job.customer} - ${job.vehicle} - ${job.repair}`;
+
+        const btn = document.createElement("button");
+        btn.textContent = "Create Invoice";
+
+        btn.onclick = () => {
+            const invoice = addInvoiceFromBooking(job);
+            if (invoice) {
+                alert("Invoice created");
+            } else {
+                alert("Invoice failed");
+            }
+        };
+
+        row.appendChild(text);
+        row.appendChild(btn);
+        container.appendChild(row);
+    });
+
+});
