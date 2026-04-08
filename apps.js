@@ -10,7 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
         invoices: document.getElementById("invoicesSection"),
         repairs: document.getElementById("repairsSection"),
         parts: document.getElementById("partsSection"),
-        technicians: document.getElementById("techniciansSection")
+        technicians: document.getElementById("techniciansSection"),
+
+        // ===== ADDED =====
+        jobs: document.getElementById("jobsSection")
     };
 
     // ===== MODAL REFERENCES =====
@@ -49,7 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
         invoices: document.getElementById("invoicesTab"),
         repairs: document.getElementById("repairsTab"),
         parts: document.getElementById("partsTab"),
-        technicians: document.getElementById("techniciansTab")
+        technicians: document.getElementById("techniciansTab"),
+
+        // ===== ADDED =====
+        jobs: document.getElementById("jobsTab")
     };
 
     function updateActiveTab(section) {
@@ -67,9 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof showCalendar === "function") showCalendar(currentMonth, currentYear);
     });
 
-    // ===== NEW: TODAY JOBS CARD CLICK =====
+    // ===== FIXED: TODAY JOBS CARD CLICK =====
     document.querySelector(".jobs-card")?.addEventListener("click", () => {
-        switchSection(sections.invoices); // reuse invoices section for jobs
+        switchSection(sections.jobs); // ✅ FIXED (was invoices)
         if (typeof renderJobs === "function") renderJobs();
     });
 
