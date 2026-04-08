@@ -10,7 +10,6 @@
 
 <div class="container">
 
-  <!-- ===== SIDEBAR ===== -->
   <aside class="sidebar">
     <div class="sidebar-header">Schumacher Automotive</div>
     <ul>
@@ -21,16 +20,11 @@
       <li id="repairsTab">Repairs</li>
       <li id="partsTab">Parts</li>
       <li id="techniciansTab">Technicians</li>
-
-      <!-- ===== ADDED ===== -->
-      <li id="jobsTab">Jobs</li>
     </ul>
   </aside>
 
-  <!-- ===== MAIN CONTENT ===== -->
   <main class="main">
 
-    <!-- DASHBOARD -->
     <section id="dashboardSection" class="section">
       <div class="cards">
         <div class="card calendar-card">
@@ -48,49 +42,39 @@
       </div>
     </section>
 
-    <!-- CALENDAR -->
     <section id="calendarSection" class="section hidden">
       <div class="calendar-header">
         <button id="prevMonth">&lt;</button>
         <span id="monthYear"></span>
         <button id="nextMonth">&gt;</button>
       </div>
-      <div class="calendar-table-container">
-        <table id="calendarTable">
-          <thead>
-            <tr>
-              <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
-              <th>Thu</th><th>Fri</th><th>Sat</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div id="bookingForm" class=""></div>
+      <table id="calendarTable">
+        <thead>
+          <tr>
+            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
+            <th>Thu</th><th>Fri</th><th>Sat</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="bookingForm"></div>
     </section>
 
-    <!-- CUSTOMERS -->
     <section id="customersSection" class="section hidden">
       <h2>Customers</h2>
       <button id="addCustomerBtn">Add Customer</button>
       <div id="customersList"></div>
     </section>
 
-    <!-- QUOTES -->
     <section id="quotesSection" class="section hidden">
       <h2>Quotes</h2>
       <button id="addQuoteBtn">Add Quote / Repair</button>
       <div id="quotesList"></div>
     </section>
 
-    <!-- INVOICES -->
     <section id="invoicesSection" class="section hidden">
       <h2>Invoices</h2>
       <button id="addInvoiceBtn">Add Invoice</button>
-
-      <!-- ✅ ADDED: TODAY JOBS -->
-      <h3>Today's Jobs</h3>
-      <div id="todayJobsList"></div>
 
       <h3>Finished Jobs</h3>
       <div id="finishedJobsList"></div>
@@ -98,7 +82,7 @@
       <div id="invoicesList"></div>
     </section>
 
-    <!-- ===== NEW JOBS SECTION ===== -->
+    <!-- JOBS VIEW (NO SIDEBAR) -->
     <section id="jobsSection" class="section hidden">
       <h2>Jobs</h2>
 
@@ -112,21 +96,18 @@
       <div id="jobsActiveList"></div>
     </section>
 
-    <!-- REPAIRS -->
     <section id="repairsSection" class="section hidden">
       <h2>Repair Types</h2>
       <button id="addRepairBtn">Add Repair</button>
       <ul id="repairsList"></ul>
     </section>
 
-    <!-- PARTS -->
     <section id="partsSection" class="section hidden">
       <h2>Parts</h2>
       <button id="addPartBtn">Add Part</button>
       <ul id="partsList"></ul>
     </section>
 
-    <!-- TECHNICIANS -->
     <section id="techniciansSection" class="section hidden">
       <h2>Technicians</h2>
       <button id="addTechnicianBtn">Add Technician</button>
@@ -137,26 +118,22 @@
 
 </div>
 
-<!-- ===== MODALS ===== -->
 <div id="bookingModal" class="modal hidden"></div>
 <div id="customerModal" class="modal hidden"></div>
 <div id="vehicleModal" class="modal hidden"></div>
 <div id="quoteModal" class="modal hidden"></div>
 <div id="invoiceModal" class="modal hidden"></div>
 
-<!-- ===== SCRIPTS ===== -->
 <script src="customers.js"></script>
 <script src="bookings.js"></script>
 <script src="apps.js"></script>
 <script src="quotes.js"></script>
+<script src="jobs.js"></script>
 <script src="invoices.js"></script>
 <script src="repairs.js"></script>
 <script src="parts.js"></script>
 <script src="technicians.js"></script>
 <script src="interactions.js"></script>
-
-<!-- ===== ADDED ===== -->
-<script src="jobs.js"></script>
 
 </body>
 </html>
