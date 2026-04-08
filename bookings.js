@@ -111,10 +111,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-                // ===== ARRIVED =====
+                // ===== ARRIVED (FIXED) =====
                 arrivedBtn.addEventListener("click", ()=>{
 
                     let todayJobs = JSON.parse(localStorage.getItem("todayJobs")) || [];
+
+                    // prevent duplicates
+                    const exists = todayJobs.some(j =>
+                        j.customer === b.customer &&
+                        j.vehicle === b.vehicle &&
+                        j.repair === b.repair
+                    );
+
+                    if (exists) {
+                        alert("Already arrived");
+                        return;
+                    }
 
                     todayJobs.push({
                         customer: b.customer,
@@ -125,7 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     localStorage.setItem("todayJobs", JSON.stringify(todayJobs));
 
-                    alert("Marked as arrived");
+                    // REMOVE from bookings
+                    bookings[key].splice(idx,1);
+                    localStorage.setItem("bookings", JSON.stringify(bookings));
+
+                    openBooking(day, month, year);
                 });
 
                 item.appendChild(btnContainer);
