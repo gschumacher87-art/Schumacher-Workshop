@@ -52,10 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         invoices: document.getElementById("invoicesTab"),
         repairs: document.getElementById("repairsTab"),
         parts: document.getElementById("partsTab"),
-        technicians: document.getElementById("techniciansTab"),
-
-        // ===== ADDED =====
-        jobs: document.getElementById("jobsTab")
+        technicians: document.getElementById("techniciansTab")
     };
 
     function updateActiveTab(section) {
