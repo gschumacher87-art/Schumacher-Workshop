@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         parts: document.getElementById("partsSection"),
         technicians: document.getElementById("techniciansSection"),
 
-        // ===== ADDED =====
+        // ===== ONLY ADD THIS =====
         jobs: document.getElementById("jobsSection")
     };
 
@@ -70,9 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof showCalendar === "function") showCalendar(currentMonth, currentYear);
     });
 
-    // ===== FIXED: TODAY JOBS CARD CLICK =====
+    // ===== ONLY CHANGE THIS LINE =====
     document.querySelector(".jobs-card")?.addEventListener("click", () => {
-        switchSection(sections.jobs); // ✅ FIXED (was invoices)
+        switchSection(sections.jobs); // ← WAS invoices
         if (typeof renderJobs === "function") renderJobs();
     });
 
