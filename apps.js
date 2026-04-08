@@ -67,6 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof showCalendar === "function") showCalendar(currentMonth, currentYear);
     });
 
+    // ===== NEW: TODAY JOBS CARD CLICK =====
+    document.querySelector(".jobs-card")?.addEventListener("click", () => {
+        switchSection(sections.invoices); // reuse invoices section for jobs
+        if (typeof renderJobs === "function") renderJobs();
+    });
+
     // ===== SIDEBAR TAB CLICKS =====
     for (let key in tabElements) {
         tabElements[key]?.addEventListener("click", () => {
@@ -96,6 +102,17 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.entries(addButtons).forEach(([btnId, action]) => {
         document.getElementById(btnId)?.addEventListener("click", action);
     });
+
+    // ===== NEW: UPDATE TODAY JOBS COUNT =====
+    function renderTodayJobsCount() {
+        const jobsCountEl = document.getElementById("jobsCount");
+        if (!jobsCountEl) return;
+
+        const todayJobs = JSON.parse(localStorage.getItem("todayJobs")) || [];
+        jobsCountEl.textContent = todayJobs.length;
+    }
+
+    renderTodayJobsCount();
 
     // ===== HELPER =====
     function capitalizeFirst(str) {
