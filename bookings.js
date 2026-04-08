@@ -93,13 +93,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const btnContainer = document.createElement("span");
 
-                ["Edit","Delete","Start Job"].forEach(a=>{
+                ["Edit","Delete","Arrived"].forEach(a=>{
                     const btn=document.createElement("button");
                     btn.textContent=a;
                     btnContainer.appendChild(btn);
                 });
 
-                const [editBtn, deleteBtn, startJobBtn] = btnContainer.children;
+                const [editBtn, deleteBtn, arrivedBtn] = btnContainer.children;
 
                 editBtn.addEventListener("click", ()=>showBookingModal(day, month, year, idx));
 
@@ -111,38 +111,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-                // ===== NEW: START JOB =====
-                startJobBtn.addEventListener("click", ()=>{
+                // ===== ARRIVED =====
+                arrivedBtn.addEventListener("click", ()=>{
 
-                    let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+                    let todayJobs = JSON.parse(localStorage.getItem("todayJobs")) || [];
 
-                    const technicians = JSON.parse(localStorage.getItem("technicians")) || [];
-                    if(!technicians.length){
-                        alert("No technicians available");
-                        return;
-                    }
-
-                    const techNames = technicians.map(t=>t.name).join(", ");
-                    const selected = prompt(`Select Technician:\n${techNames}`);
-
-                    if(!selected) return;
-
-                    const job = {
-                        id: Date.now(),
+                    todayJobs.push({
                         customer: b.customer,
                         vehicle: b.vehicle,
                         repair: b.repair,
-                        technician: selected,
-                        sessions: [],
-                        status: "active",
-                        createdAt: new Date().toISOString()
-                    };
+                        arrivedAt: new Date().toISOString()
+                    });
 
-                    jobs.push(job);
-                    localStorage.setItem("jobs", JSON.stringify(jobs));
+                    localStorage.setItem("todayJobs", JSON.stringify(todayJobs));
 
-                    alert("Job started");
-
+                    alert("Marked as arrived");
                 });
 
                 item.appendChild(btnContainer);
