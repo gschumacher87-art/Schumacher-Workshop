@@ -1,7 +1,6 @@
-// ===== APPS.JS =====
+// ================= APPS.JS (CENTRAL NAV + SYNC) =================
 document.addEventListener("DOMContentLoaded", () => {
 
-    // ===== SECTION REFERENCES =====
     const sections = {
         dashboard: document.getElementById("dashboardSection"),
         calendar: document.getElementById("calendarSection"),
@@ -11,115 +10,66 @@ document.addEventListener("DOMContentLoaded", () => {
         repairs: document.getElementById("repairsSection"),
         parts: document.getElementById("partsSection"),
         technicians: document.getElementById("techniciansSection"),
-
-        // ===== ONLY ADD THIS =====
         jobs: document.getElementById("jobsSection")
     };
 
-    // ===== MODAL REFERENCES =====
-    const modals = {
-        bookingForm: document.getElementById("bookingForm"),
-        bookingModal: document.getElementById("bookingModal"),
-        customerModal: document.getElementById("customerModal"),
-        vehicleModal: document.getElementById("vehicleModal"),
-        quoteModal: document.getElementById("quoteModal"),
-        invoiceModal: document.getElementById("invoiceModal")
-    };
-
-    // ===== HIDE FUNCTIONS =====
-    function hideAllSections() {
-        Object.values(sections).forEach(sec => sec?.classList.add("hidden"));
-    }
-
-    function hideAllModals(exclude=null) {
-        Object.entries(modals).forEach(([key, mod]) => {
-            if (mod && key !== exclude) mod.classList.add("hidden");
-        });
-    }
-
-    // ===== SWITCH SECTION =====
-    function switchSection(section) {
-        hideAllSections();
-        section?.classList.remove("hidden");
-        updateActiveTab(section);
-    }
-
-    // ===== ACTIVE TAB HIGHLIGHT =====
-    const tabElements = {
+    const tabs = {
         dashboard: document.getElementById("dashboardTab"),
+        calendar: document.getElementById("calendarTab"),
         customers: document.getElementById("customersTab"),
         quotes: document.getElementById("quotesTab"),
         invoices: document.getElementById("invoicesTab"),
         repairs: document.getElementById("repairsTab"),
         parts: document.getElementById("partsTab"),
-        technicians: document.getElementById("techniciansTab")
+        technicians: document.getElementById("techniciansTab"),
+        jobs: document.getElementById("jobsTab")
     };
 
-    function updateActiveTab(section) {
-        Object.values(tabElements).forEach(tab => tab.classList.remove("active"));
-        for (let key in sections) {
-            if (sections[key] === section) {
-                tabElements[key]?.classList.add("active");
-            }
+    function hideAllSections() {
+        Object.values(sections).forEach(s => s?.classList.add("hidden"));
+    }
+
+    function setActiveTab(key) {
+        Object.values(tabs).forEach(t => t?.classList.remove("active"));
+        tabs[key]?.classList.add("active");
+    }
+
+    function renderSection(key) {
+        hideAllSections();
+        sections[key]?.classList.remove("hidden");
+        setActiveTab(key);
+
+        switch (key) {
+            case "customers":
+                if (window.renderCustomers) window.renderCustomers();
+                break;
+            case "jobs":
+                if (window.renderJobs) window.renderJobs();
+                break;
+            case "invoices":
+                if (window.renderInvoices) window.renderInvoices();
+                break;
         }
     }
 
-    // ===== DASHBOARD CARD CLICK =====
-    document.querySelector(".calendar-card")?.addEventListener("click", () => {
-        switchSection(sections.calendar);
-        if (typeof showCalendar === "function") showCalendar(currentMonth, currentYear);
+    Object.keys(tabs).forEach(key => {
+        tabs[key]?.addEventListener("click", () => renderSection(key));
     });
 
-    // ===== ONLY CHANGE THIS LINE =====
-    document.querySelector(".jobs-card")?.addEventListener("click", () => {
-        switchSection(sections.jobs); // ← WAS invoices
-        if (typeof renderJobs === "function") renderJobs();
-    });
+    // ===== DASHBOARD COUNTS =====
+    function renderDashboard() {
+        const bookingsEl = document.getElementById("bookingsCount");
+        const vehiclesEl = document.getElementById("vehiclesCount");
+        const jobsEl = document.getElementById("jobsCount");
 
-    // ===== SIDEBAR TAB CLICKS =====
-    for (let key in tabElements) {
-        tabElements[key]?.addEventListener("click", () => {
-            switchSection(sections[key]);
-            const renderFuncName = "render" + capitalizeFirst(key);
-            if (typeof window[renderFuncName] === "function") {
-                window[renderFuncName]();
-            }
-        });
+        const jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+        const customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+        if (bookingsEl) bookingsEl.textContent = jobs.filter(j => j.status === "booked").length;
+        if (vehiclesEl) vehiclesEl.textContent = customers.reduce((s, c) => s + (c.vehicles?.length || 0), 0);
+        if (jobsEl) jobsEl.textContent = jobs.filter(j => j.status === "active").length;
     }
 
-    // ===== ADD BUTTONS =====
-    const addButtons = {
-        addQuoteBtn: () => {
-            hideAllModals("quoteModal");
-            if (typeof openQuoteModal === "function") openQuoteModal();
-        },
-        addInvoiceBtn: () => {
-            hideAllModals("invoiceModal");
-            if (typeof openInvoiceModal === "function") openInvoiceModal();
-        },
-        addRepairBtn: () => { if (typeof addOrEditRepair === "function") addOrEditRepair(); },
-        addPartBtn: () => { if (typeof addOrEditPart === "function") addOrEditPart(); },
-        addTechnicianBtn: () => { if (typeof addOrEditTechnician === "function") addOrEditTechnician(); }
-    };
-
-    Object.entries(addButtons).forEach(([btnId, action]) => {
-        document.getElementById(btnId)?.addEventListener("click", action);
-    });
-
-    // ===== NEW: UPDATE TODAY JOBS COUNT =====
-    function renderTodayJobsCount() {
-        const jobsCountEl = document.getElementById("jobsCount");
-        if (!jobsCountEl) return;
-
-        const todayJobs = JSON.parse(localStorage.getItem("todayJobs")) || [];
-        jobsCountEl.textContent = todayJobs.length;
-    }
-
-    renderTodayJobsCount();
-
-    // ===== HELPER =====
-    function capitalizeFirst(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+    renderDashboard();
 
 });
