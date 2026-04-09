@@ -1,83 +1,103 @@
-/*****************************************
- * technicians.js
- * ---------------------------------------
- * Technicians Block - CRUD for technicians
- * Stored in localStorage
- *****************************************/
-
+// ================= TECHNICIANS.JS (RESOURCE POOL + JOB LINKING) =================
 document.addEventListener("DOMContentLoaded", () => {
-  // ===== LOAD TECHNICIANS =====
-  let technicians = JSON.parse(localStorage.getItem("technicians")) || [];
 
-  const techniciansList = document.getElementById("techniciansList"); // container for list
-  const addTechnicianBtn = document.getElementById("addTechnicianBtn"); // button to add technician
+    let technicians = JSON.parse(localStorage.getItem("technicians")) || [];
 
-  // ===== RENDER TECHNICIANS =====
-  function renderTechnicians() {
-    techniciansList.innerHTML = "";
-    if (technicians.length === 0) {
-      techniciansList.textContent = "No technicians yet.";
-      return;
+    const techniciansList = document.getElementById("techniciansList");
+    const addTechnicianBtn = document.getElementById("addTechnicianBtn");
+
+    function saveTechs() {
+        localStorage.setItem("technicians", JSON.stringify(technicians));
+        renderTechnicians();
     }
 
-    technicians.forEach((tech, index) => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${tech.name}</strong> - Speciality: ${tech.speciality}
-        <button class="editTechnician" data-index="${index}">Edit</button>
-        <button class="deleteTechnician" data-index="${index}">Delete</button>
-      `;
-      techniciansList.appendChild(li);
+    function renderTechnicians() {
+        if (!techniciansList) return;
+
+        techniciansList.innerHTML = "";
+
+        if (!technicians.length) {
+            techniciansList.textContent = "No technicians.";
+            return;
+        }
+
+        technicians.forEach((t, index) => {
+
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+                <strong>${t.name}</strong> - ${t.speciality || ""}
+                <button data-i="${index}" class="edit">Edit</button>
+                <button data-i="${index}" class="delete">Delete</button>
+            `;
+
+            techniciansList.appendChild(li);
+        });
+
+        window.technicians = technicians;
+    }
+
+    function openTechModal(index = null) {
+
+        const modal = document.getElementById("customerModal") || document.getElementById("bookingModal");
+        if (!modal) return;
+
+        modal.classList.remove("hidden");
+        modal.classList.add("show");
+
+        let t = {
+            name: "",
+            speciality: ""
+        };
+
+        if (index !== null) t = technicians[index];
+
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>${index !== null ? "Edit" : "Add"} Technician</h3>
+
+                <input id="tName" placeholder="Name" value="${t.name}">
+                <input id="tSpec" placeholder="Speciality" value="${t.speciality || ""}">
+
+                <button id="saveTech">Save</button>
+            </div>
+        `;
+
+        document.getElementById("saveTech").onclick = () => {
+
+            const newT = {
+                name: document.getElementById("tName").value.trim(),
+                speciality: document.getElementById("tSpec").value.trim()
+            };
+
+            if (!newT.name) return;
+
+            if (index !== null) technicians[index] = newT;
+            else technicians.push(newT);
+
+            saveTechs();
+
+            modal.classList.remove("show");
+            modal.classList.add("hidden");
+        };
+    }
+
+    function deleteTech(index) {
+        if (!confirm("Delete technician?")) return;
+        technicians.splice(index, 1);
+        saveTechs();
+    }
+
+    addTechnicianBtn?.addEventListener("click", () => openTechModal());
+
+    techniciansList?.addEventListener("click", (e) => {
+        if (e.target.classList.contains("edit")) {
+            openTechModal(e.target.dataset.i);
+        }
+        if (e.target.classList.contains("delete")) {
+            deleteTech(e.target.dataset.i);
+        }
     });
 
-    // ===== ADDED =====
-    window.technicians = technicians;
-  }
-
-  // ===== SAVE TECHNICIANS =====
-  function saveTechnicians() {
-    localStorage.setItem("technicians", JSON.stringify(technicians));
     renderTechnicians();
-  }
-
-  // ===== ADD OR EDIT TECHNICIAN =====
-  function addOrEditTechnician(index = null) {
-    const name = prompt("Technician Name:", index !== null ? technicians[index].name : "");
-    if (!name) return;
-
-    const speciality = prompt("Speciality:", index !== null ? technicians[index].speciality : "");
-    if (!speciality) return;
-
-    const techObj = { name, speciality };
-
-    if (index === null) {
-      technicians.push(techObj);
-    } else {
-      technicians[index] = techObj;
-    }
-
-    saveTechnicians();
-  }
-
-  // ===== DELETE TECHNICIAN =====
-  function deleteTechnician(index) {
-    if (confirm(`Delete technician "${technicians[index].name}"?`)) {
-      technicians.splice(index, 1);
-      saveTechnicians();
-    }
-  }
-
-  // ===== EVENT LISTENERS =====
-  addTechnicianBtn?.addEventListener("click", () => addOrEditTechnician());
-
-  techniciansList?.addEventListener("click", (e) => {
-    if (e.target.classList.contains("editTechnician")) {
-      addOrEditTechnician(e.target.dataset.index);
-    } else if (e.target.classList.contains("deleteTechnician")) {
-      deleteTechnician(e.target.dataset.index);
-    }
-  });
-
-  // ===== INITIAL RENDER =====
-  renderTechnicians();
 });
