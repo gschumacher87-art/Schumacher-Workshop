@@ -1,81 +1,106 @@
-/*****************************************
- * parts.js
- * ---------------------------------------
- * Parts Block - CRUD for workshop parts
- * Stored in localStorage
- *****************************************/
+// ================= PARTS.JS (LIBRARY + INVOICE READY) =================
 document.addEventListener("DOMContentLoaded", () => {
-  // ===== LOAD PARTS =====
-  let parts = JSON.parse(localStorage.getItem("parts")) || [];
 
-  const partsList = document.getElementById("partsList"); // container for list
-  const addPartBtn = document.getElementById("addPartBtn"); // button to add part
+    let parts = JSON.parse(localStorage.getItem("parts")) || [];
 
-  // ===== RENDER PARTS =====
-  function renderParts() {
-    partsList.innerHTML = "";
-    if (parts.length === 0) {
-      partsList.textContent = "No parts yet.";
-      return;
+    const partsList = document.getElementById("partsList");
+    const addPartBtn = document.getElementById("addPartBtn");
+
+    function saveParts() {
+        localStorage.setItem("parts", JSON.stringify(parts));
+        renderParts();
     }
-    parts.forEach((part, index) => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${part.partNumber}</strong> - ${part.description} - $${part.price}
-        <button class="editPart" data-index="${index}">Edit</button>
-        <button class="deletePart" data-index="${index}">Delete</button>
-      `;
-      partsList.appendChild(li);
+
+    function renderParts() {
+        if (!partsList) return;
+
+        partsList.innerHTML = "";
+
+        if (!parts.length) {
+            partsList.textContent = "No parts.";
+            return;
+        }
+
+        parts.forEach((p, index) => {
+
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+                <strong>${p.partNumber}</strong> - ${p.description} - $${p.price.toFixed(2)}
+                <button data-i="${index}" class="edit">Edit</button>
+                <button data-i="${index}" class="delete">Delete</button>
+            `;
+
+            partsList.appendChild(li);
+        });
+    }
+
+    function openPartModal(index = null) {
+
+        const modal = document.getElementById("customerModal") || document.getElementById("bookingModal");
+        if (!modal) return;
+
+        modal.classList.remove("hidden");
+        modal.classList.add("show");
+
+        let p = {
+            partNumber: "",
+            description: "",
+            price: 0
+        };
+
+        if (index !== null) p = parts[index];
+
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>${index !== null ? "Edit" : "Add"} Part</h3>
+
+                <input id="pNum" placeholder="Part Number" value="${p.partNumber}">
+                <input id="pDesc" placeholder="Description" value="${p.description}">
+                <input id="pPrice" type="number" placeholder="Price" value="${p.price}">
+
+                <button id="savePart">Save</button>
+            </div>
+        `;
+
+        document.getElementById("savePart").onclick = () => {
+
+            const newP = {
+                partNumber: document.getElementById("pNum").value.trim(),
+                description: document.getElementById("pDesc").value.trim(),
+                price: parseFloat(document.getElementById("pPrice").value) || 0
+            };
+
+            if (!newP.partNumber || !newP.description) return;
+
+            if (index !== null) parts[index] = newP;
+            else parts.push(newP);
+
+            saveParts();
+
+            modal.classList.remove("show");
+            modal.classList.add("hidden");
+        };
+    }
+
+    function deletePart(index) {
+        if (!confirm("Delete part?")) return;
+        parts.splice(index, 1);
+        saveParts();
+    }
+
+    addPartBtn?.addEventListener("click", () => openPartModal());
+
+    partsList?.addEventListener("click", (e) => {
+        if (e.target.classList.contains("edit")) {
+            openPartModal(e.target.dataset.i);
+        }
+        if (e.target.classList.contains("delete")) {
+            deletePart(e.target.dataset.i);
+        }
     });
-  }
 
-  // ===== SAVE PARTS =====
-  function saveParts() {
-    localStorage.setItem("parts", JSON.stringify(parts));
+    window.getParts = () => parts;
+
     renderParts();
-  }
-
-  // ===== ADD OR EDIT PART =====
-  function addOrEditPart(index = null) {
-    const partNumber = prompt("Part Number:", index !== null ? parts[index].partNumber : "");
-    if (!partNumber) return;
-
-    const description = prompt("Description:", index !== null ? parts[index].description : "");
-    if (!description) return;
-
-    const price = prompt("Price:", index !== null ? parts[index].price : "");
-    if (!price || isNaN(price)) return alert("Invalid price");
-
-    const partObj = { partNumber, description, price: parseFloat(price) };
-
-    if (index === null) {
-      parts.push(partObj);
-    } else {
-      parts[index] = partObj;
-    }
-
-    saveParts();
-  }
-
-  // ===== DELETE PART =====
-  function deletePart(index) {
-    if (confirm(`Delete part "${parts[index].partNumber}"?`)) {
-      parts.splice(index, 1);
-      saveParts();
-    }
-  }
-
-  // ===== EVENT LISTENERS =====
-  addPartBtn.addEventListener("click", () => addOrEditPart());
-
-  partsList.addEventListener("click", (e) => {
-    if (e.target.classList.contains("editPart")) {
-      addOrEditPart(e.target.dataset.index);
-    } else if (e.target.classList.contains("deletePart")) {
-      deletePart(e.target.dataset.index);
-    }
-  });
-
-  // ===== INITIAL RENDER =====
-  renderParts();
 });
