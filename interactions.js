@@ -1,10 +1,10 @@
-// ================= INTERACTIONS.JS =================
+// ================= INTERACTIONS.JS (GLOBAL MODAL + UI CONTROL) =================
 document.addEventListener("DOMContentLoaded", () => {
 
-    // ===== MODAL UTILITY FUNCTIONS =====
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
+        modal.classList.remove("hidden");
         modal.classList.add("show");
     }
 
@@ -12,41 +12,45 @@ document.addEventListener("DOMContentLoaded", () => {
         const modal = document.getElementById(modalId);
         if (!modal) return;
         modal.classList.remove("show");
+        modal.classList.add("hidden");
     }
 
-    // Close modal when clicking outside content
+    // ===== CLICK OUTSIDE CLOSE =====
     document.querySelectorAll(".modal").forEach(modal => {
         modal.addEventListener("click", (e) => {
             const content = modal.querySelector(".modal-content");
-            if (e.target === modal) modal.classList.remove("show");
-            if (content && e.target === content) return; // allow clicks inside content
+            if (e.target === modal) closeModal(modal.id);
+            if (content && e.target === content) return;
         });
     });
 
-    // Close modal with ESC key
+    // ===== ESC CLOSE =====
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
-            document.querySelectorAll(".modal.show").forEach(m => m.classList.remove("show"));
+            document.querySelectorAll(".modal.show").forEach(m => {
+                m.classList.remove("show");
+                m.classList.add("hidden");
+            });
         }
     });
 
-    // ===== GLOBAL BUTTON CLICK HANDLER =====
+    // ===== GLOBAL DATA ATTR HANDLER =====
     document.body.addEventListener("click", (e) => {
+
         const btn = e.target;
 
-        // Open modals by data attribute
         if (btn.dataset.open) {
             openModal(btn.dataset.open + "Modal");
         }
 
-        // Close modals by data attribute
         if (btn.dataset.close) {
             closeModal(btn.dataset.close);
         }
     });
 
-    // ===== SIDEBAR / TAB CLICK =====
+    // ===== SIDEBAR ACTIVE STATE =====
     const sidebarItems = document.querySelectorAll(".sidebar ul li");
+
     sidebarItems.forEach(item => {
         item.addEventListener("click", () => {
             sidebarItems.forEach(i => i.classList.remove("active"));
@@ -54,8 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ===== DYNAMIC MODAL HOOKS =====
-    // Expose openModal and closeModal globally for BOOKINGS / CUSTOMERS dynamic modals
+    // ===== EXPOSE =====
     window.openModal = openModal;
     window.closeModal = closeModal;
+
 });
