@@ -10,130 +10,143 @@
 
 <div class="container">
 
-  <aside class="sidebar">
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
     <div class="sidebar-header">Schumacher Automotive</div>
     <ul>
-      <li class="active" id="dashboardTab">Dashboard</li>
-      <li id="customersTab">Customers</li>
-      <li id="quotesTab">Quotes</li>
-      <li id="invoicesTab">Invoices</li>
-      <li id="repairsTab">Repairs</li>
-      <li id="partsTab">Parts</li>
-      <li id="techniciansTab">Technicians</li>
+        <li class="active" id="dashboardTab">Dashboard</li>
+        <li id="calendarTab">Calendar</li>
+        <li id="customersTab">Customers</li>
+        <li id="quotesTab">Quotes</li>
+        <li id="invoicesTab">Invoices</li>
+        <li id="repairsTab">Repairs</li>
+        <li id="partsTab">Parts</li>
+        <li id="techniciansTab">Technicians</li>
+        <li id="jobsTab">Jobs</li>
     </ul>
-  </aside>
+</aside>
 
-  <main class="main">
+<!-- ===== MAIN ===== -->
+<main class="main">
 
-    <section id="dashboardSection" class="section">
-      <div class="cards">
+<!-- DASHBOARD -->
+<section id="dashboardSection" class="section">
+    <div class="cards">
         <div class="card calendar-card">
-          <h3>Calendar</h3>
-          <p id="bookingsCount">0</p>
+            <h3>Calendar</h3>
+            <p id="bookingsCount">0</p>
         </div>
         <div class="card vehicles-card">
-          <h3>Vehicles in Workshop</h3>
-          <p id="vehiclesCount">0</p>
+            <h3>Vehicles</h3>
+            <p id="vehiclesCount">0</p>
         </div>
         <div class="card jobs-card">
-          <h3>Today's Jobs</h3>
-          <p id="jobsCount">0</p>
+            <h3>Active Jobs</h3>
+            <p id="jobsCount">0</p>
         </div>
-      </div>
-    </section>
+    </div>
+</section>
 
-    <section id="calendarSection" class="section hidden">
-      <div class="calendar-header">
+<!-- CALENDAR -->
+<section id="calendarSection" class="section hidden">
+    <div class="calendar-header">
         <button id="prevMonth">&lt;</button>
         <span id="monthYear"></span>
         <button id="nextMonth">&gt;</button>
-      </div>
-      <table id="calendarTable">
+    </div>
+
+    <table id="calendarTable">
         <thead>
-          <tr>
-            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
-            <th>Thu</th><th>Fri</th><th>Sat</th>
-          </tr>
+            <tr>
+                <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
+                <th>Thu</th><th>Fri</th><th>Sat</th>
+            </tr>
         </thead>
         <tbody></tbody>
-      </table>
-      <div id="bookingForm"></div>
-    </section>
+    </table>
 
-    <section id="customersSection" class="section hidden">
-      <h2>Customers</h2>
-      <button id="addCustomerBtn">Add Customer</button>
-      <div id="customersList"></div>
-    </section>
+    <div id="bookingForm"></div>
+</section>
 
-    <section id="quotesSection" class="section hidden">
-      <h2>Quotes</h2>
-      <button id="addQuoteBtn">Add Quote / Repair</button>
-      <div id="quotesList"></div>
-    </section>
+<!-- CUSTOMERS -->
+<section id="customersSection" class="section hidden">
+    <h2>Customers</h2>
+    <button id="addCustomerBtn">Add Customer</button>
+    <div id="customersList"></div>
+</section>
 
-    <section id="invoicesSection" class="section hidden">
-      <h2>Invoices</h2>
-      <button id="addInvoiceBtn">Add Invoice</button>
+<!-- QUOTES -->
+<section id="quotesSection" class="section hidden">
+    <h2>Quotes</h2>
+    <div id="quotesList"></div>
+</section>
 
-      <h3>Finished Jobs</h3>
-      <div id="finishedJobsList"></div>
+<!-- INVOICES -->
+<section id="invoicesSection" class="section hidden">
+    <h2>Invoices</h2>
 
-      <div id="invoicesList"></div>
-    </section>
+    <h3>Ready To Invoice</h3>
+    <div id="finishedJobsList"></div>
 
-    <!-- JOBS VIEW (NO SIDEBAR) -->
-    <section id="jobsSection" class="section hidden">
-      <h2>Jobs</h2>
+    <h3>Saved Invoices</h3>
+    <div id="invoicesList"></div>
+</section>
 
-      <h3>Available Technicians</h3>
-      <div id="availableTechs"></div>
+<!-- JOBS -->
+<section id="jobsSection" class="section hidden">
+    <h2>Jobs</h2>
 
-      <h3>Today's Jobs</h3>
-      <div id="jobsTodayList"></div>
+    <h3>Available Technicians</h3>
+    <div id="availableTechs"></div>
 
-      <h3>Active Jobs</h3>
-      <div id="jobsActiveList"></div>
-    </section>
+    <h3>Unassigned</h3>
+    <div id="jobsTodayList"></div>
 
-    <section id="repairsSection" class="section hidden">
-      <h2>Repair Types</h2>
-      <button id="addRepairBtn">Add Repair</button>
-      <ul id="repairsList"></ul>
-    </section>
+    <h3>Active</h3>
+    <div id="jobsActiveList"></div>
+</section>
 
-    <section id="partsSection" class="section hidden">
-      <h2>Parts</h2>
-      <button id="addPartBtn">Add Part</button>
-      <ul id="partsList"></ul>
-    </section>
+<!-- REPAIRS -->
+<section id="repairsSection" class="section hidden">
+    <h2>Repairs</h2>
+    <button id="addRepairBtn">Add Repair</button>
+    <ul id="repairsList"></ul>
+</section>
 
-    <section id="techniciansSection" class="section hidden">
-      <h2>Technicians</h2>
-      <button id="addTechnicianBtn">Add Technician</button>
-      <ul id="techniciansList"></ul>
-    </section>
+<!-- PARTS -->
+<section id="partsSection" class="section hidden">
+    <h2>Parts</h2>
+    <button id="addPartBtn">Add Part</button>
+    <ul id="partsList"></ul>
+</section>
 
-  </main>
+<!-- TECHS -->
+<section id="techniciansSection" class="section hidden">
+    <h2>Technicians</h2>
+    <button id="addTechnicianBtn">Add Technician</button>
+    <ul id="techniciansList"></ul>
+</section>
 
+</main>
 </div>
 
+<!-- MODALS -->
 <div id="bookingModal" class="modal hidden"></div>
 <div id="customerModal" class="modal hidden"></div>
 <div id="vehicleModal" class="modal hidden"></div>
-<div id="quoteModal" class="modal hidden"></div>
 <div id="invoiceModal" class="modal hidden"></div>
 
+<!-- SCRIPTS -->
 <script src="customers.js"></script>
 <script src="bookings.js"></script>
 <script src="apps.js"></script>
 <script src="quotes.js"></script>
-<script src="jobs.js"></script>
 <script src="invoices.js"></script>
 <script src="repairs.js"></script>
 <script src="parts.js"></script>
 <script src="technicians.js"></script>
 <script src="interactions.js"></script>
+<script src="jobs.js"></script>
 
 </body>
 </html>
